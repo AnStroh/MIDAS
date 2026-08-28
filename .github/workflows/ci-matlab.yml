@@ -1,0 +1,25 @@
+name: MATLAB CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      # No formal unit test suite yet - this runs all 6 example configurations
+      # (small/fast grid) plus the full plotting/export pipeline once, and
+      # fails the build if anything errors. See .github/scripts/smoke_test.m.
+      - name: Run smoke tests (matlab/)
+        uses: matlab-actions/run-command@v2
+        with:
+          command: cd('matlab'); addpath('../.github/scripts'); smoke_test

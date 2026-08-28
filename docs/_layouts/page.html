@@ -1,0 +1,23 @@
+---
+layout: default
+---
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<p style="text-align: center; margin-bottom: 1.5em;">
+  <a href="{{ '/' | relative_url }}">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="{{ '/assets/logo/midas_logo_horizontal_dark.svg' | relative_url }}">
+      <img alt="MIDAS" src="{{ '/assets/logo/midas_logo_horizontal.svg' | relative_url }}" width="260">
+    </picture>
+  </a>
+</p>
+
+{{ content }}

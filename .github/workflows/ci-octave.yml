@@ -1,0 +1,27 @@
+name: Octave CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GNU Octave
+        run: sudo apt-get update && sudo apt-get install -y octave
+
+      # No formal unit test suite yet - this runs all 6 example configurations
+      # (small/fast grid) plus the full plotting/export pipeline once, and
+      # fails the build if anything errors. See .github/scripts/smoke_test.m.
+      # Ported/logic-verified under MATLAB (see octave/README.md "Status") -
+      # this is what actually exercises it under a real Octave interpreter.
+      - name: Run smoke tests (octave/)
+        run: |
+          cd octave
+          octave --no-gui --eval "addpath('../.github/scripts'); smoke_test"

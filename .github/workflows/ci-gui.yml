@@ -1,0 +1,24 @@
+name: GUI CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      # Same smoke check as ci-matlab.yml, run against the GUI/ copy, so a
+      # change that only touches GUI/ still gets a build status of its own.
+      - name: Run smoke tests (GUI/)
+        uses: matlab-actions/run-command@v2
+        with:
+          command: cd('GUI'); addpath('../.github/scripts'); smoke_test

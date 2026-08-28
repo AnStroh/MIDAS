@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Dark-mode counterpart of midas_icon.svg: transparent background, light
+       wordmark fill, same gradient underline (lightened) as the horizontal
+       logo's dark variant for a consistent light/dark pair. -->
+  <defs>
+    <linearGradient id="g1d" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B9A6D9"/>
+      <stop offset="1" stop-color="#D9A441"/>
+    </linearGradient>
+  </defs>
+  <text x="100" y="130" font-family="Arial, Helvetica, sans-serif" font-size="140"
+        font-weight="bold" fill="#F3ECFB" text-anchor="middle">M</text>
+  <rect x="30" y="150" width="140" height="12" fill="url(#g1d)"/>
+</svg>

@@ -1,0 +1,28 @@
+# Run outputs (each run creates its own timestamped folder - regenerable, not source)
+matlab/results/
+octave/results/
+GUI/results/
+*_notitle.pdf
+*_notitle.png
+*_labeled.pdf
+*_labeled.png
+
+# MATLAB
+*.asv
+*.m~
+octave-workspace
+*.oct
+
+# GUI export panel defaults
+exported_data/
+exported_figures/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+
+# Docs build output (generated, not source)
+docs/_site/
+docs/.jekyll-cache/

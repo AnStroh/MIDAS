@@ -1,0 +1,24 @@
+title: MIDAS
+description: >-
+  A moving-boundary crystal-growth and diffusion model for Lu-Hf garnet
+  geochronology - MATLAB, GNU Octave, and interactive GUI versions.
+# GitHub Pages project site (served at https://<user>.github.io/MIDAS/) -
+# needed so relative_url-generated asset links (e.g. the logo, injected by
+# _layouts/page.html) resolve correctly from every page, not just "/".
+# Update this if the repository is ever renamed.
+baseurl: "/MIDAS"
+theme: minima
+header_pages:
+  - getting-started.md
+  - examples.md
+  - equations.md
+  - configuration-options.md
+  - mesh-refinement.md
+  - interpreting-output.md
+  - benchmarks.md
+  - phase-diagrams.md
+  - references.md
+  - api-reference.md
+  - gui.md
+  - octave.md
+show_excerpts: false

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Square icon (window/taskbar icon): compact "M" mark matching the
+       wordmark's typography and gradient underline. -->
+  <rect width="200" height="200" fill="white"/>
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2E1A47"/>
+      <stop offset="1" stop-color="#D9A441"/>
+    </linearGradient>
+  </defs>
+  <text x="100" y="130" font-family="Arial, Helvetica, sans-serif" font-size="140"
+        font-weight="bold" fill="#2E1A47" text-anchor="middle">M</text>
+  <rect x="30" y="150" width="140" height="12" fill="url(#g1)"/>
+</svg>

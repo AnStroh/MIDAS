@@ -1,0 +1,19 @@
+[default]
+extend-ignore-identifiers-re = [
+    "(?i)nx_[AB]",   # grid-size fields, not a typo of "nx"
+    "(?i)lx[AB]",
+    "(?i)PTmode",
+    "(?i)MnMode",
+    "(?i)MniBMode",
+]
+
+[files]
+extend-exclude = [
+    "docs/_site/**",
+    "*.mat",
+    "*.dat",
+]
+
+[default.extend-words]
+# Domain terms that look like typos to a general-purpose dictionary.
+grt = "grt"

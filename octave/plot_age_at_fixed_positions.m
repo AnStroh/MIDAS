@@ -39,19 +39,18 @@ for it = 1:nT
 end
 
 fig  = figure('Color',[1 1 1],'Units','pixels','Position',[100 100 950 650]);
-cmap = parula(numel(fixedPos));
+cmap = viridis(numel(fixedPos));   % NOT parula: doesn't exist in Octave ("not yet implemented"); viridis is Octave's own closest perceptually-uniform equivalent
 hold on
 for k = 1:numel(fixedPos)
     plot(trec,ageAtPos(:,k),'-','LineWidth',LWW*1.5,'Color',cmap(k,:), ...
-        'DisplayName',sprintf('$x=%.4g$ mm',fixedPos(k)))
+        'DisplayName',sprintf('x=%.4g mm',fixedPos(k)))
 end
-%plot(trec,trec,'k--','LineWidth',LWW,'DisplayName','True $t$')
+%plot(trec,trec,'k--','LineWidth',LWW,'DisplayName','True t')
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('$\tau$ (Myr)','interpreter','latex','FontSize',FSS)
-title(sprintf('$\\tau$ evolution',Smin), ...
-    'interpreter','latex','FontSize',FSS)
-legend('Location','eastoutside','interpreter','latex')
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('\tau (Myr)','FontSize',FSS)
+title(sprintf('\\tau evolution',Smin),'FontSize',FSS)
+legend('Location','eastoutside')
 end

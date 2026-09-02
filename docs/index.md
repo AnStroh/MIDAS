@@ -4,16 +4,20 @@ title: MIDAS
 permalink: /
 ---
 
-**MIDAS** is an interface-limited crystal-growth model (a moving-boundary problem) for a garnet crystal (phase A) growing/resorbing in a matrix (phase B), coupled to major-element (Mg-Fe-Mn) and trace-element (Lu, Hf, Mn) diffusion and partitioning - built for modeling Lu-Hf garnet geochronology.
+**MIDAS** (Mineral Interface Dynamics and apparent-Age Simulation) is an interface-limited crystal-growth model (a moving-boundary problem) for a mineral (phase A) growing/resorbing in a matrix phase (phase B), coupled to major- and trace-element diffusion and partitioning between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent ages and interface (growth/resorption) velocities over a metamorphic P-T-t path.
 
 "A" indicates the parameters and variables with respect to the crystal, whereas "B" refers to the matrix.
+
+**Note:** MIDAS is under active development (currently v0.1.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](../CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+**Also note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation, while `octave/` is a port only recently run under real Octave for the first time. Several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](../CHANGELOG.md)), and more may still surface. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it.
 
 ## Three ways to run it
 
 | | |
 |---|---|
 | **[Getting started](getting-started)** | Run it from MATLAB or Octave in a few lines |
-| **[GUI guide](gui)** | The interactive MATLAB App Designer front-end |
+| **[GUI guide](gui)** | The interactive front-end - MATLAB App Designer, or the Octave rebuild |
 | **[Octave notes](octave)** | Setup and differences for the GNU Octave port |
 
 ## Background and reference

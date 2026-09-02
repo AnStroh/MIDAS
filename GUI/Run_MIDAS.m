@@ -16,7 +16,7 @@
 %
 % Authors: Annalena Stroh, Evangelos Moulas
 % JGU, Mainz, 2026
-%=============================================================================
+%==========================================================================
 clc, clear all%, close all
 
 params            = MIDAS_Params();          % or e.g. MIDAS_Params_Example2_PolyEquilibrium();
@@ -26,6 +26,12 @@ params.doPlot     = true;    % show figures for this single run
 % Override any field here, e.g.:
 % params.DamA = 1e-2;
 % params.DRG  = 1e2;
+%
+% Careful with the field name: a typo (e.g. params.nxA instead of
+% params.nx_A) silently creates a harmless-looking extra field instead of
+% erroring - MIDAS_Main only reads the fields it knows about, so your
+% override is quietly ignored and the default value is used instead, with
+% no warning. Double-check the name matches MIDAS_Params.m exactly.
 
 % One timestamped folder per run: everything below lands here, and re-running
 % never overwrites a previous run's results.

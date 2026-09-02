@@ -23,13 +23,13 @@ figure('Color',[1 1 1]);
 plot(R.trec,R.dMB*100,   '-', 'LineWidth',LWW*1.5,'DisplayName','MgO'), hold on
 plot(R.trec,R.dMBMn*100, '--','LineWidth',LWW*1.5,'DisplayName','Mn')
 plot(R.trec,R.dMBHfr*100,':', 'LineWidth',LWW*1.5,'DisplayName','Hf (ref)')
-yline(0,'Color',[0.7 0.7 0.7],'HandleVisibility','off')
+xlZero = xlim; plot(xlZero,[0 0],'Color',[0.7 0.7 0.7],'HandleVisibility','off'); xlim(xlZero);   % NOT yline(...,'HandleVisibility','off'): crashes legend() under Octave/fltk when combined (confirmed - see CHANGELOG.md)
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-%ylabel('$(M(t)-M(0))/M(0)$ (\%)','interpreter','latex','FontSize',FSS)
-ylabel('Normalized mass misfit (\%)','interpreter','latex','FontSize',FSS)
-title('Mass-balance drift vs. $t$','interpreter','latex','FontSize',FSS)
-legend('Location','best','interpreter','latex')
+xlabel('t (Myr)','FontSize',FSS)
+%ylabel('(M(t)-M(0))/M(0) (\%)','FontSize',FSS)
+ylabel('Normalized mass misfit (\%)','FontSize',FSS)
+title('Mass-balance drift vs. t','FontSize',FSS)
+legend('Location','northeast')   % NOT 'best': crashes outright under Octave/fltk (confirmed - see CHANGELOG.md)
 end

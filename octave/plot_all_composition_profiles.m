@@ -21,8 +21,8 @@ blackB = [0 0 0];
 rows = {
     'MgO',  R.CA_final,   R.CB_final,   'MgO (wt.\%)'
     'MnO',  R.CAMn_final, R.CBMn_final, 'MnO (wt.\%)'
-    'Lu',   R.CALu_final, R.CBLu_final, '$^{176}$Lu (ppm)'
-    'Hf',   R.CAHf_final, R.CBHf_final, '$^{176}$Hf (ppm)'
+    'Lu',   R.CALu_final, R.CBLu_final, '^{176}Lu (ppm)'
+    'Hf',   R.CAHf_final, R.CBHf_final, '^{176}Hf (ppm)'
 };
 letters = {'A','B','C','D','E','F','G','H'};
 
@@ -38,24 +38,24 @@ for k = 1:size(rows,1)
     plot(R.xA_final,CA,'Color',blueA,'LineWidth',LWW*1.5)
     grid on, axis square
     set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-    xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-    ylabel(ylab,'interpreter','latex','FontSize',FSS)
-    title([name ', Phase $A$'],'interpreter','latex','FontSize',FSS)
+    xlabel('x (mm)','FontSize',FSS)
+    ylabel(ylab,'FontSize',FSS)
+    title([name ', Phase A'],'FontSize',FSS)
     ylim([0.95*min(CA) 1.05*max(CA)])
     [tx,ty,ha,va] = panelLabelPos(letters{li});
-    text(tx,ty,['(' letters{li} ')'],'Units','normalized','HorizontalAlignment',ha,'FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment',va,'interpreter','latex','BackgroundColor',[1 1 1],'Margin',1)
+    text(tx,ty,['(' letters{li} ')'],'Units','normalized','HorizontalAlignment',ha,'FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment',va,'BackgroundColor',[1 1 1],'Margin',1)
 
     li = li+1;
     nexttile
     plot(R.xB_final,CB,'Color',blackB,'LineWidth',LWW*1.5)
     grid on, axis square
     set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-    xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-    ylabel(ylab,'interpreter','latex','FontSize',FSS)
-    title([name ', Phase $B$'],'interpreter','latex','FontSize',FSS)
+    xlabel('x (mm)','FontSize',FSS)
+    ylabel(ylab,'FontSize',FSS)
+    title([name ', Phase B'],'FontSize',FSS)
     ylim([0.95*min(CB) 1.05*max(CB)])
     [tx,ty,ha,va] = panelLabelPos(letters{li});
-    text(tx,ty,['(' letters{li} ')'],'Units','normalized','HorizontalAlignment',ha,'FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment',va,'interpreter','latex','BackgroundColor',[1 1 1],'Margin',1)
+    text(tx,ty,['(' letters{li} ')'],'Units','normalized','HorizontalAlignment',ha,'FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment',va,'BackgroundColor',[1 1 1],'Margin',1)
 end
 end
 function [tx,ty,ha,va] = panelLabelPos(letter)

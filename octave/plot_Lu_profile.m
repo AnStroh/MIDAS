@@ -18,8 +18,8 @@ figure('Color',[1 1 1]);
 plot(R.xA_final,R.CALu_final,'Color',[0, 0.4470, 0.7410],'LineWidth',LWW*1.5)
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-ylabel('$^{176}$Lu (ppm)','interpreter','latex','FontSize',FSS)
-title('$^{176}$Lu profile, Phase $A$','interpreter','latex','FontSize',FSS)
+xlabel('x (mm)','FontSize',FSS)
+ylabel('^{176}Lu (ppm)','FontSize',FSS)
+title('^{176}Lu profile, Phase A','FontSize',FSS)
 ylim([0.95*min(R.CALu_final) 1.05*max(R.CALu_final)])
 end

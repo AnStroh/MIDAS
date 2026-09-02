@@ -752,22 +752,29 @@ classdef MIDAS < matlab.apps.AppBase
             if isempty(strtrim(p.data_name))
                 issues{end+1} = 'data_name must not be empty (it is used to build the output folder name).';
             end
-            if p.lxA <= 0
+            % Written as "~(x > 0)"/"~(x >= 2)" rather than "x <= 0"/"x < 2":
+            % a NaN silently passes any <=/</>= comparison, so a plain
+            % "x <= 0" check would miss it and let garbage straight through
+            % to MIDAS_Main. MATLAB's uieditfield(...,'numeric') makes this
+            % harder to trigger than in the Octave GUI (whose plain-text
+            % fields can't prevent non-numeric input the same way), but the
+            % check is free insurance either way.
+            if ~(p.lxA > 0)
                 issues{end+1} = 'lxA must be > 0 (initial crystal length, mm).';
             end
-            if p.lxB_factor <= 0
+            if ~(p.lxB_factor > 0)
                 issues{end+1} = 'lxB_factor must be > 0.';
             end
-            if p.nx_A < 2 || p.nx_B < 2
-                issues{end+1} = 'nx_A and nx_B must each be at least 2 grid nodes.';
+            if ~(p.nx_A >= 2) || p.nx_A ~= fix(p.nx_A) || ~(p.nx_B >= 2) || p.nx_B ~= fix(p.nx_B)
+                issues{end+1} = 'nx_A and nx_B must each be a whole number >= 2.';
             end
-            if p.t_tot <= 0
+            if ~(p.t_tot > 0)
                 issues{end+1} = 't_tot must be > 0 Myr.';
             end
-            if p.CFL <= 0
-                issues{end+1} = 'CFL must be > 0.';
+            if ~(p.CFL > 0)
+                issues{end+1} = 'CFL must be > 0. CFL=0 hangs the run forever instead of erroring.';
             end
-            if any([p.DRG, p.DRG_LuHf, p.DRG_Mn, p.DamA, p.DamB] <= 0)
+            if any(~([p.DRG, p.DRG_LuHf, p.DRG_Mn, p.DamA, p.DamB] > 0))
                 issues{end+1} = 'DRG, DRG_LuHf, DRG_Mn, DamA and DamB must all be > 0.';
             end
             if any([p.Pstart, p.Pstop, p.Ppeak] < 0)

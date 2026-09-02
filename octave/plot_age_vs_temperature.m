@@ -42,22 +42,20 @@ for it = 1:nT
 end
 
 fig  = figure('Color',[1 1 1],'Units','pixels','Position',[100 100 950 650]);
-cmap = parula(numel(fixedPos));
+cmap = viridis(numel(fixedPos));   % NOT parula: doesn't exist in Octave ("not yet implemented"); viridis is Octave's own closest perceptually-uniform equivalent
 hold on
 for k = 1:numel(fixedPos)
     plot(Trec,ageAtPos(:,k),'-','LineWidth',LWW*1.5,'Color',cmap(k,:), ...
-        'DisplayName',sprintf('$x=%.4g$ mm',fixedPos(k)))
+        'DisplayName',sprintf('x=%.4g mm',fixedPos(k)))
 end
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('$T$ ($^o$C)','interpreter','latex','FontSize',FSS)
-ylabel('$\tau$ (Myr)','interpreter','latex','FontSize',FSS)
-%title(sprintf('$\\tau$ vs. temperature ($\\min S$ = %.4g mm)',Smin), ...
-%    'interpreter','latex','FontSize',FSS)
-title(sprintf('$\\tau$ vs. $T$',Smin), ...
-    'interpreter','latex','FontSize',FSS)
-legend('Location','eastoutside','interpreter','latex')
+xlabel('T (^oC)','FontSize',FSS)
+ylabel('\tau (Myr)','FontSize',FSS)
+%title(sprintf('\\tau vs. temperature (\\min S = %.4g mm)',Smin),'FontSize',FSS)
+title(sprintf('\\tau vs. T',Smin),'FontSize',FSS)
+legend('Location','eastoutside')
 xlim([0.995*min(Trec) 1.005*max(Trec)])
-%text(0.03,0.97,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+%text(0.03,0.97,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 end

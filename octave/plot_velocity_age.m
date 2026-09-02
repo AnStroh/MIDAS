@@ -61,12 +61,12 @@ relErrGrid(trec==0,:) = NaN;               % avoid division by zero at t=0
 nc     = 256;
 divmap = interp1([1 nc/2 nc], [0.20 0.33 0.64; 1 1 1; 0.70 0.09 0.17], 1:nc);
 
-figAB         = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,AgeGrid,        '$\tau$ (Myr)',      [],     FSS,LWW);
-figErr        = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,errGrid,        '$\tau - t$ (Myr)',  divmap, FSS,LWW);
-figRelErr     = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,relErrGrid*100, '$(\tau-t)/t$ (\%)', divmap, FSS,LWW);
-figErrLog     = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,errGrid,        '$\tau - t$ (Myr)',  divmap, FSS,LWW);
-figRelErrLog  = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,relErrGrid*100, '$(\tau-t)/t$ (\%)', divmap, FSS,LWW);
-figABOnly     = buildVelAgeFigPanelAOnly(fixedLengths,trec,Srec,AgeGrid,'$\tau$ (Myr)',[],FSS,LWW);
+figAB         = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,AgeGrid,        '\tau (Myr)',      [],     FSS,LWW);
+figErr        = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,errGrid,        '\tau - t (Myr)',  divmap, FSS,LWW);
+figRelErr     = buildVelAgeFig(fixedLengths,trec,Srec,Vrec,relErrGrid*100, '(\tau-t)/t (\%)', divmap, FSS,LWW);
+figErrLog     = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,errGrid,        '\tau - t (Myr)',  divmap, FSS,LWW);
+figRelErrLog  = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,relErrGrid*100, '(\tau-t)/t (\%)', divmap, FSS,LWW);
+figABOnly     = buildVelAgeFigPanelAOnly(fixedLengths,trec,Srec,AgeGrid,'\tau (Myr)',[],FSS,LWW);
 end
 function fig = buildVelAgeFigPanelAOnly(fixedLengths,trec,Srec,Grid,cbLabel,divmap,FSS,LWW)
 % Standalone version of buildVelAgeFig's panel (A) only - the length-vs-time
@@ -78,10 +78,10 @@ hold on
 plot(Srec,trec,'k-','LineWidth',LWW)                  % Crystal boundary S(t)
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on','Layer','top')
-xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-ylabel('t (Myr)','interpreter','latex','FontSize',FSS)
-title('Age distribution','interpreter','latex','FontSize',FSS)
-cb = colorbar; cb.Label.Interpreter = 'latex'; cb.Label.String = cbLabel;
+xlabel('x (mm)','FontSize',FSS)
+ylabel('t (Myr)','FontSize',FSS)
+title('Age distribution','FontSize',FSS)
+cb = colorbar; set(get(cb,'Label'),'String',cbLabel);
 if ~isempty(divmap)
     colormap(gca,divmap)
     setRobustDivergingCaxis(gca,Grid,100)
@@ -105,17 +105,17 @@ hold on
 plot(Srec,trec,'k-','LineWidth',LWW)                  % Crystal boundary S(t)
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on','Layer','top')
-xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-ylabel('t (Myr)','interpreter','latex','FontSize',FSS)
-title('Age distribution','interpreter','latex','FontSize',FSS)
-cb = colorbar; cb.Label.Interpreter = 'latex'; cb.Label.String = cbLabel;
+xlabel('x (mm)','FontSize',FSS)
+ylabel('t (Myr)','FontSize',FSS)
+title('Age distribution','FontSize',FSS)
+cb = colorbar; set(get(cb,'Label'),'String',cbLabel);
 if ~isempty(divmap)
     colormap(gca,divmap)
     setRobustDivergingCaxis(gca,Grid,100)  % 100 = raw max, no clipping - keeps the full color range usable right out to the true extremes
 end
 xlim([0 1.05*max(fixedLengths)])
 grid on, axis square
-text(0.005,0.995,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+text(0.005,0.995,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 
 % (B) Velocity vs time -------------------------------------------------------
 nexttile
@@ -124,11 +124,11 @@ hold on
 yline(0,'--')
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('Interface velocity (mm/Myr)','interpreter','latex','FontSize',FSS)
-title('Interface velocity vs. $t$','interpreter','latex','FontSize',FSS)
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('Interface velocity (mm/Myr)','FontSize',FSS)
+title('Interface velocity vs. t','FontSize',FSS)
 grid on, axis square
-text(0.005,0.995,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+text(0.005,0.995,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 end
 function fig = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,Grid,cbLabel,divmap,FSS,LWW)
 % Same as buildVelAgeFig, but panel A is colored by the signed-log transform
@@ -149,9 +149,9 @@ hold on
 plot(Srec,trec,'k-','LineWidth',LWW)
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on','Layer','top')
-xlabel('$x$ (mm)','interpreter','latex','FontSize',FSS)
-ylabel('t (Myr)','interpreter','latex','FontSize',FSS)
-title('Age distribution (signed-log scale)','interpreter','latex','FontSize',FSS)
+xlabel('x (mm)','FontSize',FSS)
+ylabel('t (Myr)','FontSize',FSS)
+title('Age distribution (signed-log scale)','FontSize',FSS)
 colormap(gca,divmap)
 M = max(abs(GridLog(:)),[],'omitnan');
 if M > 0, caxis(gca,[-M M]); end
@@ -161,13 +161,12 @@ if M > 0
     posLog = linspace(0,M,nTicksHalf+1);          % evenly spaced in the transformed (plotted) space, so labels never crowd near zero
     tickLog = [-fliplr(posLog(2:end)), posLog];
     realVal = sign(tickLog).*(10.^abs(tickLog) - 1);   % back-transform to the actual data units for the labels
-    cb.Ticks = tickLog;
-    cb.TickLabels = arrayfun(@(v) sprintf('%.3g',v), realVal, 'UniformOutput', false);
+    set(cb,'Ticks',tickLog,'TickLabels',arrayfun(@(v) sprintf('%.3g',v), realVal, 'UniformOutput', false));
 end
-cb.Label.Interpreter = 'latex'; cb.Label.String = cbLabel;
+set(get(cb,'Label'),'String',cbLabel);
 xlim([0 1.05*max(fixedLengths)])
 grid on, axis square
-text(0.005,0.995,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+text(0.005,0.995,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 
 nexttile
 plot(trec,Vrec,'k-','LineWidth',LWW)
@@ -175,11 +174,11 @@ hold on
 yline(0,'--')
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('Interface velocity (mm/Myr)','interpreter','latex','FontSize',FSS)
-title('Interface velocity vs. $t$','interpreter','latex','FontSize',FSS)
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('Interface velocity (mm/Myr)','FontSize',FSS)
+title('Interface velocity vs. t','FontSize',FSS)
 grid on, axis square
-text(0.005,0.995,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+text(0.005,0.995,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 end
 function setRobustDivergingCaxis(ax,Z,pct)
 % Symmetric color limit at the pct-th percentile of |Z|, not the raw max -

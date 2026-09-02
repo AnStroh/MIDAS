@@ -1,7 +1,10 @@
 function R = MIDAS_Main(params)
-% MIDAS_MAIN  Interface-limited growth model (a moving-boundary problem) for a
-% garnet crystal (A) growing/resorbing in a matrix (B), coupled to major
-% element (Mg-Fe-Mn) and trace element (Lu, Hf, Mn) diffusion + partitioning.
+% MIDAS_MAIN  Interface-limited growth model (a moving-boundary problem) for
+% a mineral (A) growing/resorbing in a matrix phase (B), coupled to major-
+% and trace-element diffusion + partitioning between the two, for modeling
+% geochronology, apparent ages and interface (growth/resorption) velocities
+% over a metamorphic P-T-t path. Example here: a garnet-biotite pair (major
+% elements Mg-Fe; trace elements Lu, Hf, Mn).
 %
 % PARAMS is read from a struct (see MIDAS_Params.m) instead of being
 % hardcoded, and results are returned in R instead of being left in the
@@ -24,6 +27,7 @@ function R = MIDAS_Main(params)
 if nargin < 1 || isempty(params)
     params = MIDAS_Params();
 end
+validateCoreParams(params);
 outDir          = params.outDir;                              % Folder all saved figures/movie/data go into
 data_name       = params.data_name;
 save_data       = params.save_data;                          % Data Save
@@ -120,8 +124,10 @@ dt_max = t_tot/nStepsMin;   % Upper bound on dt so near-stagnant runs (v->0) sti
 % after the loop, see below).
 firstPlotSaved = false;
 % Fast repeated-evaluation interpolants for the P-T path (built once, evaluated every timestep in the loop below)
-Tinterp = griddedInterpolant(tt,Tt,'linear','linear');
-Pinterp = griddedInterpolant(tt,Pt,'linear','linear');
+% Octave has no griddedInterpolant; interp1(...,'extrap') with the same
+% method for interpolation and extrapolation is the equivalent.
+Tinterp = @(tq) interp1(tt,Tt,tq,'linear','extrap');
+Pinterp = @(tq) interp1(tt,Pt,tq,'linear','extrap');
 %Thermodynamics (major elements) ------------------------------------------
 eqMode    = params.eqMode;                                     % 'poly': 3-point bilinear fit; 'PD': Perplex phase diagram
 MnMode    = params.MnMode;                                     % 'fixed': constant params.KDMn; 'PD': KD_Mn(T,P) from the Perplex phase diagram
@@ -160,6 +166,15 @@ switch eqMode
         Par     = params.Par;                                 % Pressures in GPa
         Car_G   = params.Car_G;                               % Compositions of MgO in garnet
         Car_B   = params.Car_B;                               % Compositions of MgO in biotite
+        if any(isnan([Tar(:); Par(:); Car_G(:); Car_B(:)]))
+            error('MIDAS:InvalidPolyCalibration', ['eqMode is ''poly'' - chosen directly, or automatically because ', ...
+                'params.PD (''%s'') could not be found - but params.Tar/Par/Car_G/Car_B are still the [NaN,NaN,NaN] ', ...
+                'placeholders from MIDAS_Params.m, not real calibration points. Fitting a polynomial to NaN silently ', ...
+                'produces a meaningless (but finite-looking) result rather than erroring, so this is checked explicitly. ', ...
+                'Fix by either: (1) setting all four to real 3-point [T,P,composition] calibration values - see ', ...
+                'MIDAS_Params_Example2_PolyEquilibrium.m for a worked example - or (2) pointing params.PD at a real, ', ...
+                'existing phase-diagram file so eqMode=''PD'' can be used instead.'], params.PD);
+        end
         [CAc]   = find_poly(Car_G,Tar,Par);                   % Coefficients for Major Elements in A
         [CBc]   = find_poly(Car_B,Tar,Par);                   % Coefficients for Major Elements in B
         eqFun        = @(T,P) TL(T,P,CAc,CBc);                % Equilibrium composition (silent: extrapolates smoothly)
@@ -708,7 +723,7 @@ while t < t_tot
             yMaxCAMn = max([yMaxCAMn, max(CAMn(:))*1.2, max(CBMn(:))*1.2]);
             yMaxCALu = max([yMaxCALu, max(CALu(:))*1.2, max(CBLu(:))*1.2]);
             yMaxCAHf = max([yMaxCAHf, max(CAHf(:))*1.2, max(CBHf(:))*1.2]);
-            figure(1), set(gcf,'Color',[1 1 1])
+            figure(1), set(gcf,'Color',[1 1 1],'Position',[50 50 1400 1800])
             if plot_kind ==1
                 plot_them_1;
             elseif plot_kind ==2
@@ -729,9 +744,10 @@ while t < t_tot
         if make_movie == 1 && doPlot
             % Make movie----------------------------------------
             it_loc     = it_loc+1;
+            addSoftwareStamp(gcf);   % so a GIF/frame pulled out of context can still be traced back to MIDAS
             frame      = getframe(1);
             im         = frame2im(frame);
-            [imind,cm] = rgb2ind(im,256);
+            [imind,cm] = rgb2ind(im);   % NOT rgb2ind(im,256): that 2-arg form isn't a valid Octave call (confirmed - see CHANGELOG.md); 256 was already GIF's own hard max and MATLAB's own default when omitted, so this is a no-op change on either platform
             if it_loc == 1
                 imwrite(imind,cm,filename,'gif', 'Loopcount',inf,'DelayTime',1.0);
             else
@@ -842,7 +858,7 @@ if doPlot
     yMaxCAMn = max([yMaxCAMn, max(CAMn(:))*1.2, max(CBMn(:))*1.2]);
     yMaxCALu = max([yMaxCALu, max(CALu(:))*1.2, max(CBLu(:))*1.2]);
     yMaxCAHf = max([yMaxCAHf, max(CAHf(:))*1.2, max(CBHf(:))*1.2]);
-    figure(1), set(gcf,'Color',[1 1 1])
+    figure(1), set(gcf,'Color',[1 1 1],'Position',[50 50 1400 1800])
     if plot_kind ==1
         plot_them_1;
     elseif plot_kind ==2
@@ -927,8 +943,10 @@ function v = pathThreePoint(t0,tpeak,t1,v0,vpeak,v1,tt)
     v = pchip(xs,ys,tt);
 end
 function [T2,P2,CA2,CB2] = load_TData(Trange,Prange,eqFun)
-    % Creates the P-T values and corresponding equilibrium compositions as
-    % grid
+    % Builds the background T-P grid (and each phase's equilibrium
+    % composition on it, via EQFUN) used to draw the phase-diagram panels
+    % (contourf of CA2/CB2 over T2/P2) - purely for plotting, not used by
+    % the solver itself.
     nT             = 100;                       % Resolution of the T grid
     nP             = 100;                       % Resolution of the P grid
     [T2,P2]        = ndgrid(linspace(Trange(1),Trange(2),nT),linspace(Prange(1),Prange(2),nP));
@@ -1011,10 +1029,10 @@ function plotChist(xArec,CArec,trec,time_it,cols,FSS)
     [tdiff, it] = min(abs(time_it-trec));
     plot(xArec(it,:),CArec(it,:),cols,'DisplayName',[num2str(time_it),' Myr'])
     grid on,axis square
-    xlabel(['$x$',' (mm)'],'interpreter','latex','FontSize',FSS)
-    ylabel(['MgO',' (wt.\%)'],'interpreter','latex','FontSize',FSS)
+    xlabel(['x',' (mm)'],'FontSize',FSS)
+    ylabel(['MgO',' (wt.\%)'],'FontSize',FSS)
     lgd = legend;
-    lgd.Location = 'best';
+    set(lgd,'Location','best');
     drawnow
 end
 function [a,b,c] = CreateTriDiag(D,dt,dx,nx,xL,xC,xR)
@@ -1064,6 +1082,13 @@ function [x] = thomasSolve(a,b,c,d)
     end
 end
 function [CA, CB] = implicitDiffusionSolver(CA,DA,dt,dx_A,nx_A,CB,DB,dx_B,nx_B,NBC,xAC,xAL,xAR,xBC,xBL,xBR,ndim)
+    % One implicit (Backward Euler) diffusion step for phase A and phase B,
+    % independently: builds each phase's tridiagonal system (CreateTriDiag)
+    % and solves it directly (thomasSolve). The two phases' own interface
+    % values (index 1 of A, end of B, in this profile convention) are held
+    % fixed here as Dirichlet conditions - solveBC computes what those
+    % values should be before this is called; this function only diffuses
+    % the interior given fixed boundary values.
     CA_o = CA(:);
     CB_o = CB(:);
     CA_o = [CA_o(1);xAC(:).*CA_o(2:end-1);CA_o(end)];
@@ -1179,6 +1204,11 @@ function [C_eq]=interpolateC(PGPa,TK,C,P_int,T_int)
     end
 end
 function [PGPa,TK,MgOA,MgOB,MnOA,MnOB]=create_grid(PhaseDiagram)
+    % Reshapes a flat Perplex table (one row per T-P node, assumed to form
+    % a complete nx-by-nx grid) into the 2-D T/P/composition grids interp2
+    % needs. See docs/phase-diagrams.md for the expected file format/column
+    % order; only the columns actually used elsewhere (T, P, MgO_A, MgO_B,
+    % MnO_A, MnO_B) are extracted here.
     nx2    = length(PhaseDiagram(:,1));
     nx     = sqrt(nx2);
 
@@ -1190,8 +1220,58 @@ function [PGPa,TK,MgOA,MgOB,MnOA,MnOB]=create_grid(PhaseDiagram)
     %FeOB   = reshape(PhaseDiagram(:,6),nx,nx);  
     MgOA   = reshape(PhaseDiagram(:,7),nx,nx);  
     MgOB   = reshape(PhaseDiagram(:,8),nx,nx);  
-    MnOA   = reshape(PhaseDiagram(:,9),nx,nx);  
-    MnOB   = reshape(PhaseDiagram(:,10),nx,nx); 
-    %CaOA   = reshape(PhaseDiagram(:,11),nx,nx); 
-    %CaOB   = reshape(PhaseDiagram(:,12),nx,nx); 
+    MnOA   = reshape(PhaseDiagram(:,9),nx,nx);
+    MnOB   = reshape(PhaseDiagram(:,10),nx,nx);
+    %CaOA   = reshape(PhaseDiagram(:,11),nx,nx);
+    %CaOB   = reshape(PhaseDiagram(:,12),nx,nx);
+end
+
+function validateCoreParams(p)
+% VALIDATECOREPARAMS  Fails fast, with one specific message per problem
+% field (naming the field, its actual value, and why it matters), on
+% parameter values that would otherwise either hang MIDAS_Main forever or
+% crash deep inside a numerical routine with an Octave/MATLAB error
+% meaningless to someone who isn't a programmer. Checks are written as
+% "~(x > 0)" rather than "x <= 0": a NaN (e.g. from a GUI numeric field
+% that got non-numeric text, or str2double of an empty string) silently
+% passes any <=/</>= comparison, so a plain "x <= 0" check would miss it.
+issues = {};
+
+if ~(p.CFL > 0)
+    issues{end+1} = sprintf(['params.CFL must be > 0 (got %s). Every timescale that the adaptive time step is built from is ', ...
+        'scaled directly by CFL, so CFL <= 0 makes dt = 0: the model time never advances and the run hangs forever with no ', ...
+        'error and no output, rather than failing - see docs/mesh-refinement.md.'], num2str(p.CFL));
+end
+if ~(p.t_tot > 0)
+    issues{end+1} = sprintf('params.t_tot must be > 0 Myr (got %s) - it is the total simulated duration.', num2str(p.t_tot));
+end
+if ~(p.lxA > 0)
+    issues{end+1} = sprintf('params.lxA must be > 0 mm (got %s) - it is the initial length of phase A (the crystal).', num2str(p.lxA));
+end
+if ~(p.lxB_factor > 0)
+    issues{end+1} = sprintf('params.lxB_factor must be > 0 (got %s) - phase B''s length is lxB_factor*lxA.', num2str(p.lxB_factor));
+end
+if ~(p.nx_A >= 2) || p.nx_A ~= fix(p.nx_A)
+    issues{end+1} = sprintf('params.nx_A must be a whole number >= 2 (got %s) - it is the number of grid nodes in phase A.', num2str(p.nx_A));
+end
+if ~(p.nx_B >= 2) || p.nx_B ~= fix(p.nx_B)
+    issues{end+1} = sprintf('params.nx_B must be a whole number >= 2 (got %s) - it is the number of grid nodes in phase B.', num2str(p.nx_B));
+end
+posFields = {'DRG','DRG_LuHf','DRG_Mn','DamA','DamB'};
+posWhat   = {'the diffusivity ratio (major elements, B relative to A)', ...
+             'the diffusivity ratio (Lu/Hf, matrix relative to A)', ...
+             'the diffusivity ratio (Mn, matrix relative to A)', ...
+             'the Damkohler_II number for phase A (interface kinetics)', ...
+             'the Damkohler_II number for phase B (interface kinetics)'};
+for i = 1:numel(posFields)
+    v = p.(posFields{i});
+    if ~(v > 0)
+        issues{end+1} = sprintf('params.%s must be > 0 (got %s) - it is %s.', posFields{i}, num2str(v), posWhat{i});
+    end
+end
+
+if ~isempty(issues)
+    msg = sprintf('%s\n', issues{:});
+    error('MIDAS:InvalidParams', 'MIDAS_Main stopped before running because of %d invalid parameter(s):\n%s', numel(issues), msg);
+end
 end

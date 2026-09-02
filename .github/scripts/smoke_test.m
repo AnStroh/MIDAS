@@ -31,6 +31,13 @@ for k = 1:numel(exampleFns)
         if ~isfinite(R.S_final) || ~isreal(R.S_final)
             error('S_final is not a finite real number (%g)', R.S_final);
         end
+        % S_final alone isn't enough: a degenerate configuration (e.g. a
+        % NaN eqMode='poly' calibration) can leave S_final looking normal
+        % while the fields that actually matter scientifically - final
+        % compositions and apparent ages - are NaN. Check those directly.
+        if any(isnan(R.CA_final)) || any(isnan(R.CB_final)) || any(isnan(R.tALuHf1_final))
+            error('S_final is finite (%g) but CA_final/CB_final/tALuHf1_final contain NaN - the run only looks like it succeeded.', R.S_final);
+        end
         fprintf('  OK, S_final = %.4g\n', R.S_final);
     catch ME
         fprintf('  FAILED: %s\n', ME.message);

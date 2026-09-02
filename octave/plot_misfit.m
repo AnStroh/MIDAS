@@ -21,13 +21,13 @@ FSS = R.params.FSS;
 LWW = R.params.LWW;
 
 figure('Color',[1 1 1]);
-plot(R.trec,R.misfitApparentH,'-','LineWidth',LWW*1.5,'DisplayName','$\max|\tau-t|$'), hold on
-plot(R.trec,R.misfitIsochronH,'--','LineWidth',LWW*1.5,'DisplayName',sprintf('$\\max|\\tau_{iso}-t|$ (ref: %s)',R.params.isoRefMode))
+plot(R.trec,R.misfitApparentH,'-','LineWidth',LWW*1.5,'DisplayName','\max|\tau-t|'), hold on
+plot(R.trec,R.misfitIsochronH,'--','LineWidth',LWW*1.5,'DisplayName',sprintf('\\max|\\tau_{iso}-t| (ref: %s)',R.params.isoRefMode))
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('$\max|\tau-t|$ (Myr)','interpreter','latex','FontSize',FSS)
-title('Worst-case age misfit (anywhere in the profile)','interpreter','latex','FontSize',FSS)
-legend('Location','best','interpreter','latex')
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('\max|\tau-t| (Myr)','FontSize',FSS)
+title('Worst-case age misfit (anywhere in the profile)','FontSize',FSS)
+legend('Location','northeast')   % NOT 'best': crashes outright under Octave/fltk (confirmed - see CHANGELOG.md)
 end

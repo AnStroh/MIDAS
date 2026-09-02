@@ -45,37 +45,37 @@ CAHf0_core = R.params.HfiB*R.params.KDHf;   % initial (t=0) core Hf - the refere
 
 fig  = figure('Color',[1 1 1],'Units','pixels','Position',[100 100 1300 650]);
 tiledlayout(1,2,'TileSpacing','loose','Padding','compact');
-cmap = parula(numel(fixedPos));
+cmap = viridis(numel(fixedPos));   % NOT parula: doesn't exist in Octave ("not yet implemented"); viridis is Octave's own closest perceptually-uniform equivalent
 
 nexttile
 hold on
 for k = 1:numel(fixedPos)
     plot(trec,LuAtPos(:,k),'-','LineWidth',LWW*1.5,'Color',cmap(k,:), ...
-        'DisplayName',sprintf('$x=%.4g$ mm',fixedPos(k)))
+        'DisplayName',sprintf('x=%.4g mm',fixedPos(k)))
 end
 hold off
 grid on, axis square
 ylim([min(LuAtPos(:))*0.8, max(LuAtPos(:))*1.2])
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('$^{176}$Lu (ppm)','interpreter','latex','FontSize',FSS)
-title('$^{176}$Lu evolution','interpreter','latex','FontSize',FSS)
-text(0.03,0.97,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('^{176}Lu (ppm)','FontSize',FSS)
+title('^{176}Lu evolution','FontSize',FSS)
+text(0.03,0.97,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 
 nexttile
 hold on
 for k = 1:numel(fixedPos)
     plot(trec,HfAtPos(:,k),'-','LineWidth',LWW*1.5,'Color',cmap(k,:), ...
-        'DisplayName',sprintf('$x=%.4g$ mm',fixedPos(k)))
+        'DisplayName',sprintf('x=%.4g mm',fixedPos(k)))
 end
-yline(CAHf0_core,'k--','LineWidth',LWW,'DisplayName','Core @ $t=0$ (ref)')
+yline(CAHf0_core,'k--','LineWidth',LWW,'DisplayName','Core @ t=0 (ref)')
 ylim([min(HfAtPos(:))*0.8, max(HfAtPos(:))*1.2])
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('$^{176}$Hf (ppm)','interpreter','latex','FontSize',FSS)
-title('$^{176}$Hf evolution','interpreter','latex','FontSize',FSS)
-legend('Location','eastoutside','interpreter','latex')
-text(0.03,0.97,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('^{176}Hf (ppm)','FontSize',FSS)
+title('^{176}Hf evolution','FontSize',FSS)
+legend('Location','eastoutside')
+text(0.03,0.97,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 end

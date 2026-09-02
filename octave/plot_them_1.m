@@ -3,37 +3,37 @@ tiledlayout(2,2)
 % Compositional profile
 nexttile
 plotAB(xA,xB,CA,CB,CA0,CB0,t,t_tot,FSS,LWW,v,yMaxCA)
-ylabel(['MgO',' (wt.\%)'],'interpreter','latex','FontSize',FSS)
-title(['t (Myr): ',num2str(t)],'interpreter','latex','FontSize',FSS,'FontWeight','normal')
+ylabel(['MgO',' (wt.\%)'],'FontSize',FSS)
+title(['t (Myr): ',num2str(t)],'FontSize',FSS,'FontWeight','normal')
 %xlim([0.0 Lx0(1)*2])
 ylim([1.0 18])
-text(0.95,0.95,'(A)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','interpreter','latex','BackgroundColor',[1 1 1],'Margin',1)
+text(0.95,0.95,'(A)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 
 
 % Phase diagram
 nexttile
 contourf(T2-273,P2,CA2,10),shading flat
-cb = colorbar; cb.Label.Interpreter = 'latex'; cb.Label.String = 'MgO (wt.\%)';
+cb = colorbar; set(get(cb,'Label'),'String','MgO (wt.\%)');
 hold on,plot(Tt-273,Pt,'k',T-273,P,'.','linewidth',LWW,'MarkerSize',16),grid on,axis square,hold off
-xlabel(['$T$ ($^o$C)'],'interpreter','latex','FontSize',FSS)
-ylabel(['$P$ (GPa)'],'interpreter','latex','FontSize',FSS)
+xlabel(['T (^oC)'],'FontSize',FSS)
+ylabel(['P (GPa)'],'FontSize',FSS)
 axis([Trange(1)-273 Trange(2)-273 Prange(1) Prange(2)])
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-text(0.95,0.95,'(B)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1,'interpreter','latex')
+text(0.95,0.95,'(B)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 
 % Isotope age
 nexttile
-plot(xA,tALuHf1,'linewidth',LWW*1.5,'DisplayName','$\tau$'),hold on
-plot([0,S],[t t],'k --','linewidth',LWW,'DisplayName','Sim. $t$'),grid on,hold off
-xlabel(['$x$', ' (mm)'],'interpreter','latex','FontSize',FSS)
-ylabel(['$t$',' (Myr)'],'interpreter','latex','FontSize',FSS)
+plot(xA,tALuHf1,'linewidth',LWW*1.5,'DisplayName','\tau'),hold on
+plot([0,S],[t t],'k --','linewidth',LWW,'DisplayName','Sim. t'),grid on,hold off
+xlabel(['x', ' (mm)'],'FontSize',FSS)
+ylabel(['t',' (Myr)'],'FontSize',FSS)
 %xlim([0.0 Lx0(1)*2])
 ylim([0 t*1.1])
 axis square
 %xlim([S-0.15 S+0.05])
-legend('Location','best','interpreter','latex')
+legend('Location','best')
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-text(0.95,0.95,'(C)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','interpreter','latex')
+text(0.95,0.95,'(C)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top')
 
 % Isochron ages phase A: core, rim, bulk, and max age are always shown;
 % the isoNskip-th profile points/lines (light gray) are optional (isoShowProfile)
@@ -51,13 +51,13 @@ plot(XfitA,YfitMaxA,'Color',[0.71 0.49 0.86],'LineWidth',LWW*1.5,'DisplayName','
 plot(XmaxA,YmaxA,'o','MarkerFaceColor',[0.71 0.49 0.86],'MarkerEdgeColor','k','HandleVisibility','off')
 hold off
 grid on,axis square
-xlabel('$P/D_r$','interpreter','latex','FontSize',FSS)
-ylabel('$D/D_r$','interpreter','latex','FontSize',FSS)
-legend('Location','best','interpreter','latex')
+xlabel('P/D_r','FontSize',FSS)
+ylabel('D/D_r','FontSize',FSS)
+legend('Location','best')
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-text(0.95,0.95,'(D)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','interpreter','latex')
-text(1.05,0.5,{sprintf('$t_{rim}$ = %.4g',t_rimA),sprintf('$t_{core}$ = %.4g',t_coreA), ...
-    sprintf('$t_{bulk}$ = %.4g',t_bulkA),sprintf('$t_{max}$ = %.4g',t_maxA)}, ...
-    'Units','normalized','HorizontalAlignment','right','interpreter','latex','FontSize',FSS,'VerticalAlignment','middle')
+text(0.95,0.95,'(D)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top')
+text(1.05,0.5,{sprintf('t_{rim} = %.4g',t_rimA),sprintf('t_{core} = %.4g',t_coreA), ...
+    sprintf('t_{bulk} = %.4g',t_bulkA),sprintf('t_{max} = %.4g',t_maxA)}, ...
+    'Units','normalized','HorizontalAlignment','right','FontSize',FSS,'VerticalAlignment','middle')
 
 drawnow

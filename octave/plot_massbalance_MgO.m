@@ -25,7 +25,7 @@ yline(0,'Color',[0.7 0.7 0.7])
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
-xlabel('t (Myr)','interpreter','latex','FontSize',FSS)
-ylabel('$(M(t)-M(0))/M(0)$ (\%)','interpreter','latex','FontSize',FSS)
-title('Mass-balance drift, MgO','interpreter','latex','FontSize',FSS)
+xlabel('t (Myr)','FontSize',FSS)
+ylabel('(M(t)-M(0))/M(0) (\%)','FontSize',FSS)
+title('Mass-balance drift, MgO','FontSize',FSS)
 end

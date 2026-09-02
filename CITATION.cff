@@ -14,14 +14,19 @@ date-released: 2026-08-28
 license: MIT
 repository-code: "https://github.com/AnStroh/MIDAS"
 abstract: >
-  MIDAS is an interface-limited crystal-growth model (a moving-boundary
-  problem) for a garnet crystal growing/resorbing in a matrix, coupled to
-  major-element (Mg-Fe-Mn) and trace-element (Lu, Hf, Mn) diffusion and
-  partitioning - built for modeling Lu-Hf garnet geochronology. Provided as
-  MATLAB, GNU Octave, and interactive GUI (MATLAB App Designer) versions.
+  MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is an
+  interface-limited crystal-growth model (a moving-boundary problem) for a
+  mineral growing/resorbing in a surrounding matrix phase, coupled to
+  major- and trace-element diffusion and partitioning between the two. The
+  example provided is a garnet-biotite pair (major elements Mg-Fe; trace
+  elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology,
+  apparent ages and interface (growth/resorption) velocities over a
+  metamorphic P-T-t path. Provided as MATLAB, GNU Octave, and interactive
+  GUI (MATLAB App Designer) versions.
 keywords:
   - geochronology
   - Lu-Hf
+  - apparent ages
   - garnet
   - crystal growth
   - Stefan problem

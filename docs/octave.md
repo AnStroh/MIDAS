@@ -4,19 +4,37 @@ title: Octave Notes
 permalink: /octave/
 ---
 
-The `octave/` folder is a fully self-contained, GNU Octave-compatible port of the model, for anyone without a MATLAB license. It covers the same physics and outputs as `matlab/`, run from the command line instead of through the MATLAB-only [GUI](gui).
+The `octave/` folder is a fully self-contained, GNU Octave-compatible port of the model, for anyone without a MATLAB license. It covers the same physics and outputs as `matlab/`, either from the command line (`Run_MIDAS`) or through its own interactive [GUI](gui#octave-gui) (`MIDAS_GUI`) - a rebuild covering the same fields as the MATLAB App Designer app, since Octave can't open that file format at all.
+
+**MIDAS was originally written for and developed in MATLAB.** `matlab/`/`GUI/` are the mature, primary implementation; this port was only recently run under a real Octave interpreter for the first time, surfacing (and fixing) a number of Octave-only compatibility bugs - see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md) - with more possibly still to find. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it.
 
 ## Requirements
 
-- GNU Octave 8.x (developed/tested against 8.4). Octave 7.1+ should work  but is untested; earlier versions are missing `griddedInterpolant`,  `tiledlayout`/`nexttile`, and `exportgraphics`, all used here.
+- GNU Octave 8.x (developed/tested against 8.4 and, on Windows, 11.3.0). Octave 7.1+ should work but is untested.
 - Two Octave Forge packages, only needed for specific features:
-  - `io` - for the `.xlsx` export in `export_results_excel.m`. Without it,  export falls back to one `.csv` file per sheet automatically.
+  - `io` - for the `.xlsx` export in `export_results_excel.m`. Without it, export falls back to one `.csv` file per sheet automatically.
   - `image` - for `params.make_movie = 1` (writing the `.gif`). Only loaded if a movie is actually requested; everything else works without it.
 
+**Linux**:
 ```bash
 sudo apt-get install -y octave
 octave --eval "pkg install -forge io image"
 ```
+**Windows**: install Octave first ([octave.org/download](https://octave.org/download), or `winget install --id GNU.Octave` - both verified to give the same result: no `qt` toolkit, see below), then:
+```
+octave --eval "pkg install -forge io image"
+```
+**macOS** ([Homebrew](https://brew.sh)):
+```bash
+brew install octave
+octave --eval "pkg install -forge io image"
+```
+
+### Graphics toolkit
+
+`qt` is strongly recommended if available. Verified on Windows: neither the `winget install GNU.Octave` package nor the official octave.org Windows installer (11.3.0) ships `qt` - only `fltk`/`gnuplot`, both flagged by Octave itself as unmaintained. `fltk`'s broken LaTeX self-test is worked around (`octave/` no longer requests the `'latex'` interpreter at all - see [Differences from the MATLAB version](#differences-from-the-matlab-version) below). Figure export still hangs for any 2-D color-mapped content, not just `contourf` (`pcolor`/`imagesc` confirmed to hang identically) - see [`octave/README.md`](https://github.com/AnStroh/MIDAS/blob/main/octave/README.md#graphics-toolkit) for the full detail. This looks like a broader `fltk`/GL2PS limitation, not a MIDAS bug; until `qt` is available, avoid exporting the phase-diagram panels (or any color-mapped plot) under Octave on Windows.
+
+The full plotting/export pipeline has since been run end-to-end under Octave; several further compatibility bugs it surfaced (a `legend()` crash, a `make_movie`/GIF failure, missing `parula`/`sgtitle`) have been fixed - see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md).
 
 ## Usage
 
@@ -29,10 +47,14 @@ Same workflow as [`matlab/`](getting-started) - `MIDAS_Params.m` is the default,
 
 ## Differences from the MATLAB version
 
-- No GUI - use [`GUI/`](gui) under MATLAB for that.
-- `export_results_excel.m` builds sheets with `writecell` instead of   `table`/`writetable` (Octave's table support is less mature); output is   the same header-row-plus-data layout either way. Column-name sanitizing   (previously `matlab.lang.makeValidName`/`makeUniqueStrings`, which don't   exist in Octave) is reimplemented locally in the same file.
-- `export_pub_fig.m` tries `exportgraphics` first and falls back to the  older `print()` if that fails, so figure export degrades gracefully  across Octave versions.
+- `octave/MIDAS_GUI.m` is a from-scratch rebuild (plain `uicontrol`), not a port of `GUI/MIDAS.m` (a MATLAB App Designer file Octave can't open at all) - see the [Octave GUI section](gui#octave-gui) of the GUI guide for what differs.
+- Octave has no `griddedInterpolant` - the P-T path lookup in `MIDAS_Main.m` uses `interp1(...,'extrap')` anonymous functions instead.
+- Octave has no `tiledlayout`/`nexttile` - `tiledlayout.m`/`nexttile.m` (in `octave/`) are small local shims backed by `subplot`, so the plotting scripts that use them are otherwise unchanged from `matlab/`.
+- MATLAB's dot-notation graphics-property access (`cb.Label.Interpreter = ...`) isn't supported on Octave's plain-double graphics handles - replaced with `get`/`set` calls where needed, as is MATLAB's `round(x,n)` two-argument form.
+- No plotting call anywhere in `octave/` uses `'interpreter','latex'` (unlike `matlab/`/`GUI/`, which do throughout) - `fltk`'s LaTeX renderer fails its own startup self-test on this install, so labels default to Octave's `'tex'` interpreter instead, with `$` delimiters stripped from every label string. `\Delta`, `\tau`, `\max`, `^{...}`, `_{...}`, and `^o` all render correctly under `'tex'` unchanged; `\%` does not (not a recognized `'tex'` escape) and was unescaped to a plain `%` wherever it appeared.
+- `export_results_excel.m` builds sheets with `writecell` instead of `table`/`writetable` (Octave's table support is less mature); output is the same header-row-plus-data layout either way. Column-name sanitizing (previously `matlab.lang.makeValidName`/`makeUniqueStrings`, which don't exist in Octave) is reimplemented locally in the same file.
+- `export_pub_fig.m` tries `exportgraphics` first and falls back to the older `print()` if that fails, so figure export degrades gracefully across Octave versions - except for the `contourf` export hang noted above, which no fallback avoids.
 
 ## Status
 
-Logic-verified by running the identical code path under MATLAB, and exercised by the Octave CI workflow (`.github/workflows/ci-octave.yml`) on every push - see the repository's Actions tab for current status.
+Actually run under a real Octave interpreter (11.3.0, Windows) end-to-end - all six examples plus the full live-plotting and post-run export pipeline - surfacing and fixing several real bugs that MATLAB-only logic-verification had missed (see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md)). Note: `.github/scripts/smoke_test.m` (run by `ci-octave.yml`) sets `doPlot = false` throughout, so CI does not exercise `MIDAS_Main.m`'s own live-plotting branch - the verification above was done manually, not by CI.

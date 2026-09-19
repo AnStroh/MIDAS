@@ -35,6 +35,8 @@ ColBg       = [0.965 0.957 0.945];   % #F6F4F1 - content background
 ColWhite    = [1 1 1];
 ColLavender = [0.898 0.875 0.949];   % #E5DFF2 - inactive sidebar text
 
+thisDir = fileparts(mfilename('fullpath'));
+addpath(fullfile(thisDir,'examples'), fullfile(thisDir,'plotting'), fullfile(thisDir,'export'));
 FieldMeta = buildFieldMeta();
 DefaultParams = MIDAS_Params();
 DefaultParams.outDir = fullfile('results', [DefaultParams.data_name, '_', datestr(now,'yyyymmdd_HHMMSS')]);
@@ -42,7 +44,7 @@ DefaultParams.outDir = fullfile('results', [DefaultParams.data_name, '_', datest
 % ------------------------------------------------------------------------
 % Main window
 % ------------------------------------------------------------------------
-fig = figure('Name','MIDAS (Octave) - Crystal Growth Model', 'NumberTitle','off', ...
+fig = figure('Name','MIDAS - Mineral Interface Dynamics and apparent-Age Simulation (Octave)', 'NumberTitle','off', ...
     'Color', ColBg, 'Units','pixels', 'Position',[60 40 1250 900], 'MenuBar','none', 'Toolbar','none');
 
 % --- Header: logo + subtitle -------------------------------------------
@@ -128,11 +130,15 @@ rightPanel = uipanel(fig, 'Units','normalized', 'Position',[rightX bodyBot right
     'BackgroundColor', ColBg, 'BorderType','none');
 
 RunButton = uicontrol(rightPanel, 'Style','pushbutton', 'String','> Run', 'FontWeight','bold', ...
-    'Units','normalized', 'Position',[0.03 0.955 0.45 0.035], ...
+    'Units','normalized', 'Position',[0.03 0.955 0.30 0.035], ...
     'BackgroundColor', ColGold, 'ForegroundColor', ColIndigo, 'Callback', @(s,e) runButtonPushed());
 ResetButton = uicontrol(rightPanel, 'Style','pushbutton', 'String','Reset', ...
-    'Units','normalized', 'Position',[0.52 0.955 0.45 0.035], ...
+    'Units','normalized', 'Position',[0.345 0.955 0.30 0.035], ...
     'BackgroundColor', ColIndigo, 'ForegroundColor', ColWhite, 'Callback', @(s,e) resetButtonPushed());
+CloseFiguresButton = uicontrol(rightPanel, 'Style','pushbutton', 'String','Close Figs', ...
+    'Units','normalized', 'Position',[0.66 0.955 0.31 0.035], ...
+    'BackgroundColor', ColIndigo, 'ForegroundColor', ColWhite, 'Callback', @(s,e) closeAllFiguresButtonPushed(), ...
+    'TooltipString', 'Close every figure window this app has opened (does not affect this control window).');
 
 ExampleDropDown = uicontrol(rightPanel, 'Style','popupmenu', 'Units','normalized', ...
     'Position',[0.03 0.905 0.65 0.035], 'String', {'MIDAS_Params (default)', 'Example1_Baseline', ...
@@ -268,16 +274,16 @@ refreshResultsList();
                     set(c, 'String', val);
                 case 'numeric'
                     if isnan(val)
-                        set(c, 'String', '0');
+                        set(c, 'String', 'NaN', 'ForegroundColor', [0.6 0.6 0.6]);
                     else
-                        set(c, 'String', num2str(val));
+                        set(c, 'String', num2str(val), 'ForegroundColor', [0 0 0]);
                     end
                 case 'vector'
                     for j = 1:f.n
                         if isnan(val(j))
-                            set(c(j), 'String', '0');
+                            set(c(j), 'String', 'NaN', 'ForegroundColor', [0.6 0.6 0.6]);
                         else
-                            set(c(j), 'String', num2str(val(j)));
+                            set(c(j), 'String', num2str(val(j)), 'ForegroundColor', [0 0 0]);
                         end
                     end
             end
@@ -303,18 +309,13 @@ refreshResultsList();
                 case 'text'
                     params.(f.name) = get(c,'String');
                 case 'numeric'
-                    v = str2double(get(c,'String'));
-                    if v == 0 && isnan(DefaultParams.(f.name))
-                        params.(f.name) = NaN;
-                    else
-                        params.(f.name) = v;
-                    end
+                    % The field's own text is the source of truth (it shows
+                    % 'NaN' literally for an unused field - see
+                    % populateControlsFromParams), so no need to guess from
+                    % DefaultParams like the old 0-placeholder approach had to.
+                    params.(f.name) = str2double(get(c,'String'));
                 case 'vector'
-                    vals = arrayfun(@(h) str2double(get(h,'String')), c);
-                    defVal = DefaultParams.(f.name);
-                    isPlaceholder = (vals == 0) & isnan(defVal(:))';
-                    vals(isPlaceholder) = NaN;
-                    params.(f.name) = vals;
+                    params.(f.name) = arrayfun(@(h) str2double(get(h,'String')), c);
             end
         end
     end
@@ -404,9 +405,9 @@ refreshResultsList();
 
             figs = {}; tags = {};
             try
-                [figAB,figErr,figRelErr,figErrLog,figRelErrLog,figABOnly] = plot_velocity_age(R);
-                figs(end+1:end+6) = {figAB,figErr,figRelErr,figErrLog,figRelErrLog,figABOnly};
-                tags(end+1:end+6) = {'velocity_age','velocity_age_misfit','velocity_age_relmisfit','velocity_age_misfit_log','velocity_age_relmisfit_log','velocity_age_AB_only'};
+                [figRelErrLog,figABOnly] = plot_velocity_age(R);
+                figs(end+1:end+2) = {figRelErrLog,figABOnly};
+                tags(end+1:end+2) = {'velocity_age_relmisfit_log','velocity_age_AB_only'};
             catch ME
                 logStatus(['  plot_velocity_age failed: ' ME.message]);
             end
@@ -414,17 +415,8 @@ refreshResultsList();
                 plot_misfit(R); figs{end+1} = gcf; tags{end+1} = 'misfit';
             catch ME, logStatus(['  plot_misfit failed: ' ME.message]); end
             try
-                plot_massbalance(R); figs{end+1} = gcf; tags{end+1} = 'massbalance';
-            catch ME, logStatus(['  plot_massbalance failed: ' ME.message]); end
-            try
                 figMgODrift = plot_massbalance_MgO(R); figs{end+1} = figMgODrift; tags{end+1} = 'massbalance_MgO';
             catch ME, logStatus(['  plot_massbalance_MgO failed: ' ME.message]); end
-            try
-                plot_Lu_profile(R); figs{end+1} = gcf; tags{end+1} = 'Lu_profile';
-            catch ME, logStatus(['  plot_Lu_profile failed: ' ME.message]); end
-            try
-                plot_Mn_profile(R); figs{end+1} = gcf; tags{end+1} = 'Mn_profile';
-            catch ME, logStatus(['  plot_Mn_profile failed: ' ME.message]); end
             try
                 figAge = plot_age_at_fixed_positions(R); figs{end+1} = figAge; tags{end+1} = 'age_fixed_positions';
             catch ME, logStatus(['  plot_age_at_fixed_positions failed: ' ME.message]); end
@@ -437,16 +429,18 @@ refreshResultsList();
             try
                 figAllComp = plot_all_composition_profiles(R); figs{end+1} = figAllComp; tags{end+1} = 'all_composition_profiles';
             catch ME, logStatus(['  plot_all_composition_profiles failed: ' ME.message]); end
-            try
-                figInit = plot_initial_conditions(R); figs{end+1} = figInit; tags{end+1} = 'initial_conditions';
-            catch ME, logStatus(['  plot_initial_conditions failed: ' ME.message]); end
 
             LastFigs = figs;
             LastFigTags = tags;
-            set(DataFolderField, 'String', R.params.outDir);
-            set(FigFolderField, 'String', R.params.outDir);
+            % Absolute, not R.params.outDir as-is (relative to pwd at the
+            % time of the run) - if pwd ever shifts before Export is
+            % clicked (e.g. a browse dialog can do this), a relative path
+            % here would silently resolve somewhere else.
+            outDirAbs = fullfile(pwd, R.params.outDir);
+            set(DataFolderField, 'String', outDirAbs);
+            set(FigFolderField, 'String', outDirAbs);
             refreshResultsList();
-            logStatus(sprintf('Done in %.1f s (%d/16 figures).', toc(t0), numel(figs)));
+            logStatus(sprintf('Done in %.1f s (%d/8 figures).', toc(t0), numel(figs)));
         catch ME
             logStatus(['ERROR: ' ME.message]);
         end
@@ -458,13 +452,29 @@ refreshResultsList();
         logStatus('Reset to defaults.');
     end
 
+    function closeAllFiguresButtonPushed()
+        % Closes every figure window (all past runs, not just the last
+        % one) except this control window itself, which is a figure too.
+        figHandles = findall(0, 'Type', 'figure');
+        n = 0;
+        for i = 1:numel(figHandles)
+            h = figHandles(i);
+            if ishandle(h) && h ~= fig
+                close(h);
+                n = n + 1;
+            end
+        end
+        LastFigs = {};
+        logStatus(sprintf('Closed %d figure(s).', n));
+    end
+
     function loadExampleButtonPushed()
         items = get(ExampleDropDown,'String');
         choice = items{get(ExampleDropDown,'Value')};
         if strcmp(choice, 'MIDAS_Params (default)')
             fname = 'MIDAS_Params';
         else
-            fname = ['MIDAS_Params_' choice];
+            fname = choice;   % examples/<choice>.m, added to the path at startup
         end
         if ~(exist(fname, 'file') == 2)
             logStatus(['ERROR: ' fname '.m not found on the path.']);
@@ -545,10 +555,14 @@ refreshResultsList();
         for i = 1:numel(LastFigs)
             h = LastFigs{i};
             if isempty(h) || ~ishandle(h), continue; end
-            export_pub_fig(h, fullfile(folder, sprintf('%s_%s', base, LastFigTags{i})));
-            n = n + 1;
+            try
+                export_pub_fig(h, fullfile(folder, sprintf('%s_%s', base, LastFigTags{i})));
+                n = n + 1;
+            catch ME
+                logStatus(sprintf('  %s export failed: %s', LastFigTags{i}, ME.message));
+            end
         end
-        logStatus(sprintf('Exported %d figure(s) (PDF + 300dpi JPG) to %s', n, folder));
+        logStatus(sprintf('Exported %d/%d figure(s) (PDF + 300dpi JPG) to %s', n, numel(LastFigs), folder));
     end
 
     function browseDataButtonPushed()
@@ -678,53 +692,53 @@ function M = buildFieldMeta()
 rows = {
     'outDir',          'Output',      'text',     'Folder all saved figures/movie/data go into (created if missing)', {}, 1
     'data_name',       'Output',      'text',     'Base name used when saving results/movie', {}, 1
-    'save_data',       'Output',      'checkbox', '1: save workspace with data_name at the end (separate from the Export Data panel on the right)', {}, 1
-    'make_movie',      'Output',      'checkbox', '1: write a .gif while running (needs doPlot = true)', {}, 1
+    'save_data',       'Output',      'checkbox', 'Save workspace with data_name at the end (separate from the Export Data panel on the right)', {}, 1
+    'make_movie',      'Output',      'checkbox', 'Write a .gif while running (needs doPlot = true)', {}, 1
     'doPlot',          'Output',      'checkbox', 'Master switch for live figures during the run (separate from this app''s post-run figures, which always show)', {}, 1
-    'saveCheckpoints', 'Output',      'checkbox', '1: also save _initial/_snapN/_last figures to outDir while doPlot=true; 0: show them live only, don''t write to disk', {}, 1
+    'saveCheckpoints', 'Output',      'checkbox', 'Also save _initial/_snapN/_last figures to outDir while doPlot=true - otherwise show them live only, don''t write to disk', {}, 1
     'plot_kind',       'Output',      'dropdown', '1: profiles+phase diagram+ages, 2: profiles+apparent age, 3: all (only affects live plotting while doPlot=true)', {'1','2','3'}, 1
     'FSS',             'Output',      'numeric',  'FontSize used in all figures', {}, 1
     'LWW',             'Output',      'numeric',  'LineWidth used in all figures', {}, 1
 
-    'checkmaxT_Eq',    'Programming', 'checkbox', '1: stop advancing T once max T is reached (checks equilibrium there)', {}, 1
+    'checkmaxT_Eq',    'Programming', 'checkbox', 'Stop advancing T once max T is reached (checks equilibrium there)', {}, 1
     'checkFinT_Eq',    'Programming', 'numeric',  '>1: extend run to checkFinT_Eq*t_tot at constant final P-T (relaxation)', {}, 1
-    'store_history',   'Programming', 'checkbox', '1: store the full time history (required by most post-run figures)', {}, 1
+    'store_history',   'Programming', 'checkbox', 'Store the full time history (required by most post-run figures)', {}, 1
     'nout',            'Programming', 'numeric',  'Plot/record every nout iterations; used only if recordMode = ''iteration''', {}, 1
     'recordMode',      'Programming', 'dropdown', '''iteration'': record every nout iterations (dt is adaptive); ''time'': record every recordDT Myr instead', {'iteration','time'}, 1
     'recordDT',        'Programming', 'numeric',  'Plot/record every recordDT Myr; used only if recordMode = ''time''', {}, 1
     'CFL',             'Programming', 'numeric',  'CFL condition', {}, 1
     'nStepsMin',       'Programming', 'numeric',  'Minimum number of adaptive time steps across the run', {}, 1
-    'microStepTol',    'Programming', 'numeric',  'mm; below-this-movement steps update the boundary node in-place instead of resampling', {}, 1
+    'microStepTol',    'Programming', 'numeric',  'Below-this-movement steps (mm) update the boundary node in-place instead of resampling', {}, 1
 
     'lxA',             'Physics', 'numeric',  'Length of A (crystal, e.g. Grt) in mm', {}, 1
     'lxB_factor',      'Physics', 'numeric',  'lxB = lxB_factor*lxA; length of B (matrix) in mm', {}, 1
     'DRG',             'Physics', 'numeric',  'Diffusivity of B wrt A (major elements)', {}, 1
     'DRG_LuHf',        'Physics', 'numeric',  'Diffusivity Lu/Hf in matrix (wrt A)', {}, 1
     'DRG_Mn',          'Physics', 'numeric',  'Diffusivity Mn in matrix (wrt A)', {}, 1
-    'DamA',            'Physics', 'numeric',  'Damkohler_II for material A (interface kinetics)', {}, 1
-    'DamB',            'Physics', 'numeric',  'Damkohler_II for material B (interface kinetics)', {}, 1
-    'KDLu',            'Physics', 'numeric',  'KD Lu (Xtl/Mtrx: pelites) (Kohn, 2009, p.171)', {}, 1
-    'KDHf',            'Physics', 'numeric',  'KD Hf (Xtl/Mtrx: pelites) (Kohn, 2009, p.171)', {}, 1
+    'DamA',            'Physics', 'numeric',  'Damköhler_II for material A (interface kinetics)', {}, 1
+    'DamB',            'Physics', 'numeric',  'Damköhler_II for material B (interface kinetics)', {}, 1
+    'KDLu',            'Physics', 'numeric',  'KD Lu (Xtl/Mtrx: pelites)', {}, 1
+    'KDHf',            'Physics', 'numeric',  'KD Hf (Xtl/Mtrx: pelites)', {}, 1
     'MnMode',          'Physics', 'dropdown', '''fixed'': use constant KDMn below; ''PD'': derive KD_Mn(T,P) from the phase diagram (PD)', {'fixed','PD'}, 1
-    'KDMn',            'Physics', 'numeric',  'KD Mn (Xtl/Mtrx: pelites) (KD = 30, Kretz, 1959); used only if MnMode = ''fixed'', or if MniBMode = ''manual''', {}, 1
+    'KDMn',            'Physics', 'numeric',  'KD Mn (Xtl/Mtrx: pelites); used only if MnMode = ''fixed'', or if MniBMode = ''manual''', {}, 1
     'LuiB',            'Physics', 'numeric',  'Initial amount in ppm of Lu (in B)', {}, 1
     'HfiB',            'Physics', 'numeric',  'Initial amount in ppm of Hf (in B)', {}, 1
-    'HfiBref',         'Physics', 'numeric',  'Initial amount in ppm of Hf(ref) (in B); normalization reference', {}, 1
+    'HfiBref',         'Physics', 'numeric',  'Initial amount in ppm of Hf(ref) (in B)', {}, 1
     'MniBMode',        'Physics', 'dropdown', '''manual'': use MniB below; ''PD'': override it from the phase diagram at Tstart,Pstart', {'manual','PD'}, 1
     'MniB',            'Physics', 'numeric',  'Initial amount in wt% of Mn (in B); used only if MniBMode = ''manual''', {}, 1
     'isoRefMode',      'Physics', 'dropdown', 'Isochron reference point for phase A: ''bulk'', ''core'', or ''wholerock''', {'bulk','core','wholerock'}, 1
     'isoNskip',        'Physics', 'numeric',  'Isochron profile sampling: compute an age for every isoNskip-th node across phase A', {}, 1
-    'isoShowProfile',  'Physics', 'checkbox', '1: also plot the isoNskip-th profile points/lines in the isochron panel', {}, 1
+    'isoShowProfile',  'Physics', 'checkbox', 'Also plot the isoNskip-th profile points/lines in the isochron panel', {}, 1
 
     't_tot',           'Time_PT', 'numeric',  'Total time in Myr (growth & diffusion, before relaxation)', {}, 1
     'PTmode',          'Time_PT', 'dropdown', '''Tbump'': old T-only bump (delT), P linear; ''peak'': explicit Tpeak/Ppeak with independent peak timing', {'Tbump','peak'}, 1
     'Tstart',          'Time_PT', 'numeric',  'Starting T in K', {}, 1
-    'Tstop',           'Time_PT', 'numeric',  'Tstop in K', {}, 1
+    'Tstop',           'Time_PT', 'numeric',  'Final T in K', {}, 1
     'delT',            'Time_PT', 'numeric',  'Thermal max during decompression; used only if PTmode = ''Tbump''', {}, 1
     'Tpeak',           'Time_PT', 'numeric',  'Peak T in K; used only if PTmode = ''peak''', {}, 1
     'T_peak_frac',     'Time_PT', 'numeric',  'Time of peak T, as a fraction of t_tot; used only if PTmode = ''peak''', {}, 1
-    'Pstart',          'Time_PT', 'numeric',  'Pstart in GPa', {}, 1
-    'Pstop',           'Time_PT', 'numeric',  'Pstop in GPa', {}, 1
+    'Pstart',          'Time_PT', 'numeric',  'Starting P in GPa', {}, 1
+    'Pstop',           'Time_PT', 'numeric',  'Final P in GPa', {}, 1
     'Ppeak',           'Time_PT', 'numeric',  'Peak P in GPa; used only if PTmode = ''peak''', {}, 1
     'P_peak_frac',     'Time_PT', 'numeric',  'Time of peak P, as a fraction of t_tot; used only if PTmode = ''peak''', {}, 1
     'Trange',          'Time_PT', 'vector',   'T range [min max] for visualization/phase diagram in K', {}, 2
@@ -735,7 +749,7 @@ rows = {
     'Par',             'Thermo', 'vector',   'Pressures in GPa at the 3 calibration points (used if eqMode = ''poly'')', {}, 3
     'Car_G',           'Thermo', 'vector',   'Compositions of MgO in garnet (A) at the 3 points (used if eqMode = ''poly'')', {}, 3
     'Car_B',           'Thermo', 'vector',   'Compositions of MgO in biotite (B) at the 3 points (used if eqMode = ''poly'')', {}, 3
-    'PD',              'Thermo', 'text',     'Perplex table filename (used if eqMode = ''PD'')', {}, 1
+    'PD',              'Thermo', 'text',     'Lookup table for the thermodynamic data set used to create the phase diagram (used if eqMode = ''PD'')', {}, 1
 
     'ndim',            'Numerics', 'dropdown', 'Geometry factor (1: planar, 2: cylindrical, 3: spherical)', {'1','2','3'}, 1
     'NBC',             'Numerics', 'numeric',  'Neumann (no-flux) outer boundary condition', {}, 1

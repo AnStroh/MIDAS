@@ -2,6 +2,7 @@
 matlab/results/
 octave/results/
 GUI/results/
+GUI/presets/
 tests/results/
 *_notitle.pdf
 *_notitle.png
@@ -27,3 +28,7 @@ Thumbs.db
 # Docs build output (generated, not source)
 docs/_site/
 docs/.jekyll-cache/
+
+# Developer-only content - not for the public repo (destined for a private
+# submodule once one is set up; ignored here in the meantime)
+dev/

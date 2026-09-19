@@ -7,7 +7,7 @@ permalink: /api-reference/
 ## Core functions
 
 ### `MIDAS_Params()`
-Returns the default `params` struct. Every field is documented inline in the file itself; the tables below summarize them by section. Call with no arguments for defaults, then override individual fields, or call one of the `MIDAS_Params_ExampleN.m` functions instead for a ready-made configuration (see [Examples](examples)).
+Returns the default `params` struct. Every field is documented inline in the file itself; the tables below summarize them by section. Call with no arguments for defaults, then override individual fields, or call one of the `examples/ExampleN.m` functions instead for a ready-made configuration (see [Examples](examples)).
 
 ### `R = MIDAS_Main(params)`
 Runs the model once. Returns a struct `R` with: 
@@ -53,16 +53,13 @@ Every function below takes the `R` struct returned by `MIDAS_Main` and produces 
 
 | Function | Shows |
 |---|---|
-| `plot_velocity_age(R)` | 6 figures: apparent age / signed misfit / relative misfit heatmaps (linear + signed-log variants) vs. crystal size and time, interface velocity vs. time, and a standalone apparent-age-only panel |
+| `plot_velocity_age(R)` | 2 figures: relative-misfit heatmap (signed-log color scale) vs. crystal size and time (with interface velocity vs. time alongside it), and a standalone apparent-age-only panel |
 | `plot_misfit(R)` | Worst-case apparent-age and isochron-age misfit vs. true time |
-| `plot_massbalance(R)` | Mass-balance drift (MgO, Mn, Hf-ref) vs. time - a numerical-integrity check |
 | `plot_massbalance_MgO(R)` | Mass-balance drift, MgO only |
-| `plot_Lu_profile(R)` / `plot_Mn_profile(R)` | Final-state Lu / Mn profile, phase A only |
 | `plot_age_at_fixed_positions(R)` | Apparent age vs. time, tracked at fixed distances from the core |
 | `plot_conc_at_fixed_positions(R)` | Lu, Hf concentrations vs. time at the same fixed positions |
 | `plot_age_vs_temperature(R)` | Closure-temperature diagnostic: apparent age vs. T |
 | `plot_all_composition_profiles(R)` | Every element/isotope's final-state profile, phase A vs. phase B, one figure |
-| `plot_initial_conditions(R)` | Every element/isotope's initial ($t=0$) profile, phase A vs. phase B, one figure - the before to `plot_all_composition_profiles`'s after |
 
 ## Export functions
 

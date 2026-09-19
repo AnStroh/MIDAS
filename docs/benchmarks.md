@@ -17,7 +17,6 @@ computed by trapezoidal quadrature over both phases together (`calc_mass_vol`), 
 ```matlab
 R = MIDAS_Main(params);       % params.store_history = 1
 plot_massbalance_MgO(R)       % MgO drift only
-plot_massbalance(R)           % MgO, MnO, and Hfr together
 ```
 
 ## Results (full-resolution, full-duration runs)

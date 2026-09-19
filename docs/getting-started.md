@@ -41,7 +41,7 @@ params = MIDAS_Params();
 ```
 to any of the six example configurations, e.g.
 ```matlab
-params = MIDAS_Params_Example2_PolyEquilibrium();
+params = Example2_PolyEquilibrium();
 ```
 See **[Examples](examples)** for what each one demonstrates.
 

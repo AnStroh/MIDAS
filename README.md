@@ -59,11 +59,17 @@ See [`docs/getting-started.md`](docs/getting-started.md) for more.
 
 ## Graphical user interface (GUI)
 
-For an interactive alternative to editing parameter files by hand, [`GUI/`](GUI/) has a MATLAB App Designer front-end (`MIDAS.m`), and [`octave/`](octave/) has its own GNU Octave rebuild (`MIDAS_GUI.m`, plain `uicontrol` - Octave can't open App Designer's `.mlapp` format at all): every field of `MIDAS_Params.m` is exposed as its own control (grouped into tabs matching its sections), with the same explanatory text as the source file's inline comments available as a hover tooltip. Load any of the six examples below (or the plain default) from a dropdown to use as a starting point - every field stays freely editable afterwards - then Run, reset to defaults, save/load a parameter preset, browse previous runs, and export figures/data, all without leaving the app. The MATLAB version also includes a dark/light toggle (not yet in the Octave one). See [`docs/gui.md`](docs/gui.md) for the full guide to both.
+For an interactive alternative to editing parameter files by hand, [`GUI/`](GUI/) has a MATLAB App Designer front-end (`MIDAS.m`), and [`octave/`](octave/) has its own GNU Octave rebuild (`MIDAS_GUI.m`, plain `uicontrol` - Octave can't open App Designer's `.mlapp` format at all): every field of `MIDAS_Params.m` is exposed as its own control (grouped into tabs matching its sections), with the same explanatory text as the source file's inline comments available as a hover tooltip. Load any of the six examples below (or the plain default) from a dropdown to use as a starting point - every field stays freely editable afterwards - then Run, reset to defaults, save/load a parameter preset, browse previous runs, and export figures/data, all without leaving the app. See [`docs/gui.md`](docs/gui.md) for the full guide to both.
 
 ## The six examples
 
-`Run_MIDAS.m` defaults to `MIDAS_Params()`. Swap that line for any of the six standalone example parameter files to see a different capability of the model - each is a complete, self-contained parameter set, with every field it does NOT use set to `NaN`:
+`Run_MIDAS.m` defaults to `MIDAS_Params()`. Swap that line for any of the six standalone example parameter files, under that folder's own `examples/` subfolder (already on the path - `Run_MIDAS.m` adds it itself), to see a different capability of the model - each is a complete, self-contained parameter set, with every field it does NOT use set to `NaN`:
+
+```matlab
+params = Example1_Baseline();   % instead of params = MIDAS_Params();
+```
+
+Loading one from the GUI works the same way, via the **Load Example** dropdown (see [Graphical user interface](#graphical-user-interface-gui) above).
 
 1. **Example1_Baseline** - fully automated, phase-diagram-driven (recommended starting point)
 2. **Example2_PolyEquilibrium** - no phase-diagram file needed at all

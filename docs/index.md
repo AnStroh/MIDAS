@@ -42,7 +42,8 @@ permalink: /
 ## Quick example
 
 ```matlab
-params = MIDAS_Params_Example1_Baseline();  % fully automated, phase-diagram-driven
+addpath('examples');
+params = Example1_Baseline();               % fully automated, phase-diagram-driven
 R = MIDAS_Main(params);
 plot_all_composition_profiles(R);           % every element/isotope, phase A vs phase B
 ```

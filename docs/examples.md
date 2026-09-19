@@ -4,7 +4,7 @@ title: Examples
 permalink: /examples/
 ---
 
-Six standalone example configurations ship with MIDAS (identical in `matlab/`, `octave/`, and `GUI/`). Each is a **complete** parameter set - not a diff on top of the default - and every field it does NOT use for its particular mode combination is set to `NaN`, so it's obvious at a glance what actually matters for that run. Together they exercise every mode switch in the model.
+Six standalone example configurations ship with MIDAS, under each folder's own `examples/` subfolder (identical in `matlab/`, `octave/`, and `GUI/`). Each is a **complete** parameter set - not a diff on top of the default - and every field it does NOT use for its particular mode combination is set to `NaN`, so it's obvious at a glance what actually matters for that run. Together they exercise every mode switch in the model.
 
 ## Example1_Baseline
 
@@ -16,7 +16,8 @@ The recommended starting point: the fully automated, phase-diagram-driven config
 - Spherical growth geometry (`ndim=3`)
 
 ```matlab
-params = MIDAS_Params_Example1_Baseline();
+addpath('examples');
+params = Example1_Baseline();
 R = MIDAS_Main(params);
 ```
 

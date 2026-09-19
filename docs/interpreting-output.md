@@ -32,9 +32,8 @@ Every `<field>rec` array (`R.Srec`, `R.Vrec`, `R.Trec`, `R.Prec`, `R.CArec`, ...
 |---|---|
 | How does apparent age compare to true age, everywhere and always? | `plot_velocity_age(R)` |
 | What's the worst-case age misfit over time, as a single curve? | `plot_misfit(R)` |
-| Is mass conserved (numerical sanity check)? | `plot_massbalance(R)` / `plot_massbalance_MgO(R)` |
+| Is mass conserved (numerical sanity check)? | `plot_massbalance_MgO(R)` |
 | What does the crystal look like now, all elements at once? | `plot_all_composition_profiles(R)` |
-| ...and at $t=0$, for comparison? | `plot_initial_conditions(R)` |
 | How does age/composition evolve at a few fixed depths? | `plot_age_at_fixed_positions(R)` / `plot_conc_at_fixed_positions(R)` |
 | Where's the closure temperature? | `plot_age_vs_temperature(R)` |
 

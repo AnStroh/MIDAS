@@ -49,18 +49,18 @@ octave
 ```
 (see [`docs/gui.md`](https://github.com/AnStroh/MIDAS/blob/main/docs/gui.md#octave-gui) for the full guide.)
 
-`MIDAS_Params.m` is the default input file - edit numbers there before running, or swap in one of the six standalone examples to see a different capability of the model (each is a complete parameter set; whatever a given example does NOT use is set to `NaN` so it's obvious at a glance what matters for that run):
+`MIDAS_Params.m` is the default input file - edit numbers there before running, or swap in one of the six standalone examples under `examples/` to see a different capability of the model (each is a complete parameter set; whatever a given example does NOT use is set to `NaN` so it's obvious at a glance what matters for that run):
 
 | File | Demonstrates |
 |---|---|
-| `MIDAS_Params_Example1_Baseline.m` | Fully automated, phase-diagram-driven (recommended starting point) |
-| `MIDAS_Params_Example2_PolyEquilibrium.m` | No phase-diagram file needed at all (polynomial equilibrium fit, manual Mn) |
-| `MIDAS_Params_Example3_ThermalBump.m` | Older, simpler P-T parameterization (`PTmode='Tbump'`) |
-| `MIDAS_Params_Example4_ManualPartitioning.m` | Phase-diagram majors + user-specified Mn partitioning (hybrid) |
-| `MIDAS_Params_Example5_PlanarGeometry.m` | Planar growth geometry (`ndim=1`) |
-| `MIDAS_Params_Example6_CylindricalGeometry.m` | Cylindrical growth geometry (`ndim=2`) |
+| `examples/Example1_Baseline.m` | Fully automated, phase-diagram-driven (recommended starting point) |
+| `examples/Example2_PolyEquilibrium.m` | No phase-diagram file needed at all (polynomial equilibrium fit, manual Mn) |
+| `examples/Example3_ThermalBump.m` | Older, simpler P-T parameterization (`PTmode='Tbump'`) |
+| `examples/Example4_ManualPartitioning.m` | Phase-diagram majors + user-specified Mn partitioning (hybrid) |
+| `examples/Example5_PlanarGeometry.m` | Planar growth geometry (`ndim=1`) |
+| `examples/Example6_CylindricalGeometry.m` | Cylindrical growth geometry (`ndim=2`) |
 
-Open `Run_MIDAS.m` and change the `params = MIDAS_Params();` line to call whichever one you want; it then runs `MIDAS_Main.m` and saves/exports figures + data the same way regardless of which params file was used.
+Open `Run_MIDAS.m` and change the `params = MIDAS_Params();` line to call whichever one you want (`addpath('examples')` is already set up at the top of the file); it then runs `MIDAS_Main.m` and saves/exports figures + data the same way regardless of which params file was used.
 
 ## Differences from the MATLAB version
 

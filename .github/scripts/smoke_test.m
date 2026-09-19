@@ -1,5 +1,5 @@
 % SMOKE_TEST  CI smoke check, shared between the MATLAB and Octave
-% workflows: runs every MIDAS_Params_ExampleN.m with a small/fast grid,
+% workflows: runs every examples/ExampleN.m with a small/fast grid,
 % confirms each produces a finite real S_final, then runs the full
 % plotting + export pipeline once (Example1). This is NOT a substitute for
 % real unit tests (none exist yet) - it's just a guard against the whole
@@ -14,9 +14,10 @@
 % Authors: Annalena Stroh, Evangelos Moulas
 % JGU, Mainz, 2026
 %==========================================================================
-exampleFns = {'MIDAS_Params_Example1_Baseline', 'MIDAS_Params_Example2_PolyEquilibrium', ...
-              'MIDAS_Params_Example3_ThermalBump', 'MIDAS_Params_Example4_ManualPartitioning', ...
-              'MIDAS_Params_Example5_PlanarGeometry', 'MIDAS_Params_Example6_CylindricalGeometry'};
+addpath('examples', 'plotting', 'export');
+exampleFns = {'Example1_Baseline', 'Example2_PolyEquilibrium', ...
+              'Example3_ThermalBump', 'Example4_ManualPartitioning', ...
+              'Example5_PlanarGeometry', 'Example6_CylindricalGeometry'};
 
 ok = true;
 for k = 1:numel(exampleFns)
@@ -47,18 +48,16 @@ end
 
 fprintf('=== Full plotting + export pipeline (Example1) ===\n');
 try
-    params = MIDAS_Params_Example1_Baseline();
+    params = Example1_Baseline();
     params.doPlot = false; params.make_movie = false; params.save_data = false;
     params.store_history = true; params.t_tot = 1; params.nx_A = 15; params.nx_B = 15;
     outDir = tempname(); mkdir(outDir); params.outDir = outDir;
     R = MIDAS_Main(params);
-    [figAB,figErr,figRelErr,figErrLog,figRelErrLog,figABOnly] = plot_velocity_age(R); %#ok<ASGLU>
-    plot_misfit(R); plot_massbalance(R); plot_massbalance_MgO(R);
-    plot_Lu_profile(R); plot_Mn_profile(R);
+    [figRelErrLog,figABOnly] = plot_velocity_age(R); %#ok<ASGLU>
+    plot_misfit(R); plot_massbalance_MgO(R);
     plot_age_at_fixed_positions(R); plot_conc_at_fixed_positions(R);
     plot_age_vs_temperature(R); plot_all_composition_profiles(R);
-    plot_initial_conditions(R);
-    export_pub_fig(figAB, fullfile(outDir,'ci_test'));
+    export_pub_fig(figRelErrLog, fullfile(outDir,'ci_test'));
     export_results_excel(R, fullfile(outDir,'ci_test.xlsx'));
     fprintf('  OK\n');
 catch ME

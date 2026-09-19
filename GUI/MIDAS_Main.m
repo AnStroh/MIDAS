@@ -20,17 +20,19 @@ function R = MIDAS_Main(params)
 % Authors: Annalena Stroh, Evangelos Moulas
 % JGU, Mainz, 2026
 %==========================================================================
+thisDir = fileparts(mfilename('fullpath'));
+addpath(fullfile(thisDir,'plotting'), fullfile(thisDir,'export'));
 if nargin < 1 || isempty(params)
     params = MIDAS_Params();
 end
 validateCoreParams(params);
 outDir          = params.outDir;                              % Folder all saved figures/movie/data go into
 data_name       = params.data_name;
-save_data       = params.save_data;                          % Data Save
+save_data       = params.save_data;                           % Data Save
 make_movie      = params.make_movie;                          % Flag for Movie making
 plot_kind       = params.plot_kind;                           % Kind of plot (1: profiles+phase diagram+ages, 2: profiles+apparent age, 3: all)
-doPlot          = params.doPlot;                               % Master switch for any plotting
-saveCheckpoints = params.saveCheckpoints;                      % 1: also save _initial/_snapN/_last figures to outDir while doPlot=true; 0: show them live only, don't write to disk
+doPlot          = params.doPlot;                              % Master switch for any plotting
+saveCheckpoints = params.saveCheckpoints;                     % 1: also save _initial/_snapN/_last figures to outDir while doPlot=true; 0: show them live only, don't write to disk
 % Only create outDir if something will actually be written into it: the
 % .mat file (save_data), or - while plotting live - the checkpoint figures
 % and/or the movie gif. Pure live-viewing (doPlot=true, everything else
@@ -39,7 +41,7 @@ if (save_data || (doPlot && (saveCheckpoints || make_movie))) && ~exist(outDir,'
     mkdir(outDir)
 end
 FSS             = params.FSS;                                  % FontSize
-LWW              = params.LWW;                                  % LineWidth
+LWW             = params.LWW;                                  % LineWidth
 % Programming flags and options---------------------------------------------
 checkmaxT_Eq    = params.checkmaxT_Eq;                         % Check MaxT Equilibrium (simulation stops here)
 checkFinT_Eq    = params.checkFinT_Eq;                         % Check Final Equilibrium >1 (t_tot*factor = end) -> relaxation
@@ -56,14 +58,14 @@ Rgac     = 1.9872159;                                         % cal/mol/K
 RgaJ     = Rgac*4.184;                                        % J/mol/K
 l_Lu     = 1.867*1e-11;                                       % Lu decay constant in yr^(-1) (Söderlund et al. 2004)
 % Physics (Diffusion and Growth)
-lxA      = params.lxA;                                         % Length of A in mm
+lxA      = params.lxA;                                          % Length of A in mm
 lxB      = params.lxB_factor*lxA;                               % Length of B in mm
-DRG      = params.DRG;                                         % Diffusivity of B wrt A
+DRG      = params.DRG;                                          % Diffusivity of B wrt A
 DRG_LuHf = params.DRG_LuHf;                                     % Diffusivity Lu/Hf in matrix (wrt A)
 DRG_Mn   = params.DRG_Mn;                                       % Diffusivity Mn in matrix (wrt A)
-DamA     = params.DamA;                                         % Damkohler_II for 1st material (A)
-DamB     = params.DamB;                                         % Damkohler_II for 2nd material (B)
-lamLu    = l_Lu*1e6;                                           % Lu Decay in Myr^(-1)
+DamA     = params.DamA;                                         % Damköhler_II for 1st material (A)
+DamB     = params.DamB;                                         % Damköhler_II for 2nd material (B)
+lamLu    = l_Lu*1e6;                                            % Lu Decay in Myr^(-1)
 KDLu     = params.KDLu;                                         % KD Lu (Xtl/Mtrx: pelites)
 KDHf     = params.KDHf;                                         % KD Hf (Xtl/Mtrx: pelites)
 KDMn     = params.KDMn;                                         % KD Mn (Xtl/Mtrx: pelites)
@@ -77,14 +79,14 @@ isoShowProfile = params.isoShowProfile;                         % Plot the isoNs
 % Time and Path
 t_tot    = params.t_tot;                                        % Total time in Myr (for growth & diffusion without relaxation afterwards)
 Tstart   = params.Tstart;                                       % Starting T in K
-Tstop    = params.Tstop;                                        % Tstop in K
-Pstart   = params.Pstart;                                       % Pstart in GPa
-Pstop    = params.Pstop;                                        % Pstop
+Tstop    = params.Tstop;                                        % T stop in K
+Pstart   = params.Pstart;                                       % P start in GPa
+Pstop    = params.Pstop;                                        % P stop
 Trange   = params.Trange;                                       % T range for visualization in K
 Prange   = params.Prange;                                       % P range for visualization in GPa
 %Make P-T path (parametrized) ---------------------------------------------
-PTmode   = params.PTmode;                                       % 'Tbump': old T-only bump (delT), P linear; 'peak': explicit Tpeak/Ppeak with independent peak timing for T and P
-tt       = linspace(0,t_tot,1000);                            % Time array
+PTmode   = params.PTmode;                                       % 'Tbump': T-only bump (delT), P linear; 'peak': explicit Tpeak/Ppeak with independent peak timing for T and P
+tt       = linspace(0,t_tot,1000);                              % Time array
 switch PTmode
     case 'Tbump'
         delT = params.delT;                                   % Thermal max during decompression (changes peak T)
@@ -166,7 +168,7 @@ switch eqMode
                 'placeholders from MIDAS_Params.m, not real calibration points. Fitting a polynomial to NaN silently ', ...
                 'produces a meaningless (but finite-looking) result rather than erroring, so this is checked explicitly. ', ...
                 'Fix by either: (1) setting all four to real 3-point [T,P,composition] calibration values - see ', ...
-                'MIDAS_Params_Example2_PolyEquilibrium.m for a worked example - or (2) pointing params.PD at a real, ', ...
+                'examples/Example2_PolyEquilibrium.m for a worked example - or (2) pointing params.PD at a real, ', ...
                 'existing phase-diagram file so eqMode=''PD'' can be used instead.'], params.PD);
         end
         [CAc]   = find_poly(Car_G,Tar,Par);                   % Coefficients for Major Elements in A
@@ -174,7 +176,7 @@ switch eqMode
         eqFun        = @(T,P) TL(T,P,CAc,CBc);                % Equilibrium composition (silent: extrapolates smoothly)
         eqFunChecked = eqFun;                                 % 'poly' never raises an out-of-range error
     case 'PD'
-        eqFun        = @(T,P) deal(interp2(PGPa,TK,MgOA,P,T), interp2(PGPa,TK,MgOB,P,T));         % Silent (for the background field)
+        eqFun        = @(T,P) deal(interp2(PGPa,TK,MgOA,P,T), interp2(PGPa,TK,MgOB,P,T));           % Silent (for the background field)
         eqFunChecked = @(T,P) deal(interpolateC(PGPa,TK,MgOA,P,T), interpolateC(PGPa,TK,MgOB,P,T)); % Errors if P,T is outside the phase diagram range
     otherwise
         error('params.eqMode must be ''poly'' or ''PD''.')
@@ -195,7 +197,7 @@ switch MniBMode
     otherwise
         error('params.MniBMode must be ''manual'' or ''PD''.')
 end
-% Note that the compositions are not generally independent -> compare phase diagramms
+% Note that the compositions are not generally independent -> compare phase diagrams
 %Calculate thermo field ---------------------------------------------------
 [T2,P2,CA2,CB2] = load_TData(Trange,Prange,eqFun);
 % Numerics ----------------------------------------------------------------
@@ -437,7 +439,6 @@ while t < t_tot
     end
     [t_rimA,t_coreA,t_bulkA,XdatA,YdatA,XfitA,YfitRimA,YfitCoreA,YfitBulkA,t_profA,Xprof,Yprof,YfitProf,t_maxA,XmaxA,YmaxA,YfitMaxA] = ...
         isochronsRef(CALu,CAHf,CAHfr,xA,ndim,LuRef,HfRef,HfrRef,lamLu,isoNskip);
-    %[P_Dr_B,D_Dr_B,yfitB,RsqB,t_intB] = isochrons(CBLu(2:end),CBHf(2:end),CBHfr(2:end),lamLu);
     %Test for V magnitude --------------------------------------
     if abs(dC)<1e-5
         error('KD (for major elements) close to one - dC goes to zero - velocity will go to infinity')
@@ -553,7 +554,7 @@ while t < t_tot
         CAMn_temp  = [CAMn,CAn0Mn];
         CBMn_temp  = [CB1Mn, CBMn(2:end)];
         dx_A       = lxA/(nx_A-1);
-        xA         = (0:dx_A:lxA);                           % Resample
+        xA         = (0:dx_A:lxA);                                    % Resample
         CA         = pchip(xA_temp,CA_temp,xA);                       % Interpolate
         CALu       = pchip(xA_temp,CALu_temp,xA);
         CAHf       = pchip(xA_temp,CAHf_temp,xA);
@@ -756,20 +757,23 @@ while t < t_tot
             trec(itp)       = t;                                        % Monitor time
             Trec(itp)       = T;                                        % Monitor Temperature
             Prec(itp)       = P;                                        % Monitor Pressure
-            CArec(itp,:)    = CA;                                       % Monitor compositions
-            CBrec(itp,:)    = CB;                                       % Monitor compositions
-            CALurec(itp,:)  = CALu;                                     % Monitor compositions
-            CBLurec(itp,:)  = CBLu;                                     % Monitor compositions
-            CAHfrec(itp,:)  = CAHf;                                     % Monitor compositions
-            CBHfrec(itp,:)  = CBHf;                                     % Monitor compositions
-            CAHfrrec(itp,:) = CAHfr;                                    % Monitor compositions
-            CBHfrrec(itp,:) = CBHfr;                                    % Monitor compositions
-            CAMnrec(itp,:)  = CAMn;                                     % Monitor compositions
-            CBMnrec(itp,:)  = CBMn;                                     % Monitor compositions
-            xArec(itp,:)    = xA;                                       % Monitor space
-            xBrec(itp,:)   = xB;                                       % Monitor space
-            tA1(itp,:)      = tALuHf1;                                  % Monitor age
-            tB1(itp,:)      = tBLuHf1;                                  % Monitor age
+            % Monitor compositions
+            CArec(itp,:)    = CA;
+            CBrec(itp,:)    = CB;
+            CALurec(itp,:)  = CALu;
+            CBLurec(itp,:)  = CBLu;
+            CAHfrec(itp,:)  = CAHf;
+            CBHfrec(itp,:)  = CBHf;
+            CAHfrrec(itp,:) = CAHfr;
+            CBHfrrec(itp,:) = CBHfr;
+            CAMnrec(itp,:)  = CAMn;
+            CBMnrec(itp,:)  = CBMn;
+            % Monitor space
+            xArec(itp,:)    = xA;
+            xBrec(itp,:)   = xB;
+            % Monitor age
+            tA1(itp,:)      = tALuHf1;
+            tB1(itp,:)      = tBLuHf1;
             tRimAh(itp)     = t_rimA;                                   % Monitor isochron age (rim)
             tCoreAh(itp)    = t_coreA;                                  % Monitor isochron age (core)
             tBulkAh(itp)    = t_bulkA;                                  % Monitor isochron age (bulk)
@@ -984,7 +988,7 @@ end
 function [DMn] = calc_diffMn(T,P,Rgac,Myr)
     % Chakraborty and Ganguly, 1991, p.137
     D0Mn    = 5.15*1e-4;                                 % Pre-exponent of D for Mn in cm^2/s
-    Q0Mn    = 60569 + 0.1463.*P.*1e4;                    % Activation energy of Fe  (cal/mol)
+    Q0Mn    = 60569 + 0.1463.*P.*1e4;                    % Activation energy of Mn  (cal/mol)
     DMn     = D0Mn.*(10^2).*Myr.*exp(-Q0Mn./Rgac./T);    % Convert coefficient to mm^2/Myr
 end
 function [CAn0, CB1] =  solveBC(CAn0_old,CB1_old,CAn1,CB2,dxA,dxB,DA,DB,KD,v,dt,lamA,lamB)
@@ -1185,16 +1189,10 @@ function [PGPa,TK,MgOA,MgOB,MnOA,MnOB]=create_grid(PhaseDiagram)
 
     TK     = reshape(PhaseDiagram(:,1),nx,nx);
     PGPa   = reshape(PhaseDiagram(:,2),nx,nx)/1e4; %convert from bar to GPa
-    %A_v   = reshape(PhaseDiagram(:,3),nx,nx);
-    %B_v   = reshape(PhaseDiagram(:,4),nx,nx);
-    %FeOA   = reshape(PhaseDiagram(:,5),nx,nx);  %in wt%
-    %FeOB   = reshape(PhaseDiagram(:,6),nx,nx);  
     MgOA   = reshape(PhaseDiagram(:,7),nx,nx);
     MgOB   = reshape(PhaseDiagram(:,8),nx,nx);
     MnOA   = reshape(PhaseDiagram(:,9),nx,nx);
     MnOB   = reshape(PhaseDiagram(:,10),nx,nx);
-    %CaOA   = reshape(PhaseDiagram(:,11),nx,nx);
-    %CaOB   = reshape(PhaseDiagram(:,12),nx,nx);
 end
 
 function validateCoreParams(p)
@@ -1232,8 +1230,8 @@ posFields = {'DRG','DRG_LuHf','DRG_Mn','DamA','DamB'};
 posWhat   = {'the diffusivity ratio (major elements, B relative to A)', ...
              'the diffusivity ratio (Lu/Hf, matrix relative to A)', ...
              'the diffusivity ratio (Mn, matrix relative to A)', ...
-             'the Damkohler_II number for phase A (interface kinetics)', ...
-             'the Damkohler_II number for phase B (interface kinetics)'};
+             'the Damköhler_II number for phase A (interface kinetics)', ...
+             'the Damköhler_II number for phase B (interface kinetics)'};
 for i = 1:numel(posFields)
     v = p.(posFields{i});
     if ~(v > 0)

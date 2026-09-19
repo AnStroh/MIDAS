@@ -23,7 +23,7 @@ function compare_results(tol)
 % Only numeric fields are compared (strings/cells - timestamps, file
 % paths, mode-switch settings - are skipped; those are validated by
 % construction, since all three implementations are run from the exact
-% same MIDAS_Params_ExampleN.m inputs).
+% same examples/ExampleN.m inputs).
 %
 % Authors: Annalena Stroh, Evangelos Moulas
 % JGU, Mainz, 2026
@@ -34,9 +34,9 @@ end
 
 resultsDir = fullfile(fileparts(mfilename('fullpath')), 'results');
 labels = {'matlab', 'GUI', 'octave'};
-exampleFns = {'MIDAS_Params_Example1_Baseline', 'MIDAS_Params_Example2_PolyEquilibrium', ...
-              'MIDAS_Params_Example3_ThermalBump', 'MIDAS_Params_Example4_ManualPartitioning', ...
-              'MIDAS_Params_Example5_PlanarGeometry', 'MIDAS_Params_Example6_CylindricalGeometry'};
+exampleFns = {'Example1_Baseline', 'Example2_PolyEquilibrium', ...
+              'Example3_ThermalBump', 'Example4_ManualPartitioning', ...
+              'Example5_PlanarGeometry', 'Example6_CylindricalGeometry'};
 
 fprintf('Looking for results in %s (tolerance = %.3g)\n\n', resultsDir, tol);
 

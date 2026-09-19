@@ -19,7 +19,7 @@ A plain-text file, one row per $(T,P)$ point, arranged on a **square** grid ($N\
 | 9 | MnO in phase A, wt% |
 | 10 | MnO in phase B, wt% |
 
-Columns 3-4 (phase volumes) and 5-6 (FeO in phases A/B) are read but not used by the current model; columns 11-12 (CaO in phases A/B), if present, are likewise unused. Any of these can be set to `NaN`/`0` if unavailable.The shipped example (`Pelite_avg_1.dat`, used by `Example1_Baseline`/`Example3_ThermalBump`/`Example4_ManualPartitioning`/ `Example5_PlanarGeometry`/`Example6_CylindricalGeometry`) follows exactly this 12-column layout on a $120\times120$ grid. If your own table uses a different column arrangement, adapt `create_grid.m`'s `[PGPa,TK,MgOA,MgOB,MnOA,MnOB] = create_grid(PhaseDiagram)` accordingly rather than reshuffling your data to match.
+Columns 3-4 (phase volumes) and 5-6 (FeO in phases A/B) are read but not used by the current model; columns 11-12 (CaO in phases A/B), if present, are likewise unused. Any of these can be set to `NaN`/`0` if unavailable.The shipped example (`phasediagrams/Pelite_avg_1.dat`, used by `Example1_Baseline`/`Example3_ThermalBump`/`Example4_ManualPartitioning`/ `Example5_PlanarGeometry`/`Example6_CylindricalGeometry`) follows exactly this 12-column layout on a $120\times120$ grid. If your own table uses a different column arrangement, adapt `create_grid.m`'s `[PGPa,TK,MgOA,MgOB,MnOA,MnOB] = create_grid(PhaseDiagram)` accordingly rather than reshuffling your data to match.
 
 ## Generating one with Perple_X {#generating-one-with-perplex}
 

@@ -22,10 +22,11 @@ outDir = fullfile('..', 'tests', 'results');
 if ~exist(outDir, 'dir')
     mkdir(outDir);
 end
+addpath('examples', 'plotting', 'export');
 
-exampleFns = {'MIDAS_Params_Example1_Baseline', 'MIDAS_Params_Example2_PolyEquilibrium', ...
-              'MIDAS_Params_Example3_ThermalBump', 'MIDAS_Params_Example4_ManualPartitioning', ...
-              'MIDAS_Params_Example5_PlanarGeometry', 'MIDAS_Params_Example6_CylindricalGeometry'};
+exampleFns = {'Example1_Baseline', 'Example2_PolyEquilibrium', ...
+              'Example3_ThermalBump', 'Example4_ManualPartitioning', ...
+              'Example5_PlanarGeometry', 'Example6_CylindricalGeometry'};
 
 fprintf('Generating reference results for "%s" -> %s\n', label, outDir);
 for k = 1:numel(exampleFns)

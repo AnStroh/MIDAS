@@ -19,9 +19,9 @@ cd octave
 octave --eval "addpath('../tests'); generate_results('octave')"
 ```
 
-(Deliberately not `run('../tests/generate_results.m')` - both MATLAB's and Octave's `run()` change the working directory to the script's own folder for the call, which would break the example-file lookup.)
+Deliberately not `run('../tests/generate_results.m')` - both MATLAB's and Octave's `run()` change the working directory to the script's own folder for the call, which would break the example-file lookup.
 
-Each run saves one `.mat` file per example to `tests/results/`, named `<matlab|GUI|octave>_MIDAS_Params_ExampleN_*.mat`. You don't need all three - compare whichever you have.
+Each run saves one `.mat` file per example to `tests/results/`, named `<matlab|GUI|octave>_ExampleN_*.mat`. You don't need all three - compare whichever you have.
 
 **2. Compare** - once you have results from 2 or more implementations:
 
@@ -36,7 +36,7 @@ compare_results(1e-9)   % looser tolerance
 ```
 (Run from `tests/`, or with `tests/` on the path.)
 
-Reports, per example and per pair of implementations, any numeric field whose relative difference exceeds the tolerance. Timestamps, file paths, and mode-switch strings (`params.PTmode`, etc.) are skipped - those are validated by construction, since all three runs start from the identical `MIDAS_Params_ExampleN.m` input file.
+Reports, per example and per pair of implementations, any numeric field whose relative difference exceeds the tolerance. Timestamps, file paths, and mode-switch strings (`params.PTmode`, etc.) are skipped - those are validated by construction, since all three runs start from the identical `examples/ExampleN.m` input file.
 
 ## What this can and can't tell you
 

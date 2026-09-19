@@ -19,6 +19,7 @@ classdef MIDAS < matlab.apps.AppBase
         GridMain            matlab.ui.container.GridLayout
         RunButton           matlab.ui.control.Button
         ResetButton         matlab.ui.control.Button
+        CloseFiguresButton  matlab.ui.control.Button
         SavePresetButton    matlab.ui.control.Button
         LoadPresetButton    matlab.ui.control.Button
         ExampleDropDown     matlab.ui.control.DropDown
@@ -39,7 +40,6 @@ classdef MIDAS < matlab.apps.AppBase
         ExportFiguresButton matlab.ui.control.Button
         BrowseFigButton     matlab.ui.control.Button
         CitationLabel       matlab.ui.control.Label
-        ThemeToggle         matlab.ui.control.Button
         LogoImage           matlab.ui.control.Image
     end
 
@@ -62,18 +62,6 @@ classdef MIDAS < matlab.apps.AppBase
         ColBg       = [0.965 0.957 0.945]   % #F6F4F1 - content background
         ColWhite    = [1 1 1]
         ColLavender = [0.898 0.875 0.949]   % #E5DFF2 - inactive sidebar text
-
-        % Dark-mode counterparts of ColBg/ColWhite/ColIndigo (the sidebar
-        % itself is already dark in both modes, so it isn't included here).
-        % Matches the dark-mode logo's own palette (GUI/assets/midas_*_dark.svg).
-        DarkBg      = [0.114 0.106 0.129]   % #1D1B21 - content background, dark mode
-        DarkPanel   = [0.169 0.157 0.192]   % #2B2831 - panel background, dark mode
-        DarkText    = [0.918 0.890 0.984]   % #EAE3F2 - primary text on a dark background
-
-        IsDarkMode = false        % current theme; toggled by ThemeToggle
-        ThemeBgAreas = gobjects(1,0)     % grids/panels whose BackgroundColor swaps ColBg<->DarkBg
-        ThemePanels  = gobjects(1,0)     % uipanels whose BackgroundColor/ForegroundColor swap ColWhite/ColIndigo<->DarkPanel/DarkText
-        ThemeLabels  = gobjects(1,0)     % uilabels whose FontColor swaps ColIndigo<->DarkText
     end
 
     methods (Access = public)
@@ -100,53 +88,53 @@ classdef MIDAS < matlab.apps.AppBase
             rows = {
                 'outDir',          'Output',      'text',     'Folder all saved figures/movie/data go into (created if missing)', {}, 1
                 'data_name',       'Output',      'text',     'Base name used when saving results/movie', {}, 1
-                'save_data',       'Output',      'checkbox', '1: save workspace with data_name at the end (MIDAS_Main''s own auto-save - separate from the Export Data panel on the right)', {}, 1
-                'make_movie',      'Output',      'checkbox', '1: write a .gif while running (needs doPlot = true)', {}, 1
+                'save_data',       'Output',      'checkbox', 'Save workspace with data_name at the end (MIDAS_Main''s own auto-save - separate from the Export Data panel on the right)', {}, 1
+                'make_movie',      'Output',      'checkbox', 'Write a .gif while running (needs doPlot = true)', {}, 1
                 'doPlot',          'Output',      'checkbox', 'Master switch for MATLAB''s own live figures during the run (separate from this app''s post-run figures, which always show)', {}, 1
-                'saveCheckpoints', 'Output',      'checkbox', '1: also save _initial/_snapN/_last figures to outDir while doPlot=true; 0: show them live only, don''t write to disk', {}, 1
+                'saveCheckpoints', 'Output',      'checkbox', 'Also save _initial/_snapN/_last figures to outDir while doPlot=true - otherwise show them live only, don''t write to disk', {}, 1
                 'plot_kind',       'Output',      'dropdown', '1: profiles+phase diagram+ages, 2: profiles+apparent age, 3: all (only affects live plotting while doPlot=true)', {'1','2','3'}, 1
                 'FSS',             'Output',      'numeric',  'FontSize used in all figures', {}, 1
                 'LWW',             'Output',      'numeric',  'LineWidth used in all figures', {}, 1
 
-                'checkmaxT_Eq',    'Programming', 'checkbox', '1: stop advancing T once max T is reached (checks equilibrium there)', {}, 1
+                'checkmaxT_Eq',    'Programming', 'checkbox', 'Stop advancing T once max T is reached (checks equilibrium there)', {}, 1
                 'checkFinT_Eq',    'Programming', 'numeric',  '>1: extend run to checkFinT_Eq*t_tot at constant final P-T (relaxation)', {}, 1
-                'store_history',   'Programming', 'checkbox', '1: store the full time history (REQUIRED by most of this app''s post-run figures)', {}, 1
+                'store_history',   'Programming', 'checkbox', 'Store the full time history (REQUIRED by most of this app''s post-run figures)', {}, 1
                 'nout',            'Programming', 'numeric',  'Plot/record every nout iterations; used only if recordMode = ''iteration''', {}, 1
                 'recordMode',      'Programming', 'dropdown', '''iteration'': record every nout iterations (not evenly spaced in time, dt is adaptive); ''time'': record every recordDT Myr instead', {'iteration','time'}, 1
                 'recordDT',        'Programming', 'numeric',  'Plot/record every recordDT Myr; used only if recordMode = ''time''', {}, 1
                 'CFL',             'Programming', 'numeric',  'CFL condition', {}, 1
                 'nStepsMin',       'Programming', 'numeric',  'Minimum number of adaptive time steps across the run (caps dt at t_tot/nStepsMin); without this, near-stagnant regimes (growth velocity ~0) can take a single enormous step straight to t_final, leaving no recorded time history', {}, 1
-                'microStepTol',    'Programming', 'numeric',  'mm; if the interface moves less than this in one step, update the boundary node in-place instead of doing a full mesh resample - still recorded like any other step', {}, 1
+                'microStepTol',    'Programming', 'numeric',  'If the interface moves less than this (mm) in one step, update the boundary node in-place instead of doing a full mesh resample - still recorded like any other step', {}, 1
 
                 'lxA',             'Physics', 'numeric',  'Length of A (crystal, e.g. Grt) in mm', {}, 1
                 'lxB_factor',      'Physics', 'numeric',  'lxB = lxB_factor*lxA; length of B (matrix) in mm', {}, 1
                 'DRG',             'Physics', 'numeric',  'Diffusivity of B wrt A (major elements)', {}, 1
                 'DRG_LuHf',        'Physics', 'numeric',  'Diffusivity Lu/Hf in matrix (wrt A)', {}, 1
                 'DRG_Mn',          'Physics', 'numeric',  'Diffusivity Mn in matrix (wrt A)', {}, 1
-                'DamA',            'Physics', 'numeric',  'Damkohler_II for material A (interface kinetics)', {}, 1
-                'DamB',            'Physics', 'numeric',  'Damkohler_II for material B (interface kinetics)', {}, 1
-                'KDLu',            'Physics', 'numeric',  'KD Lu (Xtl/Mtrx: pelites) (Kohn, 2009, p.171)', {}, 1
-                'KDHf',            'Physics', 'numeric',  'KD Hf (Xtl/Mtrx: pelites) (Kohn, 2009, p.171)', {}, 1
+                'DamA',            'Physics', 'numeric',  'Damköhler_II for material A (interface kinetics)', {}, 1
+                'DamB',            'Physics', 'numeric',  'Damköhler_II for material B (interface kinetics)', {}, 1
+                'KDLu',            'Physics', 'numeric',  'KD Lu (Xtl/Mtrx: pelites)', {}, 1
+                'KDHf',            'Physics', 'numeric',  'KD Hf (Xtl/Mtrx: pelites)', {}, 1
                 'MnMode',          'Physics', 'dropdown', '''fixed'': use constant KDMn below; ''PD'': derive KD_Mn(T,P) from the phase diagram (PD)', {'fixed','PD'}, 1
-                'KDMn',            'Physics', 'numeric',  'KD Mn (Xtl/Mtrx: pelites) (KD = 30, Kretz, 1959); used only if MnMode = ''fixed'', or if MniBMode = ''manual'' (overrides a ''PD'' MnMode)', {}, 1
+                'KDMn',            'Physics', 'numeric',  'KD Mn (Xtl/Mtrx: pelites); used only if MnMode = ''fixed'', or if MniBMode = ''manual'' (overrides a ''PD'' MnMode)', {}, 1
                 'LuiB',            'Physics', 'numeric',  'Initial amount in ppm of Lu (in B)', {}, 1
                 'HfiB',            'Physics', 'numeric',  'Initial amount in ppm of Hf (in B)', {}, 1
-                'HfiBref',         'Physics', 'numeric',  'Initial amount in ppm of Hf(ref) (in B); normalization reference (176Lu/177Hf ~0.279, Faure & Mensing, 2025)', {}, 1
+                'HfiBref',         'Physics', 'numeric',  'Initial amount in ppm of Hf(ref) (in B)', {}, 1
                 'MniBMode',        'Physics', 'dropdown', '''manual'': use MniB below; ''PD'': override it with MnO_Bt interpolated from the phase diagram at Tstart,Pstart', {'manual','PD'}, 1
                 'MniB',            'Physics', 'numeric',  'Initial amount in wt% of Mn (in B); used only if MniBMode = ''manual''', {}, 1
                 'isoRefMode',      'Physics', 'dropdown', 'Isochron reference point for phase A (crystal): ''bulk'' (volume-weighted average of B), ''core'' (B node farthest from the interface), or ''wholerock'' (volume-weighted average of A+B together)', {'bulk','core','wholerock'}, 1
                 'isoNskip',        'Physics', 'numeric',  'Isochron profile sampling: compute an age for every isoNskip-th node across phase A (in addition to rim/core/bulk)', {}, 1
-                'isoShowProfile',  'Physics', 'checkbox', '1: also plot the isoNskip-th profile points/lines in the isochron panel; 0: show only core/rim/bulk/max', {}, 1
+                'isoShowProfile',  'Physics', 'checkbox', 'Also plot the isoNskip-th profile points/lines in the isochron panel - otherwise show only core/rim/bulk/max', {}, 1
 
                 't_tot',           'Time_PT', 'numeric',  'Total time in Myr (growth & diffusion, before relaxation)', {}, 1
                 'PTmode',          'Time_PT', 'dropdown', '''Tbump'': old T-only bump (delT), P linear; ''peak'': explicit Tpeak/Ppeak with independent peak timing for T and P', {'Tbump','peak'}, 1
                 'Tstart',          'Time_PT', 'numeric',  'Starting T in K', {}, 1
-                'Tstop',           'Time_PT', 'numeric',  'Tstop in K', {}, 1
+                'Tstop',           'Time_PT', 'numeric',  'Final T in K', {}, 1
                 'delT',            'Time_PT', 'numeric',  'Thermal max during decompression (changes peak T); used only if PTmode = ''Tbump''', {}, 1
                 'Tpeak',           'Time_PT', 'numeric',  'Peak T in K; used only if PTmode = ''peak''', {}, 1
                 'T_peak_frac',     'Time_PT', 'numeric',  'Time of peak T, as a fraction of t_tot; used only if PTmode = ''peak''', {}, 1
-                'Pstart',          'Time_PT', 'numeric',  'Pstart in GPa', {}, 1
-                'Pstop',           'Time_PT', 'numeric',  'Pstop in GPa', {}, 1
+                'Pstart',          'Time_PT', 'numeric',  'Starting P in GPa', {}, 1
+                'Pstop',           'Time_PT', 'numeric',  'Final P in GPa', {}, 1
                 'Ppeak',           'Time_PT', 'numeric',  'Peak P in GPa; used only if PTmode = ''peak''', {}, 1
                 'P_peak_frac',     'Time_PT', 'numeric',  'Time of peak P, as a fraction of t_tot (independent of T_peak_frac); used only if PTmode = ''peak''', {}, 1
                 'Trange',          'Time_PT', 'vector',   'T range [min max] for visualization/phase diagram in K', {}, 2
@@ -157,7 +145,7 @@ classdef MIDAS < matlab.apps.AppBase
                 'Par',             'Thermo', 'vector',   'Pressures in GPa at the 3 calibration points (used if eqMode = ''poly'')', {}, 3
                 'Car_G',           'Thermo', 'vector',   'Compositions of MgO in garnet (A) at the 3 points (used if eqMode = ''poly'')', {}, 3
                 'Car_B',           'Thermo', 'vector',   'Compositions of MgO in biotite (B) at the 3 points (used if eqMode = ''poly'')', {}, 3
-                'PD',              'Thermo', 'text',     'Perplex table filename: cols [T(K), P(bar), ..., MgO_A(wt%), MgO_B(wt%), ...] (used if eqMode = ''PD'')', {}, 1
+                'PD',              'Thermo', 'text',     'Lookup table for the thermodynamic data set used to create the phase diagram (used if eqMode = ''PD'')', {}, 1
 
                 'ndim',            'Numerics', 'dropdown', 'Geometry factor (1: planar, 2: cylindrical, 3: spherical)', {'1','2','3'}, 1
                 'NBC',             'Numerics', 'numeric',  'Neumann (no-flux) outer boundary condition', {}, 1
@@ -177,7 +165,6 @@ classdef MIDAS < matlab.apps.AppBase
             lbl.Layout.Row = row;
             lbl.Layout.Column = 1;
             lbl.FontColor = app.ColIndigo;
-            app.ThemeLabels(end+1) = lbl;
 
             switch f.type
                 case 'checkbox'
@@ -228,7 +215,7 @@ classdef MIDAS < matlab.apps.AppBase
 
             app.UIFigure = uifigure('Visible', 'off');
             app.UIFigure.Position = [60 40 1250 780];
-            app.UIFigure.Name = 'MIDAS - Crystal Growth Model';
+            app.UIFigure.Name = 'MIDAS - Mineral Interface Dynamics and apparent-Age Simulation';
             app.UIFigure.Color = app.ColBg;
             iconPath = fullfile(assetsDir, 'midas_icon.png');
             if isfile(iconPath)
@@ -241,18 +228,16 @@ classdef MIDAS < matlab.apps.AppBase
             app.GridMain.Padding = [0 0 0 0];
             app.GridMain.RowSpacing = 0;
             app.GridMain.BackgroundColor = app.ColBg;
-            app.ThemeBgAreas(end+1) = app.GridMain;
 
-            % --- Header: logo + subtitle + theme toggle -----------------------------
+            % --- Header: logo + subtitle ---------------------------------------------
             header = uipanel(app.GridMain);
             header.Layout.Row = 1;
             header.Layout.Column = 1;
             header.BackgroundColor = app.ColWhite;
             header.BorderType = 'line';
-            app.ThemePanels(end+1) = header;   % ColWhite/DarkPanel, like the section panels (not ColBg)
 
-            headerGrid = uigridlayout(header, [1, 3]);
-            headerGrid.ColumnWidth = {320, '1x', 90};
+            headerGrid = uigridlayout(header, [1, 2]);
+            headerGrid.ColumnWidth = {320, '1x'};
             headerGrid.Padding = [16 8 16 8];
 
             app.LogoImage = uiimage(headerGrid);
@@ -271,16 +256,6 @@ classdef MIDAS < matlab.apps.AppBase
             subLbl.VerticalAlignment = 'bottom';
             subLbl.Layout.Row = 1;
             subLbl.Layout.Column = 2;
-            app.ThemeLabels(end+1) = subLbl;
-
-            app.ThemeToggle = uibutton(headerGrid, 'push');
-            app.ThemeToggle.Text = [char(9789) '  Dark'];   % moon glyph
-            app.ThemeToggle.BackgroundColor = app.ColIndigo;
-            app.ThemeToggle.FontColor = app.ColWhite;
-            app.ThemeToggle.Layout.Row = 1;
-            app.ThemeToggle.Layout.Column = 3;
-            app.ThemeToggle.Tooltip = 'Switch between light and dark mode.';
-            app.ThemeToggle.ButtonPushedFcn = createCallbackFcn(app, @app.ThemeToggleButtonPushed, true);
 
             % --- Body: sidebar + content + run/export panel ------------------------
             body = uigridlayout(app.GridMain, [1, 3]);
@@ -331,7 +306,6 @@ classdef MIDAS < matlab.apps.AppBase
             content.Layout.Column = 2;
             content.Padding = [12 12 12 12];
             content.BackgroundColor = app.ColBg;
-            app.ThemeBgAreas(end+1) = content;
 
             app.Ctrl = struct();
             app.SectionPanels = struct();
@@ -344,7 +318,6 @@ classdef MIDAS < matlab.apps.AppBase
                 panel.ForegroundColor = app.ColIndigo;
                 panel.BackgroundColor = app.ColWhite;
                 panel.Visible = 'off';
-                app.ThemePanels(end+1) = panel;
                 app.SectionPanels.(tabKeys{it}) = panel;
 
                 fieldsHere = app.FieldMeta(strcmp({app.FieldMeta.tab}, tabKeys{it}));
@@ -370,10 +343,9 @@ classdef MIDAS < matlab.apps.AppBase
             rightGrid.RowSpacing = 8;
             rightGrid.Padding = [10 10 10 10];
             rightGrid.BackgroundColor = app.ColBg;
-            app.ThemeBgAreas(end+1) = rightGrid;
             rightGrid.Scrollable = 'on';   % so nothing gets clipped on shorter screens now that more blocks were added
 
-            runResetGrid = uigridlayout(rightGrid, [1, 2]);
+            runResetGrid = uigridlayout(rightGrid, [1, 3]);
             runResetGrid.Layout.Row = 1;
             runResetGrid.Layout.Column = 1;
             runResetGrid.Padding = [0 0 0 0];
@@ -386,7 +358,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.RunButton.FontColor = app.ColIndigo;
             app.RunButton.Layout.Row = 1;
             app.RunButton.Layout.Column = 1;
-            app.RunButton.ButtonPushedFcn = createCallbackFcn(app, @app.RunButtonPushed, true);
+            app.RunButton.ButtonPushedFcn = createCallbackFcn(app, @RunButtonPushed, true);
 
             app.ResetButton = uibutton(runResetGrid, 'push');
             app.ResetButton.Text = [char(8634) '  Reset'];
@@ -394,7 +366,16 @@ classdef MIDAS < matlab.apps.AppBase
             app.ResetButton.FontColor = app.ColWhite;
             app.ResetButton.Layout.Row = 1;
             app.ResetButton.Layout.Column = 2;
-            app.ResetButton.ButtonPushedFcn = createCallbackFcn(app, @app.ResetButtonPushed, true);
+            app.ResetButton.ButtonPushedFcn = createCallbackFcn(app, @ResetButtonPushed, true);
+
+            app.CloseFiguresButton = uibutton(runResetGrid, 'push');
+            app.CloseFiguresButton.Text = [char(10005) '  Close Figs'];
+            app.CloseFiguresButton.BackgroundColor = app.ColIndigo;
+            app.CloseFiguresButton.FontColor = app.ColWhite;
+            app.CloseFiguresButton.Layout.Row = 1;
+            app.CloseFiguresButton.Layout.Column = 3;
+            app.CloseFiguresButton.Tooltip = 'Close every figure window this app has opened (does not affect the app window itself).';
+            app.CloseFiguresButton.ButtonPushedFcn = createCallbackFcn(app, @CloseFiguresButtonPushed, true);
 
             % --- Load Example row -------------------------------------------------
             exampleGrid = uigridlayout(rightGrid, [1, 2]);
@@ -419,7 +400,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.LoadExampleButton.Layout.Row = 1;
             app.LoadExampleButton.Layout.Column = 2;
             app.LoadExampleButton.Tooltip = 'Populate every field from the selected configuration.';
-            app.LoadExampleButton.ButtonPushedFcn = createCallbackFcn(app, @app.LoadExampleButtonPushed, true);
+            app.LoadExampleButton.ButtonPushedFcn = createCallbackFcn(app, @LoadExampleButtonPushed, true);
 
             % --- Save/Load preset row -------------------------------------------
             presetGrid = uigridlayout(rightGrid, [1, 2]);
@@ -435,7 +416,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.SavePresetButton.Layout.Row = 1;
             app.SavePresetButton.Layout.Column = 1;
             app.SavePresetButton.Tooltip = 'Save the current field values (this whole form) as a .mat preset you can reload later.';
-            app.SavePresetButton.ButtonPushedFcn = createCallbackFcn(app, @app.SavePresetButtonPushed, true);
+            app.SavePresetButton.ButtonPushedFcn = createCallbackFcn(app, @SavePresetButtonPushed, true);
 
             app.LoadPresetButton = uibutton(presetGrid, 'push');
             app.LoadPresetButton.Text = 'Load Preset';
@@ -444,12 +425,11 @@ classdef MIDAS < matlab.apps.AppBase
             app.LoadPresetButton.Layout.Row = 1;
             app.LoadPresetButton.Layout.Column = 2;
             app.LoadPresetButton.Tooltip = 'Load field values from a previously saved .mat preset.';
-            app.LoadPresetButton.ButtonPushedFcn = createCallbackFcn(app, @app.LoadPresetButtonPushed, true);
+            app.LoadPresetButton.ButtonPushedFcn = createCallbackFcn(app, @LoadPresetButtonPushed, true);
 
             statusLbl = uilabel(rightGrid);
             statusLbl.Text = 'Status:';
             statusLbl.FontColor = app.ColIndigo;
-            app.ThemeLabels(end+1) = statusLbl;
             statusLbl.FontWeight = 'bold';
             statusLbl.Layout.Row = 4;
             statusLbl.Layout.Column = 1;
@@ -466,7 +446,6 @@ classdef MIDAS < matlab.apps.AppBase
             dataPanel.FontWeight = 'bold';
             dataPanel.ForegroundColor = app.ColIndigo;
             dataPanel.BackgroundColor = app.ColWhite;
-            app.ThemePanels(end+1) = dataPanel;
             dataPanel.Layout.Row = 6;
             dataPanel.Layout.Column = 1;
 
@@ -475,7 +454,7 @@ classdef MIDAS < matlab.apps.AppBase
             dg.ColumnWidth = {55, '1x', 60};
             dg.RowSpacing = 4;
 
-            l1 = uilabel(dg); l1.Text = 'Folder:'; l1.Layout.Row = 1; l1.Layout.Column = 1; l1.FontColor = app.ColIndigo; app.ThemeLabels(end+1) = l1;
+            l1 = uilabel(dg); l1.Text = 'Folder:'; l1.Layout.Row = 1; l1.Layout.Column = 1; l1.FontColor = app.ColIndigo;
             app.DataFolderField = uieditfield(dg, 'text');
             app.DataFolderField.Layout.Row = 1;
             app.DataFolderField.Layout.Column = 2;
@@ -485,9 +464,9 @@ classdef MIDAS < matlab.apps.AppBase
             app.BrowseDataButton.FontColor = app.ColWhite;
             app.BrowseDataButton.Layout.Row = 1;
             app.BrowseDataButton.Layout.Column = 3;
-            app.BrowseDataButton.ButtonPushedFcn = createCallbackFcn(app, @app.BrowseDataButtonPushed, true);
+            app.BrowseDataButton.ButtonPushedFcn = createCallbackFcn(app, @BrowseDataButtonPushed, true);
 
-            l2 = uilabel(dg); l2.Text = 'Name:'; l2.Layout.Row = 2; l2.Layout.Column = 1; l2.FontColor = app.ColIndigo; app.ThemeLabels(end+1) = l2;
+            l2 = uilabel(dg); l2.Text = 'Name:'; l2.Layout.Row = 2; l2.Layout.Column = 1; l2.FontColor = app.ColIndigo;
             app.DataBaseField = uieditfield(dg, 'text');
             app.DataBaseField.Layout.Row = 2;
             app.DataBaseField.Layout.Column = [2 3];
@@ -510,7 +489,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.ExportDataButton.FontColor = app.ColWhite;
             app.ExportDataButton.Layout.Row = 4;
             app.ExportDataButton.Layout.Column = [1 3];
-            app.ExportDataButton.ButtonPushedFcn = createCallbackFcn(app, @app.ExportDataButtonPushed, true);
+            app.ExportDataButton.ButtonPushedFcn = createCallbackFcn(app, @ExportDataButtonPushed, true);
 
             % --- Export Figures panel ---------------------------------------------
             figPanel = uipanel(rightGrid);
@@ -518,7 +497,6 @@ classdef MIDAS < matlab.apps.AppBase
             figPanel.FontWeight = 'bold';
             figPanel.ForegroundColor = app.ColIndigo;
             figPanel.BackgroundColor = app.ColWhite;
-            app.ThemePanels(end+1) = figPanel;
             figPanel.Layout.Row = 7;
             figPanel.Layout.Column = 1;
 
@@ -527,7 +505,7 @@ classdef MIDAS < matlab.apps.AppBase
             fg.ColumnWidth = {55, '1x', 60};
             fg.RowSpacing = 4;
 
-            l3 = uilabel(fg); l3.Text = 'Folder:'; l3.Layout.Row = 1; l3.Layout.Column = 1; l3.FontColor = app.ColIndigo; app.ThemeLabels(end+1) = l3;
+            l3 = uilabel(fg); l3.Text = 'Folder:'; l3.Layout.Row = 1; l3.Layout.Column = 1; l3.FontColor = app.ColIndigo;
             app.FigFolderField = uieditfield(fg, 'text');
             app.FigFolderField.Layout.Row = 1;
             app.FigFolderField.Layout.Column = 2;
@@ -537,9 +515,9 @@ classdef MIDAS < matlab.apps.AppBase
             app.BrowseFigButton.FontColor = app.ColWhite;
             app.BrowseFigButton.Layout.Row = 1;
             app.BrowseFigButton.Layout.Column = 3;
-            app.BrowseFigButton.ButtonPushedFcn = createCallbackFcn(app, @app.BrowseFigButtonPushed, true);
+            app.BrowseFigButton.ButtonPushedFcn = createCallbackFcn(app, @BrowseFigButtonPushed, true);
 
-            l4 = uilabel(fg); l4.Text = 'Name:'; l4.Layout.Row = 2; l4.Layout.Column = 1; l4.FontColor = app.ColIndigo; app.ThemeLabels(end+1) = l4;
+            l4 = uilabel(fg); l4.Text = 'Name:'; l4.Layout.Row = 2; l4.Layout.Column = 1; l4.FontColor = app.ColIndigo;
             app.FigBaseField = uieditfield(fg, 'text');
             app.FigBaseField.Layout.Row = 2;
             app.FigBaseField.Layout.Column = [2 3];
@@ -550,7 +528,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.ExportFiguresButton.FontColor = app.ColWhite;
             app.ExportFiguresButton.Layout.Row = 3;
             app.ExportFiguresButton.Layout.Column = [1 3];
-            app.ExportFiguresButton.ButtonPushedFcn = createCallbackFcn(app, @app.ExportFiguresButtonPushed, true);
+            app.ExportFiguresButton.ButtonPushedFcn = createCallbackFcn(app, @ExportFiguresButtonPushed, true);
 
             % --- Manage Results panel ---------------------------------------------
             resultsPanel = uipanel(rightGrid);
@@ -558,7 +536,6 @@ classdef MIDAS < matlab.apps.AppBase
             resultsPanel.FontWeight = 'bold';
             resultsPanel.ForegroundColor = app.ColIndigo;
             resultsPanel.BackgroundColor = app.ColWhite;
-            app.ThemePanels(end+1) = resultsPanel;
             resultsPanel.Layout.Row = 8;
             resultsPanel.Layout.Column = 1;
 
@@ -583,7 +560,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.RefreshResultsButton.FontColor = app.ColWhite;
             app.RefreshResultsButton.Layout.Row = 1;
             app.RefreshResultsButton.Layout.Column = 1;
-            app.RefreshResultsButton.ButtonPushedFcn = createCallbackFcn(app, @app.RefreshResultsButtonPushed, true);
+            app.RefreshResultsButton.ButtonPushedFcn = createCallbackFcn(app, @RefreshResultsButtonPushed, true);
 
             app.DeleteResultButton = uibutton(delRefreshGrid, 'push');
             app.DeleteResultButton.Text = 'Delete Selected';
@@ -591,7 +568,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.DeleteResultButton.FontColor = app.ColWhite;
             app.DeleteResultButton.Layout.Row = 1;
             app.DeleteResultButton.Layout.Column = 2;
-            app.DeleteResultButton.ButtonPushedFcn = createCallbackFcn(app, @app.DeleteResultButtonPushed, true);
+            app.DeleteResultButton.ButtonPushedFcn = createCallbackFcn(app, @DeleteResultButtonPushed, true);
 
             app.DeleteAllResultsButton = uibutton(rg, 'push');
             app.DeleteAllResultsButton.Text = [char(9888) '  Delete ALL Results'];
@@ -599,7 +576,7 @@ classdef MIDAS < matlab.apps.AppBase
             app.DeleteAllResultsButton.FontColor = app.ColWhite;
             app.DeleteAllResultsButton.Layout.Row = 3;
             app.DeleteAllResultsButton.Layout.Column = 1;
-            app.DeleteAllResultsButton.ButtonPushedFcn = createCallbackFcn(app, @app.DeleteAllResultsButtonPushed, true);
+            app.DeleteAllResultsButton.ButtonPushedFcn = createCallbackFcn(app, @DeleteAllResultsButtonPushed, true);
 
             % --- Footer: citation ------------------------------------------------------
             % TODO: once the Zenodo DOI exists, append it here, e.g.
@@ -611,7 +588,6 @@ classdef MIDAS < matlab.apps.AppBase
             app.CitationLabel.FontSize = 11;
             app.CitationLabel.FontColor = app.ColIndigo;
             app.CitationLabel.Text = 'MIDAS - Stroh, A. & Moulas, E. (2026)';
-            app.ThemeLabels(end+1) = app.CitationLabel;
 
             app.UIFigure.Visible = 'on';
         end
@@ -636,6 +612,8 @@ classdef MIDAS < matlab.apps.AppBase
         end
 
         function startupFcn(app)
+            thisDir = fileparts(mfilename('fullpath'));
+            addpath(fullfile(thisDir,'examples'), fullfile(thisDir,'plotting'), fullfile(thisDir,'export'));
             p = MIDAS_Params();
             % Give outDir a per-run-safe default (same convention Run_MIDAS.m
             % uses) instead of the file's bare '.' - avoids different runs silently
@@ -674,20 +652,35 @@ classdef MIDAS < matlab.apps.AppBase
                         c.Value = val;
                     case 'numeric'
                         % NaN marks a field unused under the current mode
-                        % combination (see MIDAS_Params.m) - numeric edit
-                        % fields can't hold NaN as their Value, so show 0
-                        % as an inert placeholder instead of erroring.
+                        % combination (see MIDAS_Params.m). Some MATLAB
+                        % releases reject NaN as a numeric edit field's
+                        % Value ("must be finite") - fall back to an inert
+                        % 0 placeholder there instead of erroring, but
+                        % always gray the field out either way so it still
+                        % reads as "not in use".
                         if isnan(val)
-                            c.Value = 0;
+                            try
+                                c.Value = NaN;
+                            catch
+                                c.Value = 0;
+                            end
+                            c.FontColor = [0.6 0.6 0.6];
                         else
                             c.Value = val;
+                            c.FontColor = [0 0 0];
                         end
                     case 'vector'
                         for j = 1:f.n
                             if isnan(val(j))
-                                c(j).Value = 0;
+                                try
+                                    c(j).Value = NaN;
+                                catch
+                                    c(j).Value = 0;
+                                end
+                                c(j).FontColor = [0.6 0.6 0.6];
                             else
                                 c(j).Value = val(j);
+                                c(j).FontColor = [0 0 0];
                             end
                         end
                 end
@@ -711,18 +704,19 @@ classdef MIDAS < matlab.apps.AppBase
                     case 'text'
                         params.(f.name) = c.Value;
                     case 'numeric'
-                        % Numeric edit fields can't display NaN (see
-                        % populateControlsFromParams), so a field that was
-                        % NaN in the defaults and still shows its 0
-                        % placeholder is read back as NaN, not a literal 0 -
-                        % otherwise an inert/unused field (e.g. a poly-mode
-                        % fit coefficient while eqMode='PD') would silently
-                        % turn into an active zero the moment some other
-                        % switch (e.g. a missing phase-diagram file) makes
-                        % it start mattering. A field the user has actually
-                        % typed a new value into is read back as-is,
-                        % including an explicit 0.
-                        if c.Value == 0 && isnan(app.DefaultParams.(f.name))
+                        % c.Value is genuinely NaN here on MATLAB releases
+                        % that accept it as a numeric edit field's Value
+                        % (see populateControlsFromParams), so this is
+                        % normally just a direct read-back. The 0-vs-NaN
+                        % check below is only a fallback for the rare
+                        % release that instead rejected NaN and fell back
+                        % to an inert 0 placeholder there - without it, an
+                        % unused field (e.g. a poly-mode fit coefficient
+                        % while eqMode='PD') could silently turn into an
+                        % active zero the moment some other switch (e.g. a
+                        % missing phase-diagram file) makes it start
+                        % mattering.
+                        if isnan(c.Value) || (c.Value == 0 && isnan(app.DefaultParams.(f.name)))
                             params.(f.name) = NaN;
                         else
                             params.(f.name) = c.Value;
@@ -849,19 +843,19 @@ classdef MIDAS < matlab.apps.AppBase
                 end
 
                 % The solver call above has no internal progress hooks, so it
-                % ran with an indeterminate spinner; the 8 post-run plots each
+                % ran with an indeterminate spinner; the post-run plots each
                 % complete in a bounded, known number of steps, so switch to a
                 % real percentage for this part.
                 d.Indeterminate = 'off';
-                nSteps = 11;
+                nSteps = 7;
                 figs = {};
                 tags = {};
 
                 d.Value = 1/nSteps; d.Message = 'Plotting velocity/age...';
                 try
-                    [figAB, figErr, figRelErr, figErrLog, figRelErrLog, figABOnly] = plot_velocity_age(R);
-                    figs(end+1:end+6) = {figAB, figErr, figRelErr, figErrLog, figRelErrLog, figABOnly};
-                    tags(end+1:end+6) = {'velocity_age','velocity_age_misfit','velocity_age_relmisfit','velocity_age_misfit_log','velocity_age_relmisfit_log','velocity_age_AB_only'};
+                    [figRelErrLog, figABOnly] = plot_velocity_age(R);
+                    figs(end+1:end+2) = {figRelErrLog, figABOnly};
+                    tags(end+1:end+2) = {'velocity_age_relmisfit_log','velocity_age_AB_only'};
                 catch ME
                     app.logStatus(['  plot_velocity_age failed: ' ME.message]);
                 end
@@ -874,15 +868,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_misfit failed: ' ME.message]);
                 end
 
-                d.Value = 3/nSteps; d.Message = 'Plotting mass balance...';
-                try
-                    plot_massbalance(R);
-                    figs{end+1} = gcf; tags{end+1} = 'massbalance';
-                catch ME
-                    app.logStatus(['  plot_massbalance failed: ' ME.message]);
-                end
-
-                d.Value = 4/nSteps; d.Message = 'Plotting MgO mass drift...';
+                d.Value = 3/nSteps; d.Message = 'Plotting MgO mass drift...';
                 try
                     figMgODrift = plot_massbalance_MgO(R);
                     figs{end+1} = figMgODrift; tags{end+1} = 'massbalance_MgO';
@@ -890,23 +876,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_massbalance_MgO failed: ' ME.message]);
                 end
 
-                d.Value = 5/nSteps; d.Message = 'Plotting Lu profile...';
-                try
-                    plot_Lu_profile(R);
-                    figs{end+1} = gcf; tags{end+1} = 'Lu_profile';
-                catch ME
-                    app.logStatus(['  plot_Lu_profile failed: ' ME.message]);
-                end
-
-                d.Value = 6/nSteps; d.Message = 'Plotting Mn profile...';
-                try
-                    plot_Mn_profile(R);
-                    figs{end+1} = gcf; tags{end+1} = 'Mn_profile';
-                catch ME
-                    app.logStatus(['  plot_Mn_profile failed: ' ME.message]);
-                end
-
-                d.Value = 7/nSteps; d.Message = 'Plotting age at fixed positions...';
+                d.Value = 4/nSteps; d.Message = 'Plotting age at fixed positions...';
                 try
                     figAge = plot_age_at_fixed_positions(R);
                     figs{end+1} = figAge; tags{end+1} = 'age_fixed_positions';
@@ -914,7 +884,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_age_at_fixed_positions failed: ' ME.message]);
                 end
 
-                d.Value = 8/nSteps; d.Message = 'Plotting concentration at fixed positions...';
+                d.Value = 5/nSteps; d.Message = 'Plotting concentration at fixed positions...';
                 try
                     figConc = plot_conc_at_fixed_positions(R);
                     figs{end+1} = figConc; tags{end+1} = 'conc_fixed_positions';
@@ -922,7 +892,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_conc_at_fixed_positions failed: ' ME.message]);
                 end
 
-                d.Value = 9/nSteps; d.Message = 'Plotting all composition profiles...';
+                d.Value = 6/nSteps; d.Message = 'Plotting all composition profiles...';
                 try
                     figAllComp = plot_all_composition_profiles(R);
                     figs{end+1} = figAllComp; tags{end+1} = 'all_composition_profiles';
@@ -930,7 +900,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_all_composition_profiles failed: ' ME.message]);
                 end
 
-                d.Value = 10/nSteps; d.Message = 'Plotting age vs temperature...';
+                d.Value = 7/nSteps; d.Message = 'Plotting age vs temperature...';
                 try
                     figAgeT = plot_age_vs_temperature(R);
                     figs{end+1} = figAgeT; tags{end+1} = 'age_vs_temperature';
@@ -938,24 +908,21 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_age_vs_temperature failed: ' ME.message]);
                 end
 
-                d.Value = 11/nSteps; d.Message = 'Plotting initial conditions...';
-                try
-                    figInit = plot_initial_conditions(R);
-                    figs{end+1} = figInit; tags{end+1} = 'initial_conditions';
-                catch ME
-                    app.logStatus(['  plot_initial_conditions failed: ' ME.message]);
-                end
-
                 app.LastFigs = figs;
                 app.LastFigTags = tags;
 
                 % Point the export panels at this run's own output folder by
                 % default (still user-editable before clicking Export).
-                app.DataFolderField.Value = R.params.outDir;
-                app.FigFolderField.Value  = R.params.outDir;
+                % Absolute, not R.params.outDir as-is (relative to pwd at
+                % the time of the run) - if pwd ever shifts before Export
+                % is clicked (e.g. a browse dialog can do this), a relative
+                % path here would silently resolve somewhere else.
+                outDirAbs = fullfile(pwd, R.params.outDir);
+                app.DataFolderField.Value = outDirAbs;
+                app.FigFolderField.Value  = outDirAbs;
                 app.refreshResultsList();
 
-                app.logStatus(sprintf('Done in %.1f s (%d/16 figures).', toc(t0), numel(figs)));
+                app.logStatus(sprintf('Done in %.1f s (%d/8 figures).', toc(t0), numel(figs)));
             catch ME
                 app.logStatus(['ERROR: ' ME.message]);
             end
@@ -964,6 +931,22 @@ classdef MIDAS < matlab.apps.AppBase
         function ResetButtonPushed(app, ~)
             app.populateControlsFromParams(app.DefaultParams);
             app.logStatus('Reset to defaults.');
+        end
+
+        function CloseFiguresButtonPushed(app, ~)
+            % Closes every figure window (all past runs, not just the last
+            % one) except the app's own UIFigure, which is a figure too.
+            figHandles = findall(groot, 'Type', 'figure');
+            n = 0;
+            for i = 1:numel(figHandles)
+                h = figHandles(i);
+                if isvalid(h) && h ~= app.UIFigure
+                    close(h);
+                    n = n + 1;
+                end
+            end
+            app.LastFigs = {};
+            app.logStatus(sprintf('Closed %d figure(s).', n));
         end
 
         function SavePresetButtonPushed(app, ~)
@@ -1004,7 +987,7 @@ classdef MIDAS < matlab.apps.AppBase
             if strcmp(choice, 'MIDAS_Params (default)')
                 fname = 'MIDAS_Params';
             else
-                fname = ['MIDAS_Params_' choice];
+                fname = choice;   % examples/<choice>.m, added to the path at startup
             end
             if ~(exist(fname, 'file') == 2)
                 app.logStatus(['ERROR: ' fname '.m not found on the path.']);
@@ -1013,50 +996,6 @@ classdef MIDAS < matlab.apps.AppBase
             exParams = feval(fname);
             app.populateControlsFromParams(exParams);
             app.logStatus(['Loaded ' fname '() - every field above is still freely editable before you Run.']);
-        end
-
-        function ThemeToggleButtonPushed(app, ~)
-            app.IsDarkMode = ~app.IsDarkMode;
-            app.applyTheme();
-        end
-
-        function applyTheme(app)
-            % Re-colors every tracked component (populated during
-            % createComponents) between the light and dark palettes, and
-            % swaps the logo image. Individual input controls (edit
-            % fields/dropdowns/checkboxes) are deliberately left at their
-            % OS-default light rendering in both modes - MATLAB's uifigure
-            % Theme API (which would restyle those too) only exists from
-            % R2022b, while this app targets R2019b+.
-            if app.IsDarkMode
-                bg = app.DarkBg; panelBg = app.DarkPanel; text = app.DarkText;
-                logoFile = 'midas_logo_horizontal_dark.png';
-                app.ThemeToggle.Text = [char(9728) '  Light'];
-            else
-                bg = app.ColBg; panelBg = app.ColWhite; text = app.ColIndigo;
-                logoFile = 'midas_logo_horizontal.png';
-                app.ThemeToggle.Text = [char(9789) '  Dark'];
-            end
-
-            app.UIFigure.Color = bg;
-            for h = app.ThemeBgAreas
-                if isvalid(h), h.BackgroundColor = bg; end
-            end
-            for h = app.ThemePanels
-                if isvalid(h)
-                    h.BackgroundColor = panelBg;
-                    h.ForegroundColor = text;
-                end
-            end
-            for h = app.ThemeLabels
-                if isvalid(h), h.FontColor = text; end
-            end
-
-            assetsDir = fullfile(fileparts(mfilename('fullpath')), 'assets');
-            logoPath = fullfile(assetsDir, logoFile);
-            if isfile(logoPath) && isvalid(app.LogoImage)
-                app.LogoImage.ImageSource = logoPath;
-            end
         end
 
         function ExportDataButtonPushed(app, ~)
@@ -1112,10 +1051,14 @@ classdef MIDAS < matlab.apps.AppBase
                 if isempty(fig) || ~isvalid(fig)
                     continue
                 end
-                export_pub_fig(fig, fullfile(folder, sprintf('%s_%s', base, app.LastFigTags{i})));
-                n = n + 1;
+                try
+                    export_pub_fig(fig, fullfile(folder, sprintf('%s_%s', base, app.LastFigTags{i})));
+                    n = n + 1;
+                catch ME
+                    app.logStatus(sprintf('  %s export failed: %s', app.LastFigTags{i}, ME.message));
+                end
             end
-            app.logStatus(sprintf('Exported %d figure(s) (PDF + 300dpi JPG) to %s', n, folder));
+            app.logStatus(sprintf('Exported %d/%d figure(s) (PDF + 300dpi JPG) to %s', n, numel(app.LastFigs), folder));
         end
 
         function BrowseDataButtonPushed(app, ~)

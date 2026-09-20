@@ -2,8 +2,8 @@ function plotAB(xA,xB,CA,CB,CA0,CB0,t,t_tot,FSS,LWW,v,yMax)
 % PLOTAB  Composition profile, phase A (crystal) vs. phase B (matrix),
 % against distance - the shared building block behind every element/isotope
 % panel in the main tiled figure (plot_them_1/2/3.m) and in
-% plot_all_composition_profiles.m/plot_initial_conditions.m. Caller supplies
-% the axis labels/title; this only draws the two curves + interface marker.
+% plot_all_composition_profiles.m. Caller supplies the axis labels/title;
+% this only draws the two curves + interface marker.
 %
 % Usage:
 %   plotAB(xA,xB,CA,CB,CA0,CB0,t,t_tot,FSS,LWW,v,yMax)

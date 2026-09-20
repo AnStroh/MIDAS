@@ -127,7 +127,7 @@ classdef MIDAS < matlab.apps.AppBase
                 'isoShowProfile',  'Physics', 'checkbox', 'Also plot the isoNskip-th profile points/lines in the isochron panel - otherwise show only core/rim/bulk/max', {}, 1
 
                 't_tot',           'Time_PT', 'numeric',  'Total time in Myr (growth & diffusion, before relaxation)', {}, 1
-                'PTmode',          'Time_PT', 'dropdown', '''Tbump'': old T-only bump (delT), P linear; ''peak'': explicit Tpeak/Ppeak with independent peak timing for T and P', {'Tbump','peak'}, 1
+                'PTmode',          'Time_PT', 'dropdown', '''Tbump'': T-only bump (delT), P linear; ''peak'': explicit Tpeak/Ppeak with independent peak timing for T and P', {'Tbump','peak'}, 1
                 'Tstart',          'Time_PT', 'numeric',  'Starting T in K', {}, 1
                 'Tstop',           'Time_PT', 'numeric',  'Final T in K', {}, 1
                 'delT',            'Time_PT', 'numeric',  'Thermal max during decompression (changes peak T); used only if PTmode = ''Tbump''', {}, 1

@@ -9,7 +9,7 @@ function fig = plot_age_at_fixed_positions(R, nDiv)
 % NaN-masking for exactly this reason).
 %
 % Usage:
-%   R = MIDAS_Main(params);          % params.store_history must be 1
+%   R = MIDAS_Main(params);              % params.store_history must be 1
 %   plot_age_at_fixed_positions(R)       % default: every 10th of min(S)
 %   plot_age_at_fixed_positions(R,20)    % every 20th instead
 %

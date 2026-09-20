@@ -83,13 +83,13 @@ isoShowProfile = params.isoShowProfile;                         % Plot the isoNs
 % Time and Path
 t_tot    = params.t_tot;                                        % Total time in Myr (for growth & diffusion without relaxation afterwards)
 Tstart   = params.Tstart;                                       % Starting T in K
-Tstop    = params.Tstop;                                        % Tstop in K
-Pstart   = params.Pstart;                                       % Pstart in GPa
-Pstop    = params.Pstop;                                        % Pstop
+Tstop    = params.Tstop;                                        % Final T in K
+Pstart   = params.Pstart;                                       % Starting P in GPa
+Pstop    = params.Pstop;                                        % Final P in GPa
 Trange   = params.Trange;                                       % T range for visualization in K
 Prange   = params.Prange;                                       % P range for visualization in GPa
 %Make P-T path (parametrized) ---------------------------------------------
-PTmode   = params.PTmode;                                       % 'Tbump': old T-only bump (delT), P linear; 'peak': explicit Tpeak/Ppeak with independent peak timing for T and P
+PTmode   = params.PTmode;                                       % 'Tbump': T-only bump (delT), P linear; 'peak': explicit Tpeak/Ppeak with independent peak timing for T and P
 tt       = linspace(0,t_tot,1000);                              % Time array
 switch PTmode
     case 'Tbump'

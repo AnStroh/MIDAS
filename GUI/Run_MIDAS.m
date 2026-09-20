@@ -5,9 +5,9 @@
 %   MIDAS_Params.m          - default input parameters (edit numbers there,
 %                              or swap in one of the examples/ExampleN.m
 %                              files below to see a different capability)
-%   MIDAS_Main.m             - main function + all helper functions
+%   MIDAS_Main.m            - main function + all helper functions
 %   Run_MIDAS.m (this file) - loads params, applies any overrides
-%       below, and runs the model once.
+%                             below, and runs the model once.
 %
 % Examples (each a complete, standalone parameter set - swap the line below
 % to try one): examples/Example1_Baseline, Example2_PolyEquilibrium,
@@ -20,9 +20,9 @@
 clc, clear all%, close all
 addpath('examples', 'plotting', 'export');
 
-params            = MIDAS_Params();          % or e.g. Example2_PolyEquilibrium();
-params.doPlot     = true;    % show figures for this single run
-%params.make_movie = 0;       % also write a .gif of figure(1) over the run
+params            = MIDAS_Params();         % or e.g. Example2_PolyEquilibrium();
+params.doPlot     = true;                   % show figures for this single run
+%params.make_movie = 0;                     % also write a .gif of figure(1) over the run
 
 % Override any field here, e.g.:
 % params.DamA = 1e-2;
@@ -33,6 +33,7 @@ params.doPlot     = true;    % show figures for this single run
 % erroring - MIDAS_Main only reads the fields it knows about, so your
 % override is quietly ignored and the default value is used instead, with
 % no warning. Double-check the name matches MIDAS_Params.m exactly.
+% We recommend editing MIDAS_Params.m instead of overriding values here.
 
 % One timestamped folder per run: everything below lands here, and re-running
 % never overwrites a previous run's results.
@@ -45,15 +46,15 @@ R = MIDAS_Main(params);
 % (PDF+PNG) to outDir, instead of toggling this by commenting lines.
 % Kept off by default (nothing written to disk from a first, out-of-the-box
 % run) - flip whichever ones you want to keep to true.
-save_velocity_age = false;
-save_misfit       = false;
+save_velocity_age    = false;
+save_misfit          = false;
 save_massbalance_MgO = false;
-save_ageFixedPos  = false;
-save_concFixedPos = false;
-save_ageVsT       = false;
-save_allComp      = false;
+save_ageFixedPos     = false;
+save_concFixedPos    = false;
+save_ageVsT          = false;
+save_allComp         = false;
 
-[figRelErrLog, figABOnly] = plot_velocity_age(R);   % Signed/relative-misfit heatmap + velocity vs time, and a standalone panel-only apparent-age heatmap
+[figRelErrLog, figABOnly] = plot_velocity_age(R);         % Signed/relative-misfit heatmap + velocity vs time, and a standalone panel-only apparent-age heatmap
 if save_velocity_age
     export_pub_fig(figRelErrLog, fullfile(R.params.outDir,'Fig_velocity_age_relmisfit_log'))
     export_pub_fig(figABOnly,    fullfile(R.params.outDir,'Fig_velocity_age_AB_only'))

@@ -12,7 +12,7 @@ function fig = plot_conc_at_fixed_positions(R, nDiv)
 % sensitive to any diffusive disturbance.
 %
 % Usage:
-%   R = MIDAS_Main(params);           % params.store_history must be 1
+%   R = MIDAS_Main(params);               % params.store_history must be 1
 %   plot_conc_at_fixed_positions(R)       % default: every 10th of min(S)
 %   plot_conc_at_fixed_positions(R,20)    % every 20th instead
 %

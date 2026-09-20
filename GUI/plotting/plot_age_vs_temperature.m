@@ -12,7 +12,7 @@ function fig = plot_age_vs_temperature(R, nDiv)
 % that's real path history, not a plotting artifact.
 %
 % Usage:
-%   R = MIDAS_Main(params);        % params.store_history must be 1
+%   R = MIDAS_Main(params);            % params.store_history must be 1
 %   plot_age_vs_temperature(R)         % default: every 10th of min(S)
 %   plot_age_vs_temperature(R,20)      % every 20th instead
 %

@@ -16,8 +16,8 @@ function [figRelErrLog, figABOnly] = plot_velocity_age(R, fixedLengths)
 %                      "(A)" letter tag (unambiguous with only one panel).
 %
 % Usage:
-%   R = MIDAS_Main(params);            % params.store_history must be 1
-%   plot_velocity_age(R)                   % default fixed lengths
+%   R = MIDAS_Main(params);                    % params.store_history must be 1
+%   plot_velocity_age(R)                       % default fixed lengths
 %   plot_velocity_age(R, linspace(0,0.05,50))  % your own fixed lengths (mm)
 %
 % Authors: Annalena Stroh, Evangelos Moulas
@@ -102,7 +102,7 @@ hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on','Layer','top')
 xlabel('x (mm)','FontSize',FSS)
 ylabel('t (Myr)','FontSize',FSS)
-title('Age distribution (signed-log scale)','FontSize',FSS)
+title('Age distribution','FontSize',FSS)
 colormap(gca,divmap)
 M = max(abs(GridLog(:)),[],'omitnan');
 if M > 0, caxis(gca,[-M M]); end

@@ -381,7 +381,7 @@ while t < t_tot
         CBHfr(1)         =  CB1Hfr;
         [CAHfr, CBHfr] = implicitDiffusionSolver(CAHfr,DAHf,dt,dx_A,nx_A,CBHfr,DBHf,dx_B,nx_B,NBC,xAC,xAL,xAR,xBC,xBL,xBR,ndim);
         % Manganese ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        KDMn            = KDMnFun(T,P)                   % Constant (MnMode='fixed') or from the phase diagram (MnMode='PD')
+        KDMn            = KDMnFun(T,P);                            % Constant (MnMode='fixed') or from the phase diagram (MnMode='PD')
         [CAn0Mn, CB1Mn] = solveBC(CAMn(end),CBMn(1),CAMn(end-1),CBMn(2),dx_A,dx_B,DAMn,DBMn,KDMn,v,dt,kMnA,kMnB);
         CAMn(end)       =  CAn0Mn;
         CBMn(1)         =  CB1Mn;

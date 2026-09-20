@@ -63,13 +63,19 @@ For an interactive alternative to editing parameter files by hand, [`GUI/`](GUI/
 
 ## The six examples
 
-`Run_MIDAS.m` defaults to `MIDAS_Params()`. Swap that line for any of the six standalone example parameter files, under that folder's own `examples/` subfolder (already on the path - `Run_MIDAS.m` adds it itself), to see a different capability of the model - each is a complete, self-contained parameter set, with every field it does NOT use set to `NaN`:
+Want to see a different capability of the model instead of the default configuration? Open `Run_MIDAS.m` (in whichever of `matlab/`, `GUI/`, or `octave/` you're using) and find this line near the top:
 
 ```matlab
-params = Example1_Baseline();   % instead of params = MIDAS_Params();
+params = MIDAS_Params();
 ```
 
-Loading one from the GUI works the same way, via the **Load Example** dropdown (see [Graphical user interface](#graphical-user-interface-gui) above).
+Replace it with the name of any of the six examples below, for example:
+
+```matlab
+params = Example2_PolyEquilibrium();
+```
+
+Save the file and run `Run_MIDAS` again - that's the only change needed; the `examples/` subfolder each example lives in is already set up to be found automatically. Each example is a complete, self-contained parameter set, with every field it does NOT use set to `NaN` so it's obvious at a glance what actually matters for that run:
 
 1. **Example1_Baseline** - fully automated, phase-diagram-driven (recommended starting point)
 2. **Example2_PolyEquilibrium** - no phase-diagram file needed at all
@@ -79,6 +85,8 @@ Loading one from the GUI works the same way, via the **Load Example** dropdown (
 6. **Example6_CylindricalGeometry** - cylindrical growth geometry
 
 Together they exercise every mode switch in the model (P-T path style, equilibrium source, Mn-partitioning source, geometry, isochron reference point, and recording cadence). Details for each: [`docs/examples.md`](docs/examples.md).
+
+Using the GUI instead? No file editing needed - pick one from the **Load Example** dropdown and click Load (see [Graphical user interface](#graphical-user-interface-gui) above).
 
 ## Documentation
 

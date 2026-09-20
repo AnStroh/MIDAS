@@ -20,7 +20,7 @@ If you're using **isochron ages** instead (`R.t_rimA_final`/ `R.t_coreA_final`/`
 
 ## Is the run numerically trustworthy?
 
-The mass-balance fields (`R.dMB_max`, `R.dMBMn_max`, `R.dMBHfr_max` - peak drift over the whole run for MgO/MnO/Hfr, species with no physical source or sink) are the main numerical-integrity check. See [Benchmarks](benchmarks) for what "small" means in practice and a current, honest account of where this check does and doesn't hold up well yet (MnO/Hfr can show much larger drift than MgO under `MnMode='PD'` - a known open item, not something specific to your run).
+The mass-balance fields (`R.dMB_max`, `R.dMBMn_max`, `R.dMBHfr_max` - peak drift over the whole run for MgO/MnO/Hfr, species with no physical source or sink) are the main numerical-integrity check. See [Benchmarks](benchmarks) for what "small" means in practice.
 
 ## History fields, if `store_history = 1`
 

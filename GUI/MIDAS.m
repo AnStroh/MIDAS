@@ -44,9 +44,9 @@ classdef MIDAS < matlab.apps.AppBase
     end
 
     properties (Access = private)
-        Ctrl                    % struct: Ctrl.(paramName) = control handle (array of handles for 'vector' fields)
-        FieldMeta                % struct array from buildFieldMeta()
-        DefaultParams            % struct from MIDAS_Params(), used as-is
+        Ctrl                      % struct: Ctrl.(paramName) = control handle (array of handles for 'vector' fields)
+        FieldMeta                 % struct array from buildFieldMeta()
+        DefaultParams             % struct from MIDAS_Params(), used as-is
         LastR = []                % last run's result struct (Export Data source)
         LastFigs = {}             % last run's figure handles (Export Figures source)
         LastFigTags = {}          % short name per entry in LastFigs, used to build export filenames

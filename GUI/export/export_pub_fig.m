@@ -8,7 +8,7 @@ function export_pub_fig(fig, filename)
 %
 % Usage:
 %   export_pub_fig(gcf, 'Fig_apparent_age')   % -> Fig_apparent_age.pdf/.png
-%                                              % -> Fig_apparent_age_notitle.pdf/.png
+%                                             % -> Fig_apparent_age_notitle.pdf/.png
 %
 % Authors: Annalena Stroh, Evangelos Moulas
 % JGU, Mainz, 2026

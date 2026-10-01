@@ -54,7 +54,6 @@ Every function below takes the `R` struct returned by `MIDAS_Main` and produces 
 | Function | Shows |
 |---|---|
 | `plot_velocity_age(R)` | 2 figures: relative-misfit heatmap (signed-log color scale) vs. crystal size and time (with interface velocity vs. time alongside it), and a standalone apparent-age-only panel |
-| `plot_misfit(R)` | Worst-case apparent-age and isochron-age misfit vs. true time |
 | `plot_massbalance_MgO(R)` | Mass-balance drift, MgO only |
 | `plot_age_at_fixed_positions(R)` | Apparent age vs. time, tracked at fixed distances from the core |
 | `plot_conc_at_fixed_positions(R)` | Lu, Hf concentrations vs. time at the same fixed positions |

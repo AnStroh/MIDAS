@@ -1,10 +1,12 @@
 function R = MIDAS_Main(params)
-% MIDAS_MAIN  Interface-limited growth model (a moving-boundary problem) for
-% a mineral (A) growing/resorbing in a matrix phase (B), coupled to major-
-% and trace-element diffusion + partitioning between the two, for modeling
-% geochronology, apparent ages and interface (growth/resorption) velocities
-% over a metamorphic P-T-t path. Example here: a garnet-biotite pair (major
-% elements Mg-Fe; trace elements Lu, Hf, Mn).
+% MIDAS_MAIN  Growth model that couples interface kinetics and diffusion
+% across an explicit moving boundary (a Stefan/moving-boundary problem) for
+% a mineral (A) growing/resorbing in a matrix phase (B), with major- and
+% trace-element diffusion + partitioning tracked between the two, for
+% modeling geochronology, apparent and isochron ages, and interface
+% (growth/resorption) velocities over a metamorphic P-T-t path. Example
+% here: a garnet-biotite pair (major elements Mg-Fe; trace elements Lu,
+% Hf, Mn).
 %
 % PARAMS is read from a struct (see MIDAS_Params.m) instead of being
 % hardcoded, and results are returned in R instead of being left in the
@@ -1064,26 +1066,21 @@ function [a,b,c] = CreateTriDiag(D,dt,dx,nx,xL,xC,xR)
     c(2:nx-1) = -(SR(:).*xR(:));
 end
 function [x] = thomasSolve(a,b,c,d)
-    % Direct tridiagonal solve (Thomas algorithm). a,b,c are the sub-, main-
-    % and super-diagonals (length n; a(1) and c(n) are unused). d is the
-    % right-hand side, n-by-k (k>1 solves several systems sharing a,b,c at once).
-    n  = length(b);
-    cp = zeros(n,1);
-    dp = d;
-    cp(1)   = c(1)/b(1);
-    dp(1,:) = d(1,:)/b(1);
-    for i = 2:n
-        m = b(i) - a(i)*cp(i-1);
-        if i < n
-            cp(i) = c(i)/m;
-        end
-        dp(i,:) = (d(i,:) - a(i)*dp(i-1,:))/m;
-    end
-    x = zeros(n,size(d,2));
-    x(n,:) = dp(n,:);
-    for i = n-1:-1:1
-        x(i,:) = dp(i,:) - cp(i)*x(i+1,:);
-    end
+    % Direct tridiagonal solve. a,b,c are the sub-, main- and super-diagonals
+    % (length n; a(1) and c(n) are unused). d is the right-hand side, n-by-k
+    % (k>1 solves several systems sharing a,b,c at once).
+    %
+    % Octave-only: matlab/GUI use a hand-written Thomas-algorithm loop here
+    % (faster there - MATLAB's JIT compiles tight scalar loops well). Under
+    % Octave that same loop has no comparable JIT and measured as 61% of
+    % total MIDAS_Main runtime (see docs/octave.md "Performance") - replaced
+    % here with an equivalent sparse-matrix backslash solve, which hands the
+    % work to a compiled solver instead of the interpreter. Mathematically
+    % the same tridiagonal system as CreateTriDiag builds; only the solve
+    % method differs from matlab/GUI's thomasSolve, not the result.
+    n = length(b);
+    M = sparse([2:n, 1:n, 1:n-1], [1:n-1, 1:n, 2:n], [a(2:n); b(:); c(1:n-1)], n, n);
+    x = M \ d;
 end
 function [CA, CB] = implicitDiffusionSolver(CA,DA,dt,dx_A,nx_A,CB,DB,dx_B,nx_B,NBC,xAC,xAL,xAR,xBC,xBL,xBR,ndim)
     % One implicit (Backward Euler) diffusion step for phase A and phase B,

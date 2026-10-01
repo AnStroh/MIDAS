@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" width="760" height="440" font-family="Arial, Helvetica, sans-serif">
+  <!-- MIDAS conceptual model schematic: a moving-boundary (Stefan) problem -
+       phase A (crystal) growing or resorbing inside phase B (matrix), with
+       a shared concentration profile diffusing across the moving interface.
+       Palette matches docs/assets/logo/midas_logo_horizontal.svg. -->
+  <rect width="760" height="440" fill="white"/>
+
+  <!-- ===================== Top: 1D domain cross-section ===================== -->
+  <text x="380" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#2E1A47">Moving-boundary domain</text>
+
+  <!-- Phase A block -->
+  <rect x="60" y="55" width="280" height="90" fill="#2E1A47" fill-opacity="0.15" stroke="#2E1A47" stroke-width="1.5"/>
+  <text x="200" y="90" text-anchor="middle" font-size="17" fill="#2E1A47" font-weight="bold">Phase A</text>
+  <text x="200" y="112" text-anchor="middle" font-size="14" fill="#2E1A47">(crystal)</text>
+
+  <!-- Phase B block -->
+  <rect x="340" y="55" width="360" height="90" fill="#D9A441" fill-opacity="0.22" stroke="#B8842A" stroke-width="1.5"/>
+  <text x="520" y="90" text-anchor="middle" font-size="17" fill="#8A6420" font-weight="bold">Phase B</text>
+  <text x="520" y="112" text-anchor="middle" font-size="14" fill="#8A6420">(matrix)</text>
+
+  <!-- Interface line -->
+  <line x1="340" y1="55" x2="340" y2="152" stroke="#3E8F7C" stroke-width="3"/>
+  <text x="340" y="47" text-anchor="middle" font-size="14" font-style="italic" fill="#3E8F7C">S(t)</text>
+
+  <!-- Growth/resorption arrow at interface -->
+  <path d="M340,170 l18,-10 l0,6 l20,0 l0,8 l-20,0 l0,6 Z" fill="#3E8F7C"/>
+  <path d="M340,170 l-18,-10 l0,6 l-20,0 l0,8 l20,0 l0,6 Z" fill="#3E8F7C" fill-opacity="0.45"/>
+  <text x="340" y="195" text-anchor="middle" font-size="12.5" fill="#3E8F7C">growth &#8596; resorption</text>
+
+  <!-- Diffusive flux arrows crossing interface -->
+  <path d="M300,70 L380,70" stroke="#2E1A47" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowPurple)"/>
+  <path d="M380,125 L300,125" stroke="#8A6420" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+  <defs>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2E1A47"/>
+    </marker>
+    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#8A6420"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== Bottom: concentration profile ===================== -->
+  <text x="380" y="245" text-anchor="middle" font-size="17" font-weight="bold" fill="#2E1A47">Shared diffusion profile</text>
+
+  <!-- axes -->
+  <line x1="60" y1="270" x2="60" y2="400" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="400" x2="700" y2="400" stroke="#333" stroke-width="1.5"/>
+  <text x="38" y="275" font-size="16" font-style="italic" fill="#333">C</text>
+  <text x="705" y="405" font-size="16" font-style="italic" fill="#333">x</text>
+
+  <!-- interface marker (matches S(t) above) -->
+  <line x1="340" y1="270" x2="340" y2="400" stroke="#3E8F7C" stroke-width="2" stroke-dasharray="5,4"/>
+
+  <!-- concentration profile: phase A and B are each continuous on their own
+       side, but C is DISCONTINUOUS at the interface (C_A^int/C_B^int = K_D,
+       generally != 1) - not a single smooth curve. Drawn as two separate
+       paths plus a thin connector marking the jump, matching plotAB.m's own
+       convention of plotting phase A and B as two distinct lines. -->
+  <path d="M70,300 C150,300 230,298 300,303 C315,305 330,310 340,318"
+        fill="none" stroke="#2E1A47" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="340" y1="318" x2="340" y2="358" stroke="#3E8F7C" stroke-width="2" stroke-dasharray="2,3"/>
+  <path d="M340,358 C360,365 380,372 420,382 C480,390 550,392 690,393"
+        fill="none" stroke="#8A6420" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- shaded background matching phase blocks -->
+  <rect x="60" y="270" width="280" height="130" fill="#2E1A47" fill-opacity="0.05"/>
+  <rect x="340" y="270" width="360" height="130" fill="#D9A441" fill-opacity="0.08"/>
+
+  <text x="200" y="415" text-anchor="middle" font-size="13" fill="#2E1A47" font-style="italic">C<tspan dy="-5" font-size="9">A</tspan><tspan dy="5">(x,t)</tspan></text>
+  <text x="520" y="415" text-anchor="middle" font-size="13" fill="#8A6420" font-style="italic">C<tspan dy="-5" font-size="9">B</tspan><tspan dy="5">(x,t)</tspan></text>
+</svg>

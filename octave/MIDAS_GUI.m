@@ -414,9 +414,6 @@ refreshResultsList();
                 logStatus(['  plot_velocity_age failed: ' ME.message]);
             end
             try
-                plot_misfit(R); figs{end+1} = gcf; tags{end+1} = 'misfit';
-            catch ME, logStatus(['  plot_misfit failed: ' ME.message]); end
-            try
                 figMgODrift = plot_massbalance_MgO(R); figs{end+1} = figMgODrift; tags{end+1} = 'massbalance_MgO';
             catch ME, logStatus(['  plot_massbalance_MgO failed: ' ME.message]); end
             try

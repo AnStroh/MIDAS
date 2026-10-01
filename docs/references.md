@@ -9,16 +9,20 @@ Every citation used across this documentation, collected in one place. Citations
 
 ## MIDAS itself
 
+### Citing the software
+
 - Stroh, A. and Moulas, E.: MIDAS - Mineral Interface Dynamics and   apparent-Age Simulation (application to garnet/biotite Lu-Hf   geochronology), *in preparation*. See [`CITATION.cff`](https://github.com/AnStroh/MIDAS/blob/main/CITATION.cff) for how to cite the software itself.
-- Stroh, A., Aellig, P. S., and Moulas, E.: Numerical modelling of   diffusion-limited mineral growth for geospeedometry applications, *Geosci. Model Dev.*, 18, 10203-10220, [doi:10.5194/gmd-18-10203-2025](https://doi.org/10.5194/gmd-18-10203-2025),
-  1.    The methodological family MIDAS's moving-boundary numerics and   regridding approach build on (see [MovingBoundaryMinerals.jl](https://github.com/AnStroh/MovingBoundaryMinerals.jl), the sister package for diffusion-limited mineral growth).
+
+### Numerical method MIDAS builds on
+
+- Stroh, A., Aellig, P. S., and Moulas, E.: Numerical modelling of   diffusion-limited mineral growth for geospeedometry applications, *Geosci. Model Dev.*, 18, 10203-10220, [doi:10.5194/gmd-18-10203-2025](https://doi.org/10.5194/gmd-18-10203-2025), 2025. The methodological family MIDAS's moving-boundary numerics and regridding approach build on (see [MovingBoundaryMinerals.jl](https://github.com/AnStroh/MovingBoundaryMinerals.jl), the sister package for diffusion-limited mineral growth).
 
 ## Diffusion, kinetics, and geochronology (see [Equations](equations))
 
 - Bloch, E., Ganguly, J., Hervig, R., and Cheng, W.: $^{176}$Lu-$^{176}$Hf  geochronology of garnet I: experimental determination of the diffusion  kinetics of Lu$^{3+}$ and Hf$^{4+}$ in garnet, closure temperatures and  geochronological implications, *Contrib. Mineral. Petrol.*, 169, 12,  [doi:10.1007/s00410-015-1109-8](https://doi.org/10.1007/s00410-015-1109-8), 2015.
 - Chakraborty, S. and Ganguly, J.: Compositional Zoning and Cation  Diffusion in Garnets, in: *Diffusion, Atomic Ordering, and Mass  Transport*, Springer US, 120-175, [doi:10.1007/978-1-4613-9019-0_4](https://doi.org/10.1007/978-1-4613-9019-0_4), 1991.
 - Damköhler, G.: Einflüsse der Strömung, Diffusion und des Wärmeüberganges auf die Leistung von Reaktionsöfen, *Z. Für Elektrochem. Angew. Phys. Chem.*, 42, 846-862, [doi:10.1002/bbpc.19360421203](https://doi.org/10.1002/bbpc.19360421203), 1936.
-- Faure, G. and Mensing, T. M.: *Isotopes: Principles And Applications* 3rd ed., WILEY, 2025.
+- Faure, G. and Mensing, T. M.: *Isotopes: Principles And Applications* 3rd ed., WILEY, 2005.
 - Ganguly, J., Hensen, B. J., and Cheng, W.: Reaction texture and Fe-Mg  zoning in granulite garnet from Søstrene Island, Antarctica, *J. Earth  Syst. Sci.*, 110, 305-312, [doi:10.1007/BF02702897](https://doi.org/10.1007/BF02702897), 2001.
 - Kohn, M. J.: Models of garnet differential geochronology, *Geochim.  Cosmochim. Acta*, 73, 170-182, [doi:10.1016/j.gca.2008.10.004](https://doi.org/10.1016/j.gca.2008.10.004), 2009.
 - Lasaga, A. C.: Metamorphic reaction rate laws and development of  isograds, *Mineral. Mag.*, 50, 359-373, [doi:10.1180/minmag.1986.050.357.02](https://doi.org/10.1180/minmag.1986.050.357.02), 1986.

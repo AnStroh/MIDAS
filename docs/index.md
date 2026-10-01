@@ -4,11 +4,11 @@ title: MIDAS
 permalink: /
 ---
 
-**MIDAS** (Mineral Interface Dynamics and apparent-Age Simulation) is an interface-limited crystal-growth model (a moving-boundary problem) for a mineral (phase A) growing/resorbing in a matrix phase (phase B), coupled to major- and trace-element diffusion and partitioning between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent ages and interface (growth/resorption) velocities over a metamorphic P-T-t path.
+**MIDAS** (Mineral Interface Dynamics and apparent-Age Simulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a chemical Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
 
 "A" indicates the parameters and variables with respect to the crystal, whereas "B" refers to the matrix.
 
-**Note:** MIDAS is under active development (currently v0.1.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](../CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](../CONTRIBUTING.md).
+**Note:** MIDAS is under active development (currently v1.0.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](../CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 **Also note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation, while `octave/` is a port only recently run under real Octave for the first time. Several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](../CHANGELOG.md)), and more may still surface. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it.
 
@@ -34,9 +34,13 @@ permalink: /
 
 ## What it models
 
-- Interface-limited growth/resorption of a crystal in a surrounding matrix, with an explicit moving boundary (not a fixed-grid approximation).
-- Major-element (Mg-Fe-Mn) diffusion and equilibrium partitioning, sourced either from a Perplex phase diagram or a 3-point polynomial fit.
-- Trace-element (Lu, Hf, Mn) diffusion and partitioning, feeding a Lu-Hf  apparent-age calculation at every point in the crystal, at every recorded  time step.
+<p align="center">
+  <img src="{{ '/assets/diagrams/model_schematic.svg' | relative_url }}" width="100%" alt="Schematic: phase A (crystal) and phase B (matrix) sharing a moving interface S(t), with a diffusion profile C(x,t) across both.">
+</p>
+
+- Growth/resorption of a crystal in a surrounding matrix via coupled interface kinetics and diffusion, with an explicit moving boundary (not a fixed-grid approximation).
+- Major-element (Mg-Fe) diffusion and equilibrium partitioning, sourced either from a Perplex phase diagram or a 3-point polynomial fit.
+- Trace-element/minor-element (Lu, Hf, Mn) diffusion and partitioning, feeding a Lu-Hf  apparent-age calculation at every point in the crystal, at every recorded  time step.
 - Configurable P-T-t paths (an explicit peak, or a simpler thermal-pulse  parameterization), and planar/cylindrical/spherical growth geometry.
 
 ## Quick example

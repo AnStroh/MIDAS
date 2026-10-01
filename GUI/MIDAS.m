@@ -847,7 +847,7 @@ classdef MIDAS < matlab.apps.AppBase
                 % complete in a bounded, known number of steps, so switch to a
                 % real percentage for this part.
                 d.Indeterminate = 'off';
-                nSteps = 7;
+                nSteps = 6;
                 figs = {};
                 tags = {};
 
@@ -860,15 +860,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_velocity_age failed: ' ME.message]);
                 end
 
-                d.Value = 2/nSteps; d.Message = 'Plotting misfit...';
-                try
-                    plot_misfit(R);
-                    figs{end+1} = gcf; tags{end+1} = 'misfit';
-                catch ME
-                    app.logStatus(['  plot_misfit failed: ' ME.message]);
-                end
-
-                d.Value = 3/nSteps; d.Message = 'Plotting MgO mass drift...';
+                d.Value = 2/nSteps; d.Message = 'Plotting MgO mass drift...';
                 try
                     figMgODrift = plot_massbalance_MgO(R);
                     figs{end+1} = figMgODrift; tags{end+1} = 'massbalance_MgO';
@@ -876,7 +868,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_massbalance_MgO failed: ' ME.message]);
                 end
 
-                d.Value = 4/nSteps; d.Message = 'Plotting age at fixed positions...';
+                d.Value = 3/nSteps; d.Message = 'Plotting age at fixed positions...';
                 try
                     figAge = plot_age_at_fixed_positions(R);
                     figs{end+1} = figAge; tags{end+1} = 'age_fixed_positions';
@@ -884,7 +876,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_age_at_fixed_positions failed: ' ME.message]);
                 end
 
-                d.Value = 5/nSteps; d.Message = 'Plotting concentration at fixed positions...';
+                d.Value = 4/nSteps; d.Message = 'Plotting concentration at fixed positions...';
                 try
                     figConc = plot_conc_at_fixed_positions(R);
                     figs{end+1} = figConc; tags{end+1} = 'conc_fixed_positions';
@@ -892,7 +884,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_conc_at_fixed_positions failed: ' ME.message]);
                 end
 
-                d.Value = 6/nSteps; d.Message = 'Plotting all composition profiles...';
+                d.Value = 5/nSteps; d.Message = 'Plotting all composition profiles...';
                 try
                     figAllComp = plot_all_composition_profiles(R);
                     figs{end+1} = figAllComp; tags{end+1} = 'all_composition_profiles';
@@ -900,7 +892,7 @@ classdef MIDAS < matlab.apps.AppBase
                     app.logStatus(['  plot_all_composition_profiles failed: ' ME.message]);
                 end
 
-                d.Value = 7/nSteps; d.Message = 'Plotting age vs temperature...';
+                d.Value = 6/nSteps; d.Message = 'Plotting age vs temperature...';
                 try
                     figAgeT = plot_age_vs_temperature(R);
                     figs{end+1} = figAgeT; tags{end+1} = 'age_vs_temperature';

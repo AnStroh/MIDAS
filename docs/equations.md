@@ -6,6 +6,12 @@ permalink: /equations/
 
 MIDAS solves growth/resorption of a mineral couple (phase A, the crystal; phase B, the surrounding matrix) subject to diffusion and interface kinetics, and calculates apparent $^{176}$Lu-$^{176}$Hf ages from the result. This page summarizes the physical/chemical background and the numerical implementation, following the structure of the project's own technical documentation (Stroh & Moulas, in prep.) and the code (`MIDAS_Main.m`) directly - every equation below has a corresponding line or block there.
 
+<p align="center">
+  <img src="{{ '/assets/diagrams/model_schematic_equations.svg' | relative_url }}" width="100%" alt="Moving-boundary domain with phase A/B diffusivities D^A, D^B, total length L = l_A + l_B, interface kinetics Da_A, Da_B, and the shared diffusion profile C(x,t) with K_D partitioning at the interface.">
+</p>
+
+*The symbols this page uses, laid out spatially: phase A and B share one domain of total length $L=l_A+l_B$, each with its own diffusivity; the interface $S(t)$ moves according to the growth/resorption velocity $dS/dt$ and is governed by the Damköhler numbers $\mathrm{Da}_A$, $\mathrm{Da}_B$ (interface rate constants $k^A$, $k^B$); concentrations on either side are tied together by the partition coefficient $K_D$.*
+
 ## Isotopic decay and apparent ages
 
 Unstable isotopes decay from a parent $N_P$ into a daughter $N_D$:
@@ -20,7 +26,7 @@ $$
 \tau = \frac{1}{\lambda}\ln\!\left(\frac{N_D(t) - N_D(0)}{N_P(t)} + 1\right)
 $$
 
-evaluated pointwise across the whole profile every recorded step (`tALuHf1`/`tBLuHf1` in the code). Away from the diffusively-reset rim, $\tau \approx t$; near the rim (or after resorption/regrowth), $\tau$ diverges from the true model time - that divergence(`R.misfitApparent_final`, `plot_misfit.m`) is a direct diagnostic of how much a naive single-point age would be biased by diffusion.
+evaluated pointwise across the whole profile every recorded step (`tALuHf1`/`tBLuHf1` in the code). Away from the diffusively-reset rim, $\tau \approx t$; near the rim (or after resorption/regrowth), $\tau$ diverges from the true model time - that divergence (`R.misfitApparent_final`) is a direct diagnostic of how much a naive single-point age would be biased by diffusion.
 
 ## Diffusion modelling
 
@@ -86,13 +92,13 @@ MIDAS offers three ways to assign an age:
 
 1. **Model time itself** - trivial, but only meaningful for interpreting   the model's own internal consistency (see [Benchmarks](benchmarks)).
 2. **Single-point apparent age**, Eq. (above) - evaluated at every node,   every recorded step.
-3. **Isochron age** (two-point regression, e.g. Faure & Mensing, 2025):   assuming a cogenetic mineral pair sharing one true age $t$ and one   initial daughter content, a non-radiogenic reference field $\mathrm{Hf_r}$ (never touched by decay, carried alongside Hf purely to normalize the isochron axes) gives
+3. **Isochron age** (two-point regression, e.g. Faure & Mensing, 2005):   assuming a cogenetic mineral pair sharing one true age $t$ and one   initial daughter content, a non-radiogenic reference field $\mathrm{Hf_r}$ (never touched by decay, carried alongside Hf purely to normalize the isochron axes) gives
 
    $$
    X = \frac{\mathrm{Lu}}{\mathrm{Hf_r}}, \qquad Y = \frac{\mathrm{Hf}}{\mathrm{Hf_r}}, \qquad Y = Y_{ref} + \big(e^{\lambda t}-1\big)\,(X - X_{ref})
    $$
 
-   A line is fit (MATLAB's `polyfit`/`polyval`) through one point from    phase A (rim, core, bulk, or every `isoNskip`-th node) and one external  reference point set by `isoRefMode`: `'bulk'` (phase B's volume-weighted average), `'core'` (phase B's node farthest from the interface, i.e.   least disturbed by diffusion), or `'wholerock'` (volume-weighted average of A+B together). The age follows from the fitted slope, $t = \ln(\mathrm{slope}+1)/\lambda$. Isochrons are always computed for phase A's core, rim, and bulk (plus whichever of those is oldest, "max"); additional profile points are optional (`isoNskip`, plotted if `isoShowProfile = 1`). `HfiBref` is phase B's initial $^{177}$Hf content (ppm), used only to fix the normalizing ratio (chondritic $^{176}$Lu/$^{177}$Hf $\approx 0.279$; Faure & Mensing, 2025) - it does not otherwise affect the diffusion/growth solution.
+   A line is fit (MATLAB's `polyfit`/`polyval`) through one point from    phase A (rim, core, bulk, or every `isoNskip`-th node) and one external  reference point set by `isoRefMode`: `'bulk'` (phase B's volume-weighted average), `'core'` (phase B's node farthest from the interface, i.e.   least disturbed by diffusion), or `'wholerock'` (volume-weighted average of A+B together). The age follows from the fitted slope, $t = \ln(\mathrm{slope}+1)/\lambda$. Isochrons are always computed for phase A's core, rim, and bulk (plus whichever of those is oldest, "max"); additional profile points are optional (`isoNskip`, plotted if `isoShowProfile = 1`). `HfiBref` is phase B's initial $^{177}$Hf content (ppm), used only to fix the normalizing ratio (chondritic $^{176}$Lu/$^{177}$Hf $\approx 0.279$; Faure & Mensing, 2005) - it does not otherwise affect the diffusion/growth solution.
 
 ## Numerical implementation
 
@@ -121,7 +127,7 @@ $$
 - Bloch, E., Ganguly, J., Hervig, R., and Cheng, W.: $^{176}$Lu-$^{176}$Hf geochronology of garnet I: experimental determination of the diffusion kinetics of Lu$^{3+}$ and Hf$^{4+}$ in garnet, closure temperatures and geochronological implications, *Contrib. Mineral. Petrol.*, 169, 12, [doi:10.1007/s00410-015-1109-8](https://doi.org/10.1007/s00410-015-1109-8), 2015.
 - Chakraborty, S. and Ganguly, J.: Compositional Zoning and Cation Diffusion in Garnets, in: *Diffusion, Atomic Ordering, and Mass Transport*, Springer US, 120-175, [doi:10.1007/978-1-4613-9019-0_4](https://doi.org/10.1007/978-1-4613-9019-0_4), 1991.
 - Damköhler, G.: Einflüsse der Strömung, Diffusion und des Wärmeüberganges auf die Leistung von Reaktionsöfen, *Z. Für Elektrochem. Angew. Phys. Chem.*, 42, 846-862, [doi:10.1002/bbpc.19360421203](https://doi.org/10.1002/bbpc.19360421203), 1936.
-- Faure, G. and Mensing, T. M.: *Isotopes: Principles And Applications*, 3rd ed., WILEY, 2025.
+- Faure, G. and Mensing, T. M.: *Isotopes: Principles And Applications*, 3rd ed., WILEY, 2005.
 - Ganguly, J., Hensen, B. J., and Cheng, W.: Reaction texture and Fe-Mg zoning in granulite garnet from Søstrene Island, Antarctica, *J. Earth Syst. Sci.*, 110, 305-312, [doi:10.1007/BF02702897](https://doi.org/10.1007/BF02702897), 2001.
 - Kohn, M. J.: Models of garnet differential geochronology, *Geochim. Cosmochim. Acta*, 73, 170-182, [doi:10.1016/j.gca.2008.10.004](https://doi.org/10.1016/j.gca.2008.10.004), 2009.
 - Lasaga, A. C.: Metamorphic reaction rate laws and development of isograds, *Mineral. Mag.*, 50, 359-373, [doi:10.1180/minmag.1986.050.357.02](https://doi.org/10.1180/minmag.1986.050.357.02), 1986.

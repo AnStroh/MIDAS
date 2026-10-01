@@ -14,13 +14,10 @@
 
 </div>
 
-MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is an interface-limited crystal-growth model (a moving-boundary problem) for a mineral (phase A) growing/resorbing in a matrix phase (phase B), coupled to major- and trace-element diffusion and partitioning between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent ages and interface (growth/resorption) velocities over a metamorphic P-T-t path.
+MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
 
 > [!NOTE]
-> This repository is currently **private**. The Documentation badge above reflects the build status of the `docs/` site, not a live page - GitHub Pages needs a paid plan to serve a private repo. Once the repository is made public, **[the full documentation](https://AnStroh.github.io/MIDAS/)** goes live at that same link.
-
-> [!NOTE]
-> MIDAS is under active development (currently v0.1.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](CONTRIBUTING.md).
+> MIDAS is under active development (currently v1.0.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 This folder is organized into three independent copies of the same model, so you only need the one that matches how you want to run it:
 
@@ -37,14 +34,10 @@ Each is fully self-contained (no cross-folder dependencies) and carries its own 
 ## Examples
 
 <p align="center">
-  <img src="docs/assets/examples/midas_example1_baseline.gif" width="85%" alt="Example 1: planar, phase-diagram-driven baseline">
+  <img src="docs/assets/examples/midas_example1_baseline.gif" width="100%" alt="Example 1: planar, phase-diagram-driven baseline">
 </p>
 
-<p align="center">
-  <img src="docs/assets/examples/midas_example6_cylindrical.gif" width="85%" alt="Example 6: cylindrical growth geometry">
-</p>
-
-*Top: [Example1_Baseline](docs/examples.md) (phase-diagram-driven, spherical growth). Bottom: [Example6_CylindricalGeometry](docs/examples.md) (cylindrical growth geometry). Both animate the crystal/matrix interface position and composition profile evolving along the P-T-t path; frame resolution and grid are trimmed down here purely to keep the GIFs small - see [`docs/examples.md`](docs/examples.md) for the full, undownsampled parameter sets.*
+*[Example1_Baseline](docs/examples.md) (phase-diagram-driven, spherical growth): animates the crystal/matrix interface position and composition profile evolving along the P-T-t path. See [Examples](docs/examples.md) for this same animation alongside Example6_CylindricalGeometry's, and for the full, undownsampled parameter sets.*
 
 ## Getting started
 
@@ -90,7 +83,7 @@ Using the GUI instead? No file editing needed - pick one from the **Load Example
 
 ## Documentation
 
-That covers the basics - for the physics/numerics behind MIDAS, every parameter and plotting function, and more, see the **[full documentation](https://AnStroh.github.io/MIDAS/)** (see the private-repo note above) or browse [`docs/`](docs/) directly, starting from [`docs/index.md`](docs/index.md).
+That covers the basics - for the physics/numerics behind MIDAS, every parameter and plotting function, and more, see the **[full documentation](https://AnStroh.github.io/MIDAS/)** or browse [`docs/`](docs/) directly, starting from [`docs/index.md`](docs/index.md).
 
 ## Testing
 

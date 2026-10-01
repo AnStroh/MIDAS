@@ -1,10 +1,12 @@
 function R = MIDAS_Main(params)
-% MIDAS_MAIN  Interface-limited growth model (a moving-boundary problem) for
-% a mineral (A) growing/resorbing in a matrix phase (B), coupled to major-
-% and trace-element diffusion + partitioning between the two, for modeling
-% geochronology, apparent ages and interface (growth/resorption) velocities
-% over a metamorphic P-T-t path. Example here: a garnet-biotite pair (major
-% elements Mg-Fe; trace elements Lu, Hf, Mn).
+% MIDAS_MAIN  Growth model that couples interface kinetics and diffusion
+% across an explicit moving boundary (a Stefan/moving-boundary problem) for
+% a mineral (A) growing/resorbing in a matrix phase (B), with major- and
+% trace-element diffusion + partitioning tracked between the two, for
+% modeling geochronology, apparent and isochron ages, and interface
+% (growth/resorption) velocities over a metamorphic P-T-t path. Example
+% here: a garnet-biotite pair (major elements Mg-Fe; trace elements Lu,
+% Hf, Mn).
 %
 % PARAMS is read from a struct (see MIDAS_Params.m) instead of being
 % hardcoded, and results are returned in R instead of being left in the

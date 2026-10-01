@@ -21,6 +21,12 @@ A plain-text file, one row per $(T,P)$ point, arranged on a **square** grid ($N\
 
 Columns 3-4 (phase volumes) and 5-6 (FeO in phases A/B) are read but not used by the current model; columns 11-12 (CaO in phases A/B), if present, are likewise unused. Any of these can be set to `NaN`/`0` if unavailable.The shipped example (`phasediagrams/Pelite_avg_1.dat`, used by `Example1_Baseline`/`Example3_ThermalBump`/`Example4_ManualPartitioning`/ `Example5_PlanarGeometry`/`Example6_CylindricalGeometry`) follows exactly this 12-column layout on a $120\times120$ grid. If your own table uses a different column arrangement, adapt `create_grid.m`'s `[PGPa,TK,MgOA,MgOB,MnOA,MnOB] = create_grid(PhaseDiagram)` accordingly rather than reshuffling your data to match.
 
+<p align="center">
+  <img src="{{ '/assets/figures/phase_diagram_example.png' | relative_url }}" width="100%" alt="Column 7 (MgO in phase A, wt%) of the shipped Pelite_avg_1.dat table, contoured across its full 1-10 GPa, 350-850C range.">
+</p>
+
+*Column 7 (MgO in phase A) of the shipped `Pelite_avg_1.dat`, contoured across the table's full range - this is what `create_grid.m`/`eqFun` interpolate into at every timestep. Note this is the table's full extent, not any one example's actual P-T path - compare to the much narrower Trange/Prange window ([Configuration Options](configuration-options)) an individual run actually samples from within it.*
+
 ## Generating one with Perple_X {#generating-one-with-perplex}
 
 The shipped example table was generated with [Perple_X](https://www.perplex.ethz.ch/) (Connolly, 2009) - a Gibbs free-energy minimization code that computes stable mineral assemblages and compositions from a bulk composition and thermodynamic dataset. (MAGEMin - Riel et al., 2022 - is a comparable alternative for the same purpose, not used here.) Any such phase-equilibrium software that can export MgO/MnO compositions of the two phases across a $T$-$P$ grid can produce a compatible table.

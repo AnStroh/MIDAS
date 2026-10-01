@@ -1,5 +1,5 @@
 % ============================== Run_MIDAS ===================================
-% Single-run driver for the MIDAS interface-limited growth model.
+% Single-run driver for MIDAS, a coupled interface-kinetics/diffusion growth model.
 %
 % Structure:
 %   MIDAS_Params.m          - default input parameters (edit numbers there,
@@ -47,7 +47,6 @@ R = MIDAS_Main(params);
 % Kept off by default (nothing written to disk from a first, out-of-the-box
 % run) - flip whichever ones you want to keep to true.
 save_velocity_age    = false;
-save_misfit          = false;
 save_massbalance_MgO = false;
 save_ageFixedPos     = false;
 save_concFixedPos    = false;
@@ -59,9 +58,6 @@ if save_velocity_age
     export_pub_fig(figRelErrLog, fullfile(R.params.outDir,'Fig_velocity_age_relmisfit_log'))
     export_pub_fig(figABOnly,    fullfile(R.params.outDir,'Fig_velocity_age_AB_only'))
 end
-
-plot_misfit(R)                                              % Apparent-age / isochron-age misfit vs time
-if save_misfit, export_pub_fig(gcf,fullfile(R.params.outDir,'Fig_misfit')); end
 
 plot_massbalance_MgO(R);                                    % Mass-balance drift, MgO only
 if save_massbalance_MgO, export_pub_fig(gcf,fullfile(R.params.outDir,'Fig_massbalance_MgO')); end
@@ -78,7 +74,7 @@ if save_ageVsT, export_pub_fig(gcf,fullfile(R.params.outDir,'Fig_age_vs_temperat
 plot_all_composition_profiles(R);                           % Every element/isotope, phase A (left) vs phase B (right), final state
 if save_allComp, export_pub_fig(gcf,fullfile(R.params.outDir,'Fig_all_composition_profiles')); end
 
-anySaved = R.params.save_data || R.params.make_movie || save_velocity_age || save_misfit || ...
+anySaved = R.params.save_data || R.params.make_movie || save_velocity_age || ...
     save_massbalance_MgO || save_ageFixedPos || save_concFixedPos || save_ageVsT || save_allComp;
 if anySaved
     disp(['all done - results saved in ',R.params.outDir])

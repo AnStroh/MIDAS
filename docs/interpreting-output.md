@@ -14,7 +14,8 @@ Separately, a run can end with a hard error rather than a graceful `R.stoppedEar
 
 ## Apparent age vs. true age: the core diagnostic
 
-`R.tALuHf1_final` is the single-point apparent-age profile across phase A at the final step - what you'd calculate at every point if you (naively) assumed no diffusive resetting had occurred (see [Equations](equations#apparent-age-determination)). Compare it against `R.t_final` (the actual model time): where they agree, that part of the crystal has preserved its age record; where `tALuHf1` diverges below `t_final`, diffusion has reset it. `R.misfitApparent_final` is exactly this gap, reduced to one worst-case number ($\max_x \lvert \tau(x) - t\rvert$) - and `plot_misfit.m` plots its full time evolution (`R.misfitApparentH`) alongside the isochron-age equivalent (`R.misfitIsochronH`, from `R.t_rimA`/`R.t_coreA`/`R.t_bulkA`/ `R.t_maxA` vs. `t`). `plot_velocity_age.m` shows the same misfit spatially (vs. position and time) rather than reduced to a single curve.
+`R.tALuHf1_final` is the single-point apparent-age profile across phase A at the final step - what you'd calculate at every point if you (naively) assumed no diffusive resetting had occurred (see [Equations](equations#apparent-age-determination)). Compare it against `R.t_final` (the actual model time): where they agree, that part of the crystal has preserved its age record; where `tALuHf1` diverges below `t_final`, diffusion has reset it. `R.misfitApparent_final` is exactly this gap, reduced to one worst-case number ($\max_x \lvert \tau(x) - t\rvert$); its full time evolution is in `R.misfitApparentH` if you want to plot it yourself. `plot_velocity_age.m` shows the same misfit spatially (vs. position and time) rather than reduced to a single curve.
+
 
 If you're using **isochron ages** instead (`R.t_rimA_final`/ `R.t_coreA_final`/`R.t_bulkA_final`/`R.t_maxA_final`), remember these depend on `isoRefMode` (which "second mineral" point they're regressed against) - two runs with different `isoRefMode` are not directly comparable unless you know which reference point each used.
 
@@ -31,7 +32,6 @@ Every `<field>rec` array (`R.Srec`, `R.Vrec`, `R.Trec`, `R.Prec`, `R.CArec`, ...
 | Question | Function |
 |---|---|
 | How does apparent age compare to true age, everywhere and always? | `plot_velocity_age(R)` |
-| What's the worst-case age misfit over time, as a single curve? | `plot_misfit(R)` |
 | Is mass conserved (numerical sanity check)? | `plot_massbalance_MgO(R)` |
 | What does the crystal look like now, all elements at once? | `plot_all_composition_profiles(R)` |
 | How does age/composition evolve at a few fixed depths? | `plot_age_at_fixed_positions(R)` / `plot_conc_at_fixed_positions(R)` |

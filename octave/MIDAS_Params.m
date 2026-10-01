@@ -1,6 +1,6 @@
 function params = MIDAS_Params()
-% MIDAS_PARAMS  All input variables for the interface-limited
-% growth model (Garnet, Mg-Fe-Mn major elements + Lu/Hf/Mn trace elements),
+% MIDAS_PARAMS  All input variables for the interface-kinetics/diffusion-
+% coupled growth model (Garnet, Mg-Fe major elements + Lu/Hf/Mn trace elements),
 % collected into one struct. This file is the ONLY place you should need to
 % edit numbers before running a single calculation.
 %
@@ -14,7 +14,7 @@ function params = MIDAS_Params()
 %==========================================================================
 
 % Physics (Diffusion and Growth) ---------------------------------------------
-params.lxA               = 0.5;                                % Length of A (crystal, e.g. Grt) in mm
+params.lxA               = 0.8;                                % Length of A (crystal, e.g. Grt) in mm
 params.lxB_factor        = 7.5;                                % lxB = lxB_factor*lxA; length of B (matrix) in mm
 params.DRG               = 500;                                % Diffusivity of B wrt A (major elements)
 params.DRG_LuHf          = 8e3;                                % Diffusivity Lu/Hf in matrix (wrt A)
@@ -27,7 +27,7 @@ params.MnMode            = 'PD';                               % 'fixed': use co
 params.KDMn              = NaN;                                % KD Mn (Xtl/Mtrx: pelites) (KD = 30, Kretz, 1959); used only if MnMode = 'fixed', or if MniBMode = 'manual' (overrides a 'PD' MnMode)
 params.LuiB              = 1.2;                                % Initial amount in ppm of Lu (in B)
 params.HfiB              = 1.0;                                % Initial amount in ppm of Hf (in B)
-params.HfiBref           = 1.0;                                % Initial amount in ppm of Hf(ref) (in B); normalization reference; (176Lu/177Hf ~0.279, Faure & Mensing, 2025)
+params.HfiBref           = 1.0;                                % Initial amount in ppm of Hf(ref) (in B); normalization reference; (176Lu/177Hf ~0.279, Faure & Mensing, 2005)
 params.MniBMode          = 'PD';                               % 'manual': use params.MniB below (the user's own input); 'PD': override it with MnO_Bt interpolated from the phase diagram at Tstart,Pstart
 params.MniB              = NaN;                                % Initial amount in wt% of Mn (in B); used only if MniBMode = 'manual' - unused here since MniBMode = 'PD'
 params.isoRefMode        = 'core';                             % Isochron reference point for phase A (crystal): 'bulk' (volume-weighted average of B), 'core' (B node farthest from the interface), or 'wholerock' (volume-weighted average of A+B together)

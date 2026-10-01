@@ -6,21 +6,25 @@ authors:
   - family-names: Stroh
     given-names: Annalena
     affiliation: "Johannes Gutenberg University Mainz (JGU)"
+    orcid: "https://orcid.org/0009-0004-8440-974X"
   - family-names: Moulas
     given-names: Evangelos
     affiliation: "Johannes Gutenberg University Mainz (JGU)"
-version: 0.1.0
-date-released: 2026-08-28
+    orcid: "https://orcid.org/0000-0002-2783-4633"
+version: 1.0.0
+date-released: 2026-10-01
 license: MIT
 repository-code: "https://github.com/AnStroh/MIDAS"
 abstract: >
-  MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is an
-  interface-limited crystal-growth model (a moving-boundary problem) for a
-  mineral growing/resorbing in a surrounding matrix phase, coupled to
-  major- and trace-element diffusion and partitioning between the two. The
-  example provided is a garnet-biotite pair (major elements Mg-Fe; trace
-  elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology,
-  apparent ages and interface (growth/resorption) velocities over a
+  MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is a
+  crystal-growth model that couples interface kinetics and diffusion
+  across an explicit moving boundary (a Stefan/moving-boundary problem),
+  for a mineral growing or resorbing in a surrounding matrix phase, with
+  major- and trace-element diffusion and partitioning tracked between the
+  two. The example provided is a garnet-biotite pair (major elements
+  Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet
+  geochronology, apparent and isochron ages, and interface
+  (growth/resorption) velocities over a
   metamorphic P-T-t path. Provided as MATLAB, GNU Octave, and interactive
   GUI (MATLAB App Designer) versions.
 keywords:
@@ -29,7 +33,7 @@ keywords:
   - apparent ages
   - garnet
   - crystal growth
-  - Stefan problem
-  - moving boundary
+  - chemical Stefan problem/moving boundary
   - diffusion
+  - interface-kinetics
   - petrology

@@ -54,7 +54,7 @@ try
     outDir = tempname(); mkdir(outDir); params.outDir = outDir;
     R = MIDAS_Main(params);
     [figRelErrLog,figABOnly] = plot_velocity_age(R); %#ok<ASGLU>
-    plot_misfit(R); plot_massbalance_MgO(R);
+    plot_massbalance_MgO(R);
     plot_age_at_fixed_positions(R); plot_conc_at_fixed_positions(R);
     plot_age_vs_temperature(R); plot_all_composition_profiles(R);
     export_pub_fig(figRelErrLog, fullfile(outDir,'ci_test'));

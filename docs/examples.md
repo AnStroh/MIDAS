@@ -21,6 +21,12 @@ params = Example1_Baseline();
 R = MIDAS_Main(params);
 ```
 
+<p align="center">
+  <img src="{{ '/assets/examples/midas_example1_baseline.gif' | relative_url }}" width="100%" alt="Example 1: planar, phase-diagram-driven baseline">
+</p>
+
+*Animates the crystal/matrix interface position and composition profile evolving along the P-T-t path; frame resolution and grid are trimmed down here purely to keep the GIF small.*
+
 ## Example2_PolyEquilibrium
 
 Runs with **no phase-diagram file needed at all**.
@@ -52,6 +58,12 @@ Same fully automated configuration as Example1, but `ndim=1` (planar growth) ins
 ## Example6_CylindricalGeometry
 
 Same fully automated configuration as Example1, but `ndim=2` (cylindrical growth) instead of `ndim=3` (spherical).
+
+<p align="center">
+  <img src="{{ '/assets/examples/midas_example6_cylindrical.gif' | relative_url }}" width="100%" alt="Example 6: cylindrical growth geometry">
+</p>
+
+*Same animation as Example1_Baseline's above, for the cylindrical-growth configuration.*
 
 ## Coverage at a glance
 

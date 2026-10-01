@@ -13,6 +13,12 @@ The six shipped examples all use `nx_A = nx_B = 200`, which is generally enough 
 1. Run once at the shipped resolution, note `R.S_final` and `R.tALuHf1_final` (or whichever output you care about).
 2. Double `nx_A`/`nx_B`, rerun, compare. If the answer barely moves, you were already resolved; if it moves a lot, keep doubling until it stops moving.
 
+<p align="center">
+  <img src="{{ '/assets/figures/mesh_convergence.png' | relative_url }}" width="100%" alt="Grid convergence for Example1_Baseline: max apparent age and S_final both jump sharply between nx=150 and nx=200, then stay flat through nx=300.">
+</p>
+
+*A real convergence check for `Example1_Baseline`: `nx_A = nx_B` at 15 points from 15 up to 300, densely sampled around the transition. This isn't smooth convergence - it's a sharp threshold between `nx=150` and `nx=160`: below it, both diagnostics are not just off but genuinely erratic (`S_final` swings 0.61 -> 0.71 -> 0.55 -> 0.59 mm between `nx=100` and `nx=150`, no visible trend); at `nx=160` and above, both jump to and stay on a flat, stable plateau all the way to `nx=300`. The shipped examples' default of `nx_A = nx_B = 200` sits safely inside that stable plateau, with headroom to spare - and this is exactly the kind of jump the doubling recipe above is meant to catch, since the erratic region below threshold could easily look like "probably fine" from a single under-sampled check.*
+
 The CI smoke test deliberately runs at `nx_A = nx_B = 15` - fast enough for every push, but **not** resolved enough to trust scientifically; it exists only to catch the pipeline breaking outright (see [Benchmarks](benchmarks) for what happens to the mass-balance/misfit diagnostics at full resolution, which the smoke test doesn't check).
 
 `lxB_factor` (matrix length relative to crystal length) interacts with this: a larger matrix reservoir at the same `nx_B` means coarser absolute spatial resolution in phase B specifically, since `dx_B = lxB/(nx_B-1)`.

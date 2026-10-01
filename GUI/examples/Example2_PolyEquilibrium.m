@@ -28,7 +28,7 @@ params.MnMode            = 'fixed';                            % 'fixed': use co
 params.KDMn              = 30;                                 % KD Mn (Xtl/Mtrx: pelites) (KD = 30, Kretz, 1959); used only if MnMode = 'fixed', or if MniBMode = 'manual'
 params.LuiB              = 1.2;                                % Initial amount in ppm of Lu (in B)
 params.HfiB              = 1.0;                                % Initial amount in ppm of Hf (in B)
-params.HfiBref           = 1.0;                                % Initial amount in ppm of Hf(ref) (in B); normalization reference; (176Lu/177Hf ~0.279, Faure & Mensing, 2025)
+params.HfiBref           = 1.0;                                % Initial amount in ppm of Hf(ref) (in B); normalization reference; (176Lu/177Hf ~0.279, Faure & Mensing, 2005)
 params.MniBMode          = 'manual';                           % 'manual': use params.MniB below (the user's own input); 'PD': override it with MnO_Bt interpolated from the phase diagram at Tstart,Pstart
 params.MniB              = 0.05;                               % Initial amount in wt% of Mn (in B); used only if MniBMode = 'manual'
 params.isoRefMode        = 'bulk';                             % Isochron reference point for phase A (crystal): 'bulk' (volume-weighted average of B), 'core' (B node farthest from the interface), or 'wholerock' (volume-weighted average of A+B together)

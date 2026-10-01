@@ -8,6 +8,10 @@ Two interactive front-ends exist, covering the same fields and the same underlyi
 
 ## MATLAB GUI
 
+<p align="center">
+  <img src="{{ '/assets/screenshots/gui_matlab.png' | relative_url }}" width="100%" alt="MATLAB App Designer GUI: sidebar tabs (Physics, Time & P-T Path, ...), parameter fields with tooltips, Run/Reset/Close Figs, example/preset loading, Status log, and Export Data/Figures panels.">
+</p>
+
 ### Launching it
 
 ```matlab
@@ -71,6 +75,15 @@ closing the window yourself in a normal interactive session hasn't been
 confirmed yet - if it does, no work is lost (nothing is written to disk on
 close beyond what Run/Export already saved), but please report it either
 way so this note can be corrected.
+
+### Performance
+
+**If you have a MATLAB license, prefer the MATLAB GUI for long or interactive runs** - the Octave GUI's live-updating plot is noticeably slower, for two compounding reasons:
+
+- Octave has no native `tiledlayout`/`nexttile`; the shim this repo uses instead ([`tiledlayout.m`](https://github.com/AnStroh/MIDAS/blob/main/octave/plotting/tiledlayout.m)) deletes and rebuilds all 8 panel axes from scratch on every redraw, rather than updating the existing tiles in place the way MATLAB's native version does. Two of those panels also rebuild a `contourf` phase-diagram plot and a colorbar every time, on top of that.
+- This install's only available graphics toolkits are `fltk`/`gnuplot` (see [Graphics toolkit](octave#graphics-toolkit)), not `qt` - less hardware-accelerated and generally slower to render.
+
+Together, every recorded timestep of a run redraws the whole 8-panel figure from nothing, which adds up over a run with many recorded steps. Until the shim is optimized to reuse axes instead of rebuilding them, raising `recordDT` (fewer redraws over the same run) is the cheapest workaround available without code changes.
 
 ### Differences from the MATLAB GUI
 

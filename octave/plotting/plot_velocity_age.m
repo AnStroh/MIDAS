@@ -104,7 +104,9 @@ xlabel('x (mm)','FontSize',FSS)
 ylabel('t (Myr)','FontSize',FSS)
 title('Age distribution','FontSize',FSS)
 colormap(gca,divmap)
-M = max(abs(GridLog(:)),[],'omitnan');
+GridLogAbs = abs(GridLog(:));
+GridLogAbs = GridLogAbs(~isnan(GridLogAbs));
+if isempty(GridLogAbs), M = NaN; else, M = max(GridLogAbs); end
 if M > 0, caxis(gca,[-M M]); end
 cb = colorbar;
 if M > 0

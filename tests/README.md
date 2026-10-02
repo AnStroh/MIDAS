@@ -6,15 +6,15 @@
 
 **1. Generate results** - from *within* each implementation you have access to (needs the matching interpreter: MATLAB for `matlab/`/`GUI/`, GNU Octave for `octave/`):
 
-```
+```bash
 cd matlab
 matlab -batch "addpath('../tests'); generate_results('matlab')"
 ```
-```
+```bash
 cd GUI
 matlab -batch "addpath('../tests'); generate_results('GUI')"
 ```
-```
+```bash
 cd octave
 octave --eval "addpath('../tests'); generate_results('octave')"
 ```
@@ -25,7 +25,7 @@ Each run saves one `.mat` file per example to `tests/results/`, named `<matlab|G
 
 **2. Compare** - once you have results from 2 or more implementations:
 
-```
+```bash
 cd tests
 octave --eval "compare_results"
 ```

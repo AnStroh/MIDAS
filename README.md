@@ -42,7 +42,7 @@ Each is fully self-contained (no cross-folder dependencies) and carries its own 
 ## Getting started
 
 Requires MATLAB R2019b+ (`matlab/`, `GUI/`) or GNU Octave 8.x (`octave/` - see its [README](octave/README.md) for setup). Pick a folder above, then in MATLAB (or Octave, for `octave/`):
-```
+```matlab
 cd matlab   % or GUI, or octave
 Run_MIDAS
 ```
@@ -116,3 +116,7 @@ We used Claude to help find and fix bugs, restructure the code into the `matlab/
 ## Main authors
 
 Annalena Stroh, Evangelos Moulas - Johannes Gutenberg University Mainz (JGU), 2026
+
+## License
+
+MIT - see [`LICENSE`](LICENSE).

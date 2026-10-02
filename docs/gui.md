@@ -48,7 +48,7 @@ against), so the look is plainer but the functionality is the same.
 
 ### Launching it
 
-```
+```octave
 cd octave
 octave
 >> MIDAS_GUI

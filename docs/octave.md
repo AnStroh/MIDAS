@@ -21,7 +21,7 @@ sudo apt-get install -y octave
 octave --eval "pkg install -forge io image"
 ```
 **Windows**: install Octave first ([octave.org/download](https://octave.org/download), or `winget install --id GNU.Octave` - both verified to give the same result: no `qt` toolkit, see below), then:
-```
+```bash
 octave --eval "pkg install -forge io image"
 ```
 **macOS** ([Homebrew](https://brew.sh)):
@@ -38,7 +38,7 @@ The full plotting/export pipeline has since been run end-to-end under Octave; se
 
 ## Usage
 
-```
+```octave
 octave
 >> Run_MIDAS
 ```

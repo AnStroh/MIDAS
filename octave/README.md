@@ -12,16 +12,16 @@ This folder is a GNU Octave-compatible, fully self-contained port of the MIDAS c
   - `image` - for `params.make_movie = 1` (writing the `.gif`). Only loaded if a movie is actually requested; everything else works without it.
 
 Install once - **Linux**:
-```
+```bash
 sudo apt-get install -y octave
 octave --eval "pkg install -forge io image"
 ```
 **Windows**: install Octave first (the official installer from [octave.org/download](https://octave.org/download), or `winget install --id GNU.Octave` - both were verified to produce the same result: no `qt` toolkit, see below), then the same package-install line works from PowerShell/cmd:
-```
+```bash
 octave --eval "pkg install -forge io image"
 ```
 **macOS** (via [Homebrew](https://brew.sh)):
-```
+```bash
 brew install octave
 octave --eval "pkg install -forge io image"
 ```
@@ -37,13 +37,13 @@ The full plotting/export pipeline (everything `.github/scripts/smoke_test.m` exe
 
 ## Usage
 
-```
+```octave
 octave
 >> Run_MIDAS
 ```
 
 Or, for the interactive GUI instead:
-```
+```octave
 octave
 >> MIDAS_GUI
 ```

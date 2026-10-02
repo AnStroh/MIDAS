@@ -3,10 +3,24 @@ name: Deploy Documentation
 # NOTE: GitHub Pages requires the repository to be public, unless you're on
 # GitHub Pro/Team/Enterprise - this workflow is ready to go but won't
 # actually deploy anything while the repo stays private.
+#
+# Builds two versions of the docs site, matching the stable/dev convention
+# used by MovingBoundaryMinerals.jl (Documenter.jl's own convention, adapted
+# here for Jekyll since we don't have Documenter's built-in versioning):
+#   - /dev/    - always built from the current main branch
+#   - /stable/ - built from the latest git tag (vX.Y.Z), if one exists
+# The site root redirects to /stable/ once a tag exists, /dev/ until then.
+# Mechanism: `jekyll build --baseurl <prefix>` overrides _config.yml's own
+# baseurl for that one build, so every {{ ... | relative_url }} link in the
+# site comes out correctly prefixed - verified locally before relying on it
+# here (both the override itself, and building from a separate tag checkout
+# via `git worktree`, which is how the /stable/ build gets isolated from
+# whatever's currently on main without disturbing the main checkout).
 
 on:
   push:
     branches: [main]
+    tags: ['v*']
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
@@ -29,20 +43,48 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history/tags needed for the latest-tag lookup below
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          source: docs
-          destination: docs/_site
+          ruby-version: '3.3'
+
+      - name: Install Jekyll
+        run: gem install jekyll minima --no-document
+
+      - name: Find latest tag
+        id: latest_tag
+        run: |
+          TAG=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if [ -n "$TAG" ]; then echo "Latest tag: $TAG"; else echo "No tags yet - stable will mirror dev for now"; fi
+
+      - name: Build dev site (current main)
+        run: jekyll build --source docs --destination site_out/dev --baseurl /MIDAS/dev
+
+      - name: Build stable site (latest tag)
+        if: steps.latest_tag.outputs.tag != ''
+        run: |
+          git worktree add /tmp/stable-checkout "${{ steps.latest_tag.outputs.tag }}"
+          jekyll build --source /tmp/stable-checkout/docs --destination site_out/stable --baseurl /MIDAS/stable
+          git worktree remove /tmp/stable-checkout --force
+
+      - name: Build root redirect
+        run: |
+          TARGET=dev
+          if [ -n "${{ steps.latest_tag.outputs.tag }}" ]; then TARGET=stable; fi
+          echo "Root redirects to /MIDAS/$TARGET/"
+          printf '<!DOCTYPE html>\n<html><head><meta http-equiv="refresh" content="0; url=/MIDAS/%s/"><link rel="canonical" href="/MIDAS/%s/"></head><body>Redirecting to <a href="/MIDAS/%s/">/MIDAS/%s/</a>...</body></html>\n' "$TARGET" "$TARGET" "$TARGET" "$TARGET" > site_out/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/_site
+          path: site_out
 
       - name: Deploy to GitHub Pages
         id: deployment

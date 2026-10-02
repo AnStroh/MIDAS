@@ -31,7 +31,7 @@ params.HfiBref           = 1.0;                                % Initial amount 
 params.MniBMode          = 'PD';                               % 'manual': use params.MniB below (the user's own input); 'PD': override it with MnO_Bt interpolated from the phase diagram at Tstart,Pstart
 params.MniB              = NaN;                                % Initial amount in wt% of Mn (in B); used only if MniBMode = 'manual' - unused here since MniBMode = 'PD'
 params.isoRefMode        = 'core';                             % Isochron reference point for phase A (crystal): 'bulk' (volume-weighted average of B), 'core' (B node farthest from the interface), or 'wholerock' (volume-weighted average of A+B together)
-params.isoNskip          = 10;                                 % Isochron profile sampling: compute an age for every isoNskip-th node across phase A (in addition to rim/core/bulk)
+params.isoNskip          = NaN;                                % Isochron profile sampling: compute an age for every isoNskip-th node across phase A (in addition to rim/core/bulk); unused here since isoShowProfile = 0
 params.isoShowProfile    = 0;                                  % 1: also plot the isoNskip-th profile points/lines (light gray) in the isochron panel; 0: show only core/rim/bulk/max
 
 % Time and P-T path -----------------------------------------------------------

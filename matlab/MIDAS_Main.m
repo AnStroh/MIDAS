@@ -1158,7 +1158,15 @@ function [t_rim,t_core,t_bulk,Xdat,Ydat,Xfit,YfitRim,YfitCore,YfitBulk,t_prof,Xp
     YfitBulk = polyval(PfitBulk, Xfit);
     % Every nskip-th node across the profile: one two-point isochron age each
     % (in addition to the single rim/core/bulk points above), same reference.
-    idx    = 1:nskip:numel(CPA);
+    % nskip may be NaN (not applicable - e.g. isoShowProfile = 0): 1:NaN:N
+    % does not reliably evaluate to an empty range, so guard explicitly
+    % instead of relying on it, matching every other NaN-as-"unused"
+    % placeholder in this codebase (Tar/Par/Car_G/Car_B, etc.).
+    if isfinite(nskip) && nskip >= 1
+        idx = 1:nskip:numel(CPA);
+    else
+        idx = [];
+    end
     Xprof  = CPA(idx)./CDrA(idx);
     Yprof  = CDA(idx)./CDrA(idx);
     nProf  = numel(idx);

@@ -4,7 +4,7 @@ title: MIDAS
 permalink: /
 ---
 
-**MIDAS** (Mineral Interface Dynamics and apparent-Age Simulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a chemical Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
+**MIDAS** (**M**ineral **I**nterface **D**ynamics and apparent-**A**ge **S**imulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a chemical Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
 
 "A" indicates the parameters and variables with respect to the crystal, whereas "B" refers to the matrix.
 
@@ -57,6 +57,18 @@ See **[Examples](examples)** for all six included configurations, and **[API ref
 ## Citing
 
 If you use MIDAS in your research, please cite it - see [`CITATION.cff`](https://github.com/AnStroh/MIDAS/blob/main/CITATION.cff) in the repository root.
+
+## Funding
+
+The development of this package is supported by the DFG project 524829125 (VECTOR).
+
+## AI use
+
+We used Claude to help find and fix bugs, restructure the code into the `matlab/`/`GUI/`/`octave/` layout used here, and build a clearer, user-friendly version of it, including the GUI and logo. Based on the authors' own instructions and content, Claude created the documentation - both the in-code function documentation and this documentation site. Furthermore, Claude helped with visualizations as well as translation and readability. Claude was not used to develop, derive, or validate any of the model's underlying physics or numerics - that work is the authors' own. All AI-assisted output was reviewed and is approved by the authors.
+
+## Main authors
+
+Annalena Stroh, Evangelos Moulas - Johannes Gutenberg University Mainz (JGU), 2026
 
 ## License
 

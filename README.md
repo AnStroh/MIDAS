@@ -14,7 +14,7 @@
 
 </div>
 
-MIDAS (Mineral Interface Dynamics and apparent-Age Simulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
+**MIDAS** (**M**ineral **I**nterface **D**ynamics and apparent-**A**ge **S**imulation) is a crystal-growth model that couples interface kinetics and diffusion across an explicit moving boundary (a Stefan/moving-boundary problem), for a mineral (phase A) growing or resorbing in a matrix phase (phase B), with major- and trace-element diffusion and partitioning tracked between the two. The example used throughout this repository is a garnet-biotite pair (major elements Mg-Fe; trace elements Lu, Hf, Mn), built for modeling Lu-Hf garnet geochronology, apparent and isochron ages, and interface (growth/resorption) velocities over a metamorphic P-T-t path.
 
 > [!NOTE]
 > MIDAS is under active development (currently v1.0.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -111,7 +111,7 @@ The development of this package is supported by the DFG project 524829125 (VECTO
 
 ## AI use
 
-We used Claude to help find and fix bugs, restructure the code into the `matlab/`/`GUI/`/`octave/` layout used here, and write a clearer, user-friendly version of it, including the GUI and logo. Claude also helped write the documentation of the functions within the code and this documentation site (including this README and the [equations](docs/equations.md) page), and helped with translation and increasing the readability of the documentation throughout. All results were checked and are approved by the authors.
+We used Claude to help find and fix bugs, restructure the code into the `matlab/`/`GUI/`/`octave/` layout used here, and build a clearer, user-friendly version of it, including the GUI and logo. Based on the authors' own instructions and content, Claude created the documentation - both the in-code function documentation and this documentation site. Furthermore, Claude helped with visualizations as well as translation and readability. Claude was not used to develop, derive, or validate any of the model's underlying physics or numerics - that work is the authors' own. All AI-assisted output was reviewed and is approved by the authors.
 
 ## Main authors
 

@@ -80,6 +80,8 @@ if ~isempty(divmap)
 end
 xlim([0 1.05*max(fixedLengths)])
 grid on, axis square
+if isempty(divmap), colormap(gca,parula(256)), end
+matlabStyle(fig)
 end
 function fig = buildVelAgeFigLog(fixedLengths,trec,Srec,Vrec,Grid,cbLabel,divmap,FSS,LWW)
 % Same as buildVelAgeFig, but panel A is colored by the signed-log transform
@@ -114,7 +116,8 @@ if M > 0
     posLog = linspace(0,M,nTicksHalf+1);          % evenly spaced in the transformed (plotted) space, so labels never crowd near zero
     tickLog = [-fliplr(posLog(2:end)), posLog];
     realVal = sign(tickLog).*(10.^abs(tickLog) - 1);   % back-transform to the actual data units for the labels
-    set(cb,'Ticks',tickLog,'TickLabels',arrayfun(@(v) sprintf('%.3g',v), realVal, 'UniformOutput', false));
+    % Octave's colorbar is an axes object: no 'Ticks'/'TickLabels', use YTick/YTickLabel
+    set(cb,'YTick',tickLog,'YTickLabel',arrayfun(@(v) sprintf('%.3g',v), realVal, 'UniformOutput', false));
 end
 set(get(cb,'Label'),'String',cbLabel);
 xlim([0 1.05*max(fixedLengths)])
@@ -124,7 +127,7 @@ text(0.005,0.995,'(A)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bol
 nexttile
 plot(trec,Vrec,'k-','LineWidth',LWW)
 hold on
-yline(0,'--')
+plot(xlim,[0 0],'k--')   % plot() instead of yline: absent in older Octave
 hold off
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
 xlabel('t (Myr)','FontSize',FSS)
@@ -132,6 +135,7 @@ ylabel('Interface velocity (mm/Myr)','FontSize',FSS)
 title('Interface velocity vs. t','FontSize',FSS)
 grid on, axis square
 text(0.005,0.995,'(B)','Units','normalized','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
+matlabStyle(fig)
 end
 function setRobustDivergingCaxis(ax,Z,pct)
 % Symmetric color limit at the pct-th percentile of |Z|, not the raw max -

@@ -26,7 +26,7 @@ rows = {
 };
 letters = {'A','B','C','D','E','F','G','H'};
 
-fig = figure('Color',[1 1 1],'Units','pixels','Position',[100 100 900 1600]);
+fig = figure('Color',[1 1 1]);
 tiledlayout(size(rows,1),2,'TileSpacing','compact','Padding','compact')
 
 li = 0;
@@ -57,6 +57,7 @@ for k = 1:size(rows,1)
     [tx,ty,ha,va] = panelLabelPos(letters{li});
     text(tx,ty,['(' letters{li} ')'],'Units','normalized','HorizontalAlignment',ha,'FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment',va,'BackgroundColor',[1 1 1],'Margin',1)
 end
+fitFigure(fig,900,1600)   % MATLAB look; text scaled to the window size
 end
 function [tx,ty,ha,va] = panelLabelPos(letter)
 % Default label position is the upper-left corner; a few panels' curves

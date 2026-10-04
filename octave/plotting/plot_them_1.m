@@ -24,12 +24,13 @@ text(0.95,0.95,'(A)','Units','normalized','HorizontalAlignment','right','FontSiz
 
 % Phase diagram
 nexttile
-contourf(T2-273,P2,CA2,10),shading flat
+pcolor(T2-273,P2,CA2),shading flat,colormap(gca,parula(64))
 cb = colorbar; set(get(cb,'Label'),'String','MgO (wt.\%)');
 hold on,plot(Tt-273,Pt,'k',T-273,P,'.','linewidth',LWW,'MarkerSize',16),grid on,axis square,hold off
 xlabel(['T (^oC)'],'FontSize',FSS)
 ylabel(['P (GPa)'],'FontSize',FSS)
 axis([Trange(1)-273 Trange(2)-273 Prange(1) Prange(2)])
+set(gca,'XTick',ceil((Trange(1)-273)/100)*100:100:Trange(2)-273)   % round degC ticks (500, 600, ...) as in MATLAB
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
 text(0.95,0.95,'(B)','Units','normalized','HorizontalAlignment','right','FontSize',FSS*1.3,'FontWeight','bold','VerticalAlignment','top','BackgroundColor',[1 1 1],'Margin',1)
 

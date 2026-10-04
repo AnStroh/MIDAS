@@ -44,8 +44,15 @@ DefaultParams.outDir = fullfile('results', [DefaultParams.data_name, '_', datest
 % ------------------------------------------------------------------------
 % Main window
 % ------------------------------------------------------------------------
+% The layout is normalized, so it scales to any window size; 1250x900 is only
+% the design size. Shrink it to fit the screen (title bar + taskbar need room),
+% otherwise the bottom of the window is cut off and can't be reached.
+scr = get(0,'screensize');
+if numel(scr) < 4 || ~all(isfinite(scr)) || scr(3) < 640 || scr(4) < 480, scr = [1 1 1400 1000]; end
+guiW = min(1250, round(0.95*scr(3)));
+guiH = min(900,  round(0.82*scr(4)));
 fig = figure('Name','MIDAS - Mineral Interface Dynamics and apparent-Age Simulation (Octave)', 'NumberTitle','off', ...
-    'Color', ColBg, 'Units','pixels', 'Position',[60 40 1250 900], 'MenuBar','none', 'Toolbar','none');
+    'Color', ColBg, 'Units','pixels', 'Position',[max(1,round((scr(3)-guiW)/2)) max(1,round((scr(4)-guiH)/2)) guiW guiH], 'MenuBar','none', 'Toolbar','none');
 
 % --- Header: logo + subtitle -------------------------------------------
 header = uipanel(fig, 'Units','normalized', 'Position',[0 0.90 1 0.10], ...
@@ -439,7 +446,7 @@ refreshResultsList();
             set(DataFolderField, 'String', outDirAbs);
             set(FigFolderField, 'String', outDirAbs);
             refreshResultsList();
-            logStatus(sprintf('Done in %.1f s (%d/8 figures).', toc(t0), numel(figs)));
+            logStatus(sprintf('Done in %.1f s (%d/7 figures).', toc(t0), numel(figs)));
         catch ME
             logStatus(['ERROR: ' ME.message]);
         end
@@ -454,7 +461,7 @@ refreshResultsList();
     function closeAllFiguresButtonPushed()
         % Closes every figure window (all past runs, not just the last
         % one) except this control window itself, which is a figure too.
-        figHandles = findall(0, 'Type', 'figure');
+        figHandles = get(0, 'children');   % root's children are exactly the figures (a filtered findall also walks this window's controls, which crashes Octave 11.3)
         n = 0;
         for i = 1:numel(figHandles)
             h = figHandles(i);

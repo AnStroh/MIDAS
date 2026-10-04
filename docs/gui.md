@@ -46,6 +46,10 @@ GUI above - built from scratch with Octave's plain `figure`/`uicontrol`
 (Octave has no App Designer, `uigridlayout`, or `uitabgroup` to port
 against), so the look is plainer but the functionality is the same.
 
+<p align="center">
+  <img src="{{ '/assets/screenshots/gui_octave.png' | relative_url }}" width="100%" alt="GNU Octave GUI: sidebar tabs (Physics, Time & P-T Path, ...), parameter fields, Run/Reset/Close Figs, example and preset loading, Status log, and Export Data / Export Figures / Manage Results panels.">
+</p>
+
 ### Launching it
 
 ```octave

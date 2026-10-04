@@ -726,7 +726,7 @@ while t < t_tot
             yMaxCAMn = max([yMaxCAMn, max(CAMn(:))*1.2, max(CBMn(:))*1.2]);
             yMaxCALu = max([yMaxCALu, max(CALu(:))*1.2, max(CBLu(:))*1.2]);
             yMaxCAHf = max([yMaxCAHf, max(CAHf(:))*1.2, max(CBHf(:))*1.2]);
-            figure(1), set(gcf,'Color',[1 1 1],'Position',[50 50 1400 1800])
+            figure(1), set(gcf,'Color',[1 1 1])
             if plot_kind ==1
                 plot_them_1;
             elseif plot_kind ==2
@@ -734,6 +734,7 @@ while t < t_tot
             elseif plot_kind ==3
                 plot_them_3;
             end
+            fitFigure(gcf,1400,1800)   % MATLAB look; text scaled to the window size
             % Figure-saving checkpoints --------------------------
             if saveCheckpoints
                 if ~firstPlotSaved
@@ -864,7 +865,7 @@ if doPlot
     yMaxCAMn = max([yMaxCAMn, max(CAMn(:))*1.2, max(CBMn(:))*1.2]);
     yMaxCALu = max([yMaxCALu, max(CALu(:))*1.2, max(CBLu(:))*1.2]);
     yMaxCAHf = max([yMaxCAHf, max(CAHf(:))*1.2, max(CBHf(:))*1.2]);
-    figure(1), set(gcf,'Color',[1 1 1],'Position',[50 50 1400 1800])
+    figure(1), set(gcf,'Color',[1 1 1])
     if plot_kind ==1
         plot_them_1;
     elseif plot_kind ==2
@@ -872,6 +873,7 @@ if doPlot
     elseif plot_kind ==3
         plot_them_3;
     end
+    fitFigure(gcf,1400,1800)   % MATLAB look; text scaled to the window size
     if saveCheckpoints
         export_pub_fig(gcf,fullfile(outDir,[data_name,'_last']))
     end
@@ -951,7 +953,7 @@ end
 function [T2,P2,CA2,CB2] = load_TData(Trange,Prange,eqFun)
     % Builds the background T-P grid (and each phase's equilibrium
     % composition on it, via EQFUN) used to draw the phase-diagram panels
-    % (contourf of CA2/CB2 over T2/P2) - purely for plotting, not used by
+    % (pcolor of CA2/CB2 over T2/P2) - purely for plotting, not used by
     % the solver itself.
     nT             = 100;                       % Resolution of the T grid
     nP             = 100;                       % Resolution of the P grid

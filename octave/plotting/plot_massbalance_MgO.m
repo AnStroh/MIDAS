@@ -19,11 +19,12 @@ LWW = R.params.LWW;
 fig = figure('Color',[1 1 1]);
 plot(R.trec,R.dMB*100,'Color',[0, 0.4470, 0.7410],'LineWidth',LWW*1.5)
 hold on
-yline(0,'Color',[0.7 0.7 0.7])
+plot(xlim,[0 0],'Color',[0.7 0.7 0.7])   % plot() instead of yline: absent in older Octave
 hold off
 grid on, axis square
 set(gca,'FontSize',FSS,'LineWidth',LWW,'Box','on')
 xlabel('t (Myr)','FontSize',FSS)
 ylabel('(M(t)-M(0))/M(0) (\%)','FontSize',FSS)
 title('Mass-balance drift, MgO','FontSize',FSS)
+matlabStyle(fig)
 end

@@ -914,7 +914,7 @@ classdef MIDAS < matlab.apps.AppBase
                 app.FigFolderField.Value  = outDirAbs;
                 app.refreshResultsList();
 
-                app.logStatus(sprintf('Done in %.1f s (%d/8 figures).', toc(t0), numel(figs)));
+                app.logStatus(sprintf('Done in %.1f s (%d/7 figures).', toc(t0), numel(figs)));
             catch ME
                 app.logStatus(['ERROR: ' ME.message]);
             end

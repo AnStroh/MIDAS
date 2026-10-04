@@ -39,7 +39,7 @@ for it = 1:nT
 end
 
 fig  = figure('Color',[1 1 1],'Units','pixels','Position',[100 100 950 650]);
-cmap = viridis(numel(fixedPos));   % NOT parula: doesn't exist in Octave ("not yet implemented"); viridis is Octave's own closest perceptually-uniform equivalent
+cmap = parula(numel(fixedPos));   % parula.m (this folder) approximates MATLAB's parula, which Octave lacks
 hold on
 for k = 1:numel(fixedPos)
     plot(trec,ageAtPos(:,k),'-','LineWidth',LWW*1.5,'Color',cmap(k,:), ...
@@ -52,4 +52,5 @@ xlabel('t (Myr)','FontSize',FSS)
 ylabel('\tau (Myr)','FontSize',FSS)
 title(sprintf('\\tau evolution',Smin),'FontSize',FSS)
 legend('Location','eastoutside')
+matlabStyle(fig)
 end

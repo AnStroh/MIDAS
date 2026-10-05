@@ -7,7 +7,7 @@ permalink: /api-reference/
 ## Core functions
 
 ### `MIDAS_Params()`
-Returns the default `params` struct. Every field is documented inline in the file itself; the tables below summarize them by section. Call with no arguments for defaults, then override individual fields, or call one of the `examples/ExampleN.m` functions instead for a ready-made configuration (see [Examples](examples)).
+Returns the default `params` struct. Every field is documented inline in the file itself; the tables below summarize them by section. Call with no arguments for defaults, then override individual fields, or call one of the `examples/ExampleN.m` functions instead for a ready-made configuration (see [Examples]({{ '/examples/' | relative_url }})).
 
 ### `R = MIDAS_Main(params)`
 Runs the model once. Returns a struct `R` with: 
@@ -23,9 +23,9 @@ Runs the model once. Returns a struct `R` with:
 | `R.tA1`, `R.tB1` | Full time-history apparent-age profiles, phase A / phase B |
 
 ### `Run_MIDAS.m`
-Not a function - a script. Loads `MIDAS_Params()` (or swap in an example), runs `MIDAS_Main`, shows every post-run figure, and optionally exports each one. See [Getting Started](getting-started).
+Not a function - a script. Loads `MIDAS_Params()` (or swap in an example), runs `MIDAS_Main`, shows every post-run figure, and optionally exports each one. See [Getting Started]({{ '/getting-started/' | relative_url }}).
 
-See [Configuration Options](configuration-options) for a narrative walkthrough of the mode switches below (which combinations are valid, how they interact), [Equations](equations) for the physics/numerics behind them, [Mesh & Time-Step Refinement](mesh-refinement) for choosing `nx_A`/`nx_B`/`CFL`, and [Interpreting Output](interpreting-output) for what to do with `R` once you have it.
+See [Configuration Options]({{ '/configuration-options/' | relative_url }}) for a narrative walkthrough of the mode switches below (which combinations are valid, how they interact), [Equations]({{ '/equations/' | relative_url }}) for the physics/numerics behind them, [Mesh & Time-Step Refinement]({{ '/mesh-refinement/' | relative_url }}) for choosing `nx_A`/`nx_B`/`CFL`, and [Interpreting Output]({{ '/interpreting-output/' | relative_url }}) for what to do with `R` once you have it.
 
 ## Parameters, by section
 

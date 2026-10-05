@@ -4,9 +4,9 @@ title: Octave Notes
 permalink: /octave/
 ---
 
-The `octave/` folder is a fully self-contained, GNU Octave-compatible port of the model, for anyone without a MATLAB license. It covers the same physics and outputs as `matlab/`, either from the command line (`Run_MIDAS`) or through its own interactive [GUI](gui#octave-gui) (`MIDAS_GUI`) - a rebuild covering the same fields as the MATLAB App Designer app, since Octave can't open that file format at all.
+The `octave/` folder is a fully self-contained, GNU Octave-compatible port of the model, for anyone without a MATLAB license. It covers the same physics and outputs as `matlab/`, either from the command line (`Run_MIDAS`) or through its own interactive [GUI]({{ '/gui/' | relative_url }}#octave-gui) (`MIDAS_GUI`) - a rebuild covering the same fields as the MATLAB App Designer app, since Octave can't open that file format at all.
 
-**MIDAS was originally written for and developed in MATLAB.** `matlab/`/`GUI/` are the mature, primary implementation; this port was only recently run under a real Octave interpreter for the first time, surfacing (and fixing) a number of Octave-only compatibility bugs - see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md) - with more possibly still to find. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it. If you have a MATLAB license, prefer it when runtime matters - Octave measured about 4.5x slower here even with plotting off entirely, after a since-applied fix cut what was originally a much larger gap (see [Performance](#performance) below), and the GUI's live-updating plot is slower still (see [Performance](gui#performance)).
+**MIDAS was originally written for and developed in MATLAB.** `matlab/`/`GUI/` are the mature, primary implementation; this port was only recently run under a real Octave interpreter for the first time, surfacing (and fixing) a number of Octave-only compatibility bugs - see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md) - with more possibly still to find. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it. If you have a MATLAB license, prefer it when runtime matters - Octave measured about 4.5x slower here even with plotting off entirely, after a since-applied fix cut what was originally a much larger gap (see [Performance](#performance) below), and the GUI's live-updating plot is slower still (see [Performance]({{ '/gui/' | relative_url }}#performance)).
 
 ## Requirements
 
@@ -43,11 +43,11 @@ octave
 >> Run_MIDAS
 ```
 
-Same workflow as [`matlab/`](getting-started) - `MIDAS_Params.m` is the default, or swap in any of the six [example configurations](examples).
+Same workflow as [`matlab/`]({{ '/getting-started/' | relative_url }}) - `MIDAS_Params.m` is the default, or swap in any of the six [example configurations]({{ '/examples/' | relative_url }}).
 
 ## Performance
 
-**If you have a MATLAB license, prefer it for anything beyond a quick check** - Octave is still slower than MATLAB here, independent of plotting (see also the GUI-specific redraw cost in [Performance](gui#performance)), though far less than it used to be.
+**If you have a MATLAB license, prefer it for anything beyond a quick check** - Octave is still slower than MATLAB here, independent of plotting (see also the GUI-specific redraw cost in [Performance]({{ '/gui/' | relative_url }}#performance)), though far less than it used to be.
 
 Originally (before the `thomasSolve` fix below), measured directly on this machine at full resolution, `doPlot = false` (pure numerics, no plotting at all): `Example1_Baseline` took 48.2 s under MATLAB vs. 1040.5 s under Octave - about 21.6x slower. Profiling a shorter Octave run (same full grid, `t_tot = 1`) traced the large majority of this to one function: `thomasSolve` (`MIDAS_Main.m`'s hand-written tridiagonal solver, called once per phase per implicit diffusion step) accounted for 42 of 69 seconds - 61% of total runtime - across 6,360 calls, each running a ~200-iteration scalar for-loop twice (forward sweep, then back-substitution). MATLAB's JIT compiles this kind of tight indexed-scalar loop efficiently; Octave's interpreter does not, so the same algorithm that is cheap under MATLAB dominated the whole run under Octave.
 
@@ -55,7 +55,7 @@ Originally (before the `thomasSolve` fix below), measured directly on this machi
 
 ## Differences from the MATLAB version
 
-- `octave/MIDAS_GUI.m` is a from-scratch rebuild (plain `uicontrol`), not a port of `GUI/MIDAS.m` (a MATLAB App Designer file Octave can't open at all) - see the [Octave GUI section](gui#octave-gui) of the GUI guide for what differs.
+- `octave/MIDAS_GUI.m` is a from-scratch rebuild (plain `uicontrol`), not a port of `GUI/MIDAS.m` (a MATLAB App Designer file Octave can't open at all) - see the [Octave GUI section]({{ '/gui/' | relative_url }}#octave-gui) of the GUI guide for what differs.
 - Octave has no `griddedInterpolant` - the P-T path lookup in `MIDAS_Main.m` uses `interp1(...,'extrap')` anonymous functions instead.
 - Octave has no `tiledlayout`/`nexttile` - `tiledlayout.m`/`nexttile.m` (in `octave/`) are small local shims backed by `subplot`, so the plotting scripts that use them are otherwise unchanged from `matlab/`.
 - Octave's colorbar is an axes object with no `Ticks`/`TickLabels` property (`plot_velocity_age.m` sets `YTick`/`YTickLabel`), older releases have no `xline`/`yline` (reference lines are drawn with `plot()`), and there is no `parula` - `plotting/parula.m` is a small approximation of it, so the colormaps match the MATLAB figures.- The phase-diagram panels (`plot_them_1.m`, `plot_them_3.m`) use `pcolor` instead of `contourf`: Octave's `contourf` drew scrambled polygons for this grid, which contains NaN regions.- To look like the MATLAB version's LaTeX-rendered figures, `plotting/matlabStyle.m` (called from `plotting/fitFigure.m` and at the end of each plot function) sets a serif font, italic variable symbols (`x`, `t`, `T`, `P`, `D`), plain panel letters, a light grid and at most ~5 tick labels per axis, and `fitFigure.m` scales the text to the actual window size. Figure windows open at Octave's default size and are never forced to a fixed size. Both files are cosmetic and guarded: if something in them fails, the figure is drawn unstyled and a single warning is printed.

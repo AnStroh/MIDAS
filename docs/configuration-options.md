@@ -4,7 +4,7 @@ title: Configuration Options
 permalink: /configuration-options/
 ---
 
-`MIDAS_Params.m` is organized into six sections; this page walks through the mode switches in each - the fields whose *meaning* changes depending on another field's value, or whose choice changes which other fields matter. For a flat list of every field, see [API Reference](api-reference); for six ready-made combinations of all of these, see [Examples](examples).
+`MIDAS_Params.m` is organized into six sections; this page walks through the mode switches in each - the fields whose *meaning* changes depending on another field's value, or whose choice changes which other fields matter. For a flat list of every field, see [API Reference]({{ '/api-reference/' | relative_url }}); for six ready-made combinations of all of these, see [Examples]({{ '/examples/' | relative_url }}).
 
 Three combinations come up often enough that the project's own technical documentation gives them names, used below:
 
@@ -26,7 +26,7 @@ Whether to record a movie (`make_movie`), whether/what to plot (`doPlot`, `plot_
 ## Major-element equilibrium source: `eqMode`
 
 - **`'poly'`** - a 3-point bilinear fit (`Tar`/`Par`/`Car_G`/`Car_B`, three T-P-composition anchor points, least-squares fit) - no external file needed, extrapolates smoothly (never errors) outside the fitted range.
-- **`'PD'`** (case 3, above) - equilibrium compositions are bilinearly   interpolated from a Perplex phase-diagram table (`params.PD`, a filename   resolved relative to the current working directory) - see [Phase Diagrams](phase-diagrams) for the required format and how to generate one. Raises an explicit error if the requested $(T,P)$ falls outside the table's range, rather than silently extrapolating.
+- **`'PD'`** (case 3, above) - equilibrium compositions are bilinearly   interpolated from a Perplex phase-diagram table (`params.PD`, a filename   resolved relative to the current working directory) - see [Phase Diagrams]({{ '/phase-diagrams/' | relative_url }}) for the required format and how to generate one. Raises an explicit error if the requested $(T,P)$ falls outside the table's range, rather than silently extrapolating.
 
 If `eqMode = 'PD'` but `params.PD` isn't found, MIDAS falls back to `'poly'` automatically (and does the equivalent fallback for `MnMode`/ `MniBMode` below) - useful for keeping an example runnable even without the phase-diagram file present, but worth knowing about if a run behaves unexpectedly different from what you configured.
 
@@ -39,7 +39,7 @@ These two interact: if `MniBMode = 'manual'` while `MnMode = 'PD'`, MIDAS overri
 
 ## Geometry: `ndim`
 
-`1` planar, `2` cylindrical, `3` spherical - the exponent in the geometry-dependent diffusion equation (see [Equations](equations)). Purely geometric; doesn't otherwise change any other switch's meaning, except its interaction with `NBC` below.
+`1` planar, `2` cylindrical, `3` spherical - the exponent in the geometry-dependent diffusion equation (see [Equations]({{ '/equations/' | relative_url }})). Purely geometric; doesn't otherwise change any other switch's meaning, except its interaction with `NBC` below.
 
 ## Outer boundary condition: `NBC`
 
@@ -53,7 +53,7 @@ So for `ndim` = 2/3, `NBC` only controls the *outer* edge - the center is always
 ## Isochron reference point: `isoRefMode`
 
 Which "second mineral" phase A's isochron age is regressed against: `'bulk'` (phase B's volume-weighted average), `'core'` (phase B's node farthest from the interface - least diffusively disturbed), or `'wholerock'` (volume-weighted average of phase A + phase B together, a whole-rock-style comparison). `isoNskip`/`isoShowProfile` add extra profile-point isochrons on top of the always-computed core/rim/bulk/max set
-- see [Equations](equations#apparent-age-determination).
+- see [Equations]({{ '/equations/' | relative_url }}#apparent-age-determination).
 
 ## Recording cadence: `recordMode`
 

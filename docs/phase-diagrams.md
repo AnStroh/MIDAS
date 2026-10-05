@@ -4,7 +4,7 @@ title: Phase Diagrams
 permalink: /phase-diagrams/
 ---
 
-`eqMode = 'PD'` (and `MnMode`/`MniBMode = 'PD'`) sources major-elementequilibrium compositions from a pre-calculated phase-diagram look-up table instead of the 3-point polynomial fit - see [Configuration Options](configuration-options#major-element-equilibrium-source-eqmode).This page covers the table format MIDAS expects and how the shipped example table was generated.
+`eqMode = 'PD'` (and `MnMode`/`MniBMode = 'PD'`) sources major-elementequilibrium compositions from a pre-calculated phase-diagram look-up table instead of the 3-point polynomial fit - see [Configuration Options]({{ '/configuration-options/' | relative_url }}#major-element-equilibrium-source-eqmode).This page covers the table format MIDAS expects and how the shipped example table was generated.
 
 ## Required table format
 
@@ -25,7 +25,7 @@ Columns 3-4 (phase volumes) and 5-6 (FeO in phases A/B) are read but not used by
   <img src="{{ '/assets/figures/phase_diagram_example.png' | relative_url }}" width="100%" alt="Column 7 (MgO in phase A, wt%) of the shipped Pelite_avg_1.dat table, contoured across its full 1-10 GPa, 350-850C range.">
 </p>
 
-*Column 7 (MgO in phase A) of the shipped `Pelite_avg_1.dat`, contoured across the table's full range - this is what `create_grid.m`/`eqFun` interpolate into at every timestep. Note this is the table's full extent, not any one example's actual P-T path - compare to the much narrower Trange/Prange window ([Configuration Options](configuration-options)) an individual run actually samples from within it.*
+*Column 7 (MgO in phase A) of the shipped `Pelite_avg_1.dat`, contoured across the table's full range - this is what `create_grid.m`/`eqFun` interpolate into at every timestep. Note this is the table's full extent, not any one example's actual P-T path - compare to the much narrower Trange/Prange window ([Configuration Options]({{ '/configuration-options/' | relative_url }})) an individual run actually samples from within it.*
 
 ## Generating one with Perple_X {#generating-one-with-perplex}
 

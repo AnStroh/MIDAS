@@ -23,7 +23,7 @@ MIDAS
 
 - **Left sidebar**: tabs matching `MIDAS_Params.m`'s own sections, science  inputs first and bookkeeping last (Physics, Time & P-T, Thermodynamics,  Numerics, Numerics Flags, Output & Plotting) - every field is exposed as its own control (numeric box, dropdown, checkbox, or a small vector of boxes), with the same explanatory text as the source file's inline comments available as a hover tooltip.
 - **Run / Reset / Close Figs**: Run executes `MIDAS_Main` with whatever's currently in  the form and shows every post-run figure (progress bar tracks each one).  Reset restores every field to `MIDAS_Params()`'s defaults. Close Figs closes every open figure window from any past run (not just the latest one) without closing the app itself.
-- **Load Example**: pick any of the six [example configurations](examples)  (or plain `MIDAS_Params`) from the dropdown and click Load to populate  every field from it - a starting point, not a locked-in choice, since  every field stays freely editable afterwards, so you can dial in your own configuration without typing all ~60 values by hand.
+- **Load Example**: pick any of the six [example configurations]({{ '/examples/' | relative_url }})  (or plain `MIDAS_Params`) from the dropdown and click Load to populate  every field from it - a starting point, not a locked-in choice, since  every field stays freely editable afterwards, so you can dial in your own configuration without typing all ~60 values by hand.
 - **Save/Load Preset**: save the current form to a `.mat` file, or load a  previously saved one back in.
 - **Export Data / Export Figures panels**: after a run, export `R`'s  scalar/summary data to Excel, or export any of the figures from that run  as a vector PDF + 300 dpi PNG (both with and without their title).
 - **Results list**: browse, refresh, or delete previous runs' output  folders (each run gets its own timestamped folder under `results/`).
@@ -85,7 +85,7 @@ way so this note can be corrected.
 **If you have a MATLAB license, prefer the MATLAB GUI for long or interactive runs** - the Octave GUI's live-updating plot is noticeably slower, for two compounding reasons:
 
 - Octave has no native `tiledlayout`/`nexttile`; the shim this repo uses instead ([`tiledlayout.m`](https://github.com/AnStroh/MIDAS/blob/main/octave/plotting/tiledlayout.m)) deletes and rebuilds all 8 panel axes from scratch on every redraw, rather than updating the existing tiles in place the way MATLAB's native version does. Two of those panels also rebuild a `contourf` phase-diagram plot and a colorbar every time, on top of that.
-- This install's only available graphics toolkits are `fltk`/`gnuplot` (see [Graphics toolkit](octave#graphics-toolkit)), not `qt` - less hardware-accelerated and generally slower to render.
+- This install's only available graphics toolkits are `fltk`/`gnuplot` (see [Graphics toolkit]({{ '/octave/' | relative_url }}#graphics-toolkit)), not `qt` - less hardware-accelerated and generally slower to render.
 
 Together, every recorded timestep of a run redraws the whole 8-panel figure from nothing, which adds up over a run with many recorded steps. Until the shim is optimized to reuse axes instead of rebuilding them, raising `recordDT` (fewer redraws over the same run) is the cheapest workaround available without code changes.
 

@@ -8,29 +8,29 @@ permalink: /
 
 "A" indicates the parameters and variables with respect to the crystal, whereas "B" refers to the matrix.
 
-**Note:** MIDAS is under active development (currently v1.0.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](../CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](../CONTRIBUTING.md).
+**Note:** MIDAS is under active development (currently v1.0.0) - interfaces, defaults, and file formats may still change between versions, and known limitations exist (see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md)). Feedback and bug reports are welcome - see [CONTRIBUTING.md](https://github.com/AnStroh/MIDAS/blob/main/CONTRIBUTING.md).
 
-**Also note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation, while `octave/` is a port only recently run under real Octave for the first time. Several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](../CHANGELOG.md)), and more may still surface. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it.
+**Also note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation, while `octave/` is a port only recently run under real Octave for the first time. Several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](https://github.com/AnStroh/MIDAS/blob/main/CHANGELOG.md)), and more may still surface. Something that misbehaves under Octave but works fine in MATLAB is likely a porting gap, not a physics/numerics issue - please report it.
 
 ## Three ways to run it
 
 | | |
 |---|---|
-| **[Getting started](getting-started)** | Run it from MATLAB or Octave in a few lines |
-| **[GUI guide](gui)** | The interactive front-end - MATLAB App Designer, or the Octave rebuild |
-| **[Octave notes](octave)** | Setup and differences for the GNU Octave port |
+| **[Getting started]({{ '/getting-started/' | relative_url }})** | Run it from MATLAB or Octave in a few lines |
+| **[GUI guide]({{ '/gui/' | relative_url }})** | The interactive front-end - MATLAB App Designer, or the Octave rebuild |
+| **[Octave notes]({{ '/octave/' | relative_url }})** | Setup and differences for the GNU Octave port |
 
 ## Background and reference
 
 | | |
 |---|---|
-| **[Equations](equations)** | The physics and numerics MIDAS actually solves |
-| **[Configuration options](configuration-options)** | Every mode switch, what it changes, how they interact |
-| **[Mesh & time-step refinement](mesh-refinement)** | Choosing `nx_A`/`nx_B`/`CFL`, and what to do if a run errors |
-| **[Interpreting output](interpreting-output)** | What to look at in `R`, and what it means |
-| **[Benchmarks](benchmarks)** | Mass-balance conservation checks (and open items found so far) |
-| **[Phase diagrams](phase-diagrams)** | Building a Perplex look-up table for `eqMode='PD'` |
-| **[References](references)** | Every citation used across this documentation, in one place |
+| **[Equations]({{ '/equations/' | relative_url }})** | The physics and numerics MIDAS actually solves |
+| **[Configuration options]({{ '/configuration-options/' | relative_url }})** | Every mode switch, what it changes, how they interact |
+| **[Mesh & time-step refinement]({{ '/mesh-refinement/' | relative_url }})** | Choosing `nx_A`/`nx_B`/`CFL`, and what to do if a run errors |
+| **[Interpreting output]({{ '/interpreting-output/' | relative_url }})** | What to look at in `R`, and what it means |
+| **[Benchmarks]({{ '/benchmarks/' | relative_url }})** | Mass-balance conservation checks (and open items found so far) |
+| **[Phase diagrams]({{ '/phase-diagrams/' | relative_url }})** | Building a Perplex look-up table for `eqMode='PD'` |
+| **[References]({{ '/references/' | relative_url }})** | Every citation used across this documentation, in one place |
 
 ## What it models
 
@@ -52,7 +52,7 @@ R = MIDAS_Main(params);
 plot_all_composition_profiles(R);           % every element/isotope, phase A vs phase B
 ```
 
-See **[Examples](examples)** for all six included configurations, and **[API reference](api-reference)** for every parameter and every plotting function.
+See **[Examples]({{ '/examples/' | relative_url }})** for all six included configurations, and **[API reference]({{ '/api-reference/' | relative_url }})** for every parameter and every plotting function.
 
 ## Citing
 

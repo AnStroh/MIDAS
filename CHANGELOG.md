@@ -72,6 +72,7 @@ All notable changes to MIDAS are documented here. Format loosely follows [Keep a
 - Octave CI: `plot_velocity_age.m` set the colorbar ticks with `set(cb,'Ticks',...,'TickLabels',...)`, which Octave's colorbar (an axes object) does not have - the smoke test failed with `set: unknown axes property Ticks`. It now sets `YTick`/`YTickLabel`.
 - `octave/MIDAS_GUI.m`: the **Close Figs** button called `findall(0,'Type','figure')`, which walks the GUI window's own controls and crashes Octave 11.3; it now uses `get(0,'children')`.
 - Both GUIs (`GUI/MIDAS.m`, `octave/MIDAS_GUI.m`): the status line after a run said `N/8 figures`, but a run produces 7 figures; it now says `N/7`.
+- Documentation site: every cross-page link in `docs/*.md` (e.g. `[...](equations)`, `[...](gui#octave-gui)`) was a plain relative link, which the browser resolved *under* the current page (`/dev/octave/gui` instead of `/dev/gui/`) and so returned 404; they now use `{{ '/page/' | relative_url }}`, which also works under both `/dev/` and `/stable/`. Links from the docs to repository files (`CHANGELOG.md`, `CONTRIBUTING.md`, `matlab/plotting/plot_massbalance_MgO.m`) now point to their GitHub URLs.
 
 ### Corrected
 

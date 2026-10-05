@@ -90,7 +90,7 @@ with $v>0$ growth (phase A expands, phase B is consumed) and $v<0$ resorption (t
 
 MIDAS offers three ways to assign an age:
 
-1. **Model time itself** - trivial, but only meaningful for interpreting   the model's own internal consistency (see [Benchmarks](benchmarks)).
+1. **Model time itself** - trivial, but only meaningful for interpreting   the model's own internal consistency (see [Benchmarks]({{ '/benchmarks/' | relative_url }})).
 2. **Single-point apparent age**, Eq. (above) - evaluated at every node,   every recorded step.
 3. **Isochron age** (two-point regression, e.g. Faure & Mensing, 2005):   assuming a cogenetic mineral pair sharing one true age $t$ and one   initial daughter content, a non-radiogenic reference field $\mathrm{Hf_r}$ (never touched by decay, carried alongside Hf purely to normalize the isochron axes) gives
 
@@ -118,9 +118,9 @@ $$
 
 `CFL` is conventionally $<1$ for explicit schemes, but since diffusion here is unconditionally stable, MIDAS uses values up to `500` for speed - the $\Delta x/|v|$ term (scaled by an internal factor of 0.4) is what actually keeps growth/resorption from overshooting a full node per step. `nStepsMin` bounds $\Delta t$ from above so a near-stagnant run ($v\to0$) still resolves a time history instead of jumping to $t_{tot}$ in one step.
 
-**Regridding**: after the interface moves, both grids are resampled with a shape-preserving cubic interpolant (`pchip`) onto fresh uniform grids (following Stroh et al., 2025's approach) - except when the movement is below `microStepTol` (default $10^{-12}$ mm), in which case only the boundary node is updated in place, skipping the resample entirely. This resampling is the main source of the small mass-balance drift discussed in [Benchmarks](benchmarks).
+**Regridding**: after the interface moves, both grids are resampled with a shape-preserving cubic interpolant (`pchip`) onto fresh uniform grids (following Stroh et al., 2025's approach) - except when the movement is below `microStepTol` (default $10^{-12}$ mm), in which case only the boundary node is updated in place, skipping the resample entirely. This resampling is the main source of the small mass-balance drift discussed in [Benchmarks]({{ '/benchmarks/' | relative_url }}).
 
-**Output**: `MIDAS_Main` returns everything in one struct `R`. Key fields: `R.xA_final`/`R.xB_final` (final spatial grids, mm), `R.CA_final`/`R CB_final` (final major-element profiles), `R.CALu_final`/`R.CAHf_final` (final Lu/Hf profiles, phase A), `R.tALuHf1_final` (final apparent-age profile, phase A), `R.S_final` (final interface position, mm), `R.t_final` (elapsed model time, Myr), and `R.params` (a copy of the input struct used for the run). If `store_history = 1`, the full time series is also stored, generally as `<field>rec` (e.g. `R.CArec`, `R.Srec`, `R.trec`) - the apparent-age history is the one exception, stored as `R.tA1`/`R.tB1`. See[API Reference](api-reference) for the complete field list.
+**Output**: `MIDAS_Main` returns everything in one struct `R`. Key fields: `R.xA_final`/`R.xB_final` (final spatial grids, mm), `R.CA_final`/`R CB_final` (final major-element profiles), `R.CALu_final`/`R.CAHf_final` (final Lu/Hf profiles, phase A), `R.tALuHf1_final` (final apparent-age profile, phase A), `R.S_final` (final interface position, mm), `R.t_final` (elapsed model time, Myr), and `R.params` (a copy of the input struct used for the run). If `store_history = 1`, the full time series is also stored, generally as `<field>rec` (e.g. `R.CArec`, `R.Srec`, `R.trec`) - the apparent-age history is the one exception, stored as `R.tA1`/`R.tB1`. See[API Reference]({{ '/api-reference/' | relative_url }}) for the complete field list.
 
 ## References
 

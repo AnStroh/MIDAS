@@ -4,7 +4,7 @@ title: Benchmarks
 permalink: /benchmarks/
 ---
 
-MIDAS's main self-consistency check is **total mass balance**: MgO has no physical source or sink in this model (no decay, no reaction with anything outside the crystal/matrix pair), so under a closed system its volume-weighted total should stay constant throughout a run - any drift is purely numerical (discretization error, and the `pchip` regridding step after each interface move; see [Equations](equations#numerical-implementation)). This is the same benchmark used in the project's own technical documentation (Stroh et al., in prep.).
+MIDAS's main self-consistency check is **total mass balance**: MgO has no physical source or sink in this model (no decay, no reaction with anything outside the crystal/matrix pair), so under a closed system its volume-weighted total should stay constant throughout a run - any drift is purely numerical (discretization error, and the `pchip` regridding step after each interface move; see [Equations]({{ '/equations/' | relative_url }}#numerical-implementation)). This is the same benchmark used in the project's own technical documentation (Stroh et al., in prep.).
 
 ## The check
 
@@ -12,7 +12,7 @@ $$
 \overline{M}(t) = \frac{\int C(t)\, dV}{\int dV}, \qquad \delta M(t) = \frac{\overline{M}(t) - \overline{M}(0)}{\overline{M}(0)}
 $$
 
-computed by trapezoidal quadrature over both phases together (`calc_mass_vol`), for a **closed system** (`NBC = 1` and/or `ndim = 1` - see [Configuration Options](configuration-options#outer-boundary-condition-nbc) for when the outer boundary is actually closed). $\delta M$ is tracked every recorded step for MgO (`R.dMB`), with the run's peak drift also summarized as `R.dMB_max`. To reproduce:
+computed by trapezoidal quadrature over both phases together (`calc_mass_vol`), for a **closed system** (`NBC = 1` and/or `ndim = 1` - see [Configuration Options]({{ '/configuration-options/' | relative_url }}#outer-boundary-condition-nbc) for when the outer boundary is actually closed). $\delta M$ is tracked every recorded step for MgO (`R.dMB`), with the run's peak drift also summarized as `R.dMB_max`. To reproduce:
 
 ```matlab
 R = MIDAS_Main(params);       % params.store_history = 1
@@ -32,7 +32,7 @@ Peak absolute drift over the whole run (including the `checkFinT_Eq` relaxation 
 | Example5_PlanarGeometry | 100% | $5.6\times10^{-3}$ |
 | Example6_CylindricalGeometry | 137% | $5.5\times10^{-3}$ |
 
-**MgO** stays small (0.01-0.65%) across all six, consistent with the "negligible, changes in the fourth digit" description in the project's own technical write-up, and is the metric [`plot_massbalance_MgO.m`](../matlab/plotting/plot_massbalance_MgO.m) was added specifically to visualize.
+**MgO** stays small (0.01-0.65%) across all six, consistent with the "negligible, changes in the fourth digit" description in the project's own technical write-up, and is the metric [`plot_massbalance_MgO.m`](https://github.com/AnStroh/MIDAS/blob/main/matlab/plotting/plot_massbalance_MgO.m) was added specifically to visualize.
 
 ## Fixed: all six examples now complete at full resolution
 

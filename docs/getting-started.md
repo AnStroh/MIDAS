@@ -7,7 +7,7 @@ permalink: /getting-started/
 ## Requirements
 
 - **MATLAB**: R2019b or newer (uses `tiledlayout`/`nexttile` and  `exportgraphics`). No additional toolboxes required.
-- **GNU Octave**: 8.x (see [Octave notes](octave) for setup and package  requirements).
+- **GNU Octave**: 8.x (see [Octave notes]({{ '/octave/' | relative_url }}) for setup and package  requirements).
 
 ## 1. Pick a folder
 
@@ -43,7 +43,7 @@ to any of the six example configurations, e.g.
 ```matlab
 params = Example2_PolyEquilibrium();
 ```
-See **[Examples](examples)** for what each one demonstrates.
+See **[Examples]({{ '/examples/' | relative_url }})** for what each one demonstrates.
 
 ## 4. Write your own configuration
 
@@ -57,7 +57,7 @@ R = MIDAS_Main(params);
 
 ## 5. Look at the results
 
-`MIDAS_Main` returns a single struct `R` holding the full time history (if `params.store_history = 1`) and final-state profiles for every tracked quantity. Every `plot_*.m` function in the folder takes `R` and produces one figure - see **[API reference](api-reference)** for the full list.
+`MIDAS_Main` returns a single struct `R` holding the full time history (if `params.store_history = 1`) and final-state profiles for every tracked quantity. Every `plot_*.m` function in the folder takes `R` and produces one figure - see **[API reference]({{ '/api-reference/' | relative_url }})** for the full list.
 
 To export a figure as a publication-ready vector PDF + 300 dpi PNG (both a titled and an untitled version):
 ```matlab

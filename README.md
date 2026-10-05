@@ -29,7 +29,7 @@ This folder is organized into three independent copies of the same model, so you
 
 Each is fully self-contained (no cross-folder dependencies) and carries its own copy of the core solver (`MIDAS_Main.m`), default parameters (`MIDAS_Params.m`), the six example configurations, and every plotting/export helper.
 
-**Note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation. `octave/` is a port, put through real Octave for the first time only recently; several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](CHANGELOG.md)), and more may still surface as it gets more real-world use. If you hit something under Octave that works fine in MATLAB, it's likely a porting gap rather than a physics/numerics issue - please report it.
+**Note:** MIDAS was originally written for and developed in MATLAB - `matlab/`/`GUI/` are the mature, primary implementation. `octave/` is a port, put through real Octave for the first time only recently; several Octave-only compatibility bugs have been found and fixed this way (see [CHANGELOG.md](CHANGELOG.md)), and more may still surface as it gets more real-world use. If you find something under Octave that works fine in MATLAB, it's likely a porting gap rather than a physics/numerics issue - please report it.
 
 ## Examples
 
